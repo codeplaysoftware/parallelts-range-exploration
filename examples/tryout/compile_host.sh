@@ -1,0 +1,1 @@
+~/projects/computeCpp/bin/compute++ -g -std=c++1z tryout.cpp -I ~/projects/range-v3/include/ -I ~/projects/gstorm/include/ -I ~/projects/computeCpp/include/ -lComputeCpp -L ~/projects/computeCpp/lib/ -D_GLIBCXX_USE_CXX11_ABI=0 -o tryout
