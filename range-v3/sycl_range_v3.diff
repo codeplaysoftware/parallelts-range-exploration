@@ -1,0 +1,1468 @@
+diff --git a/example/comprehensions.cpp b/example/comprehensions.cpp
+index 1266e77..3bb9570 100755
+--- a/example/comprehensions.cpp
++++ b/example/comprehensions.cpp
+@@ -26,7 +26,7 @@ int main()
+             {
+                 return view::for_each(view::ints(x, z+1), [=](int y)
+                 {
+-                    return yield_if(x*x + y*y == z*z, std::make_tuple(x, y, z));
++                    return yield_if(x*x + y*y == z*z, sycl_make_tuple(x, y, z));
+                 });
+             });
+         });
+@@ -36,7 +36,7 @@ int main()
+     //               ints(1, z+1) >>= [=](int x) { return
+     //               ints(x, z+1) >>= [=](int y) { return
+     //    yield_if(x*x + y*y == z*z,
+-    //        std::make_tuple(x, y, z)); };}; };
++    //        sycl_make_tuple(x, y, z)); };}; };
+ 
+     // Display the first 100 triples
+     RANGES_FOR(auto triple, triples | view::take(100))
+@@ -86,7 +86,7 @@ void benchmark()
+             {
+                 return view::for_each(view::ints(x, z+1), [=](int y)
+                 {
+-                    return yield_if(x*x + y*y == z*z, std::make_tuple(x, y, z));
++                    return yield_if(x*x + y*y == z*z, sycl_make_tuple(x, y, z));
+                 });
+             });
+         });
+diff --git a/include/meta/meta.hpp b/include/meta/meta.hpp
+index e604016..0f8e957 100755
+--- a/include/meta/meta.hpp
++++ b/include/meta/meta.hpp
+@@ -424,8 +424,8 @@ namespace meta
+             constexpr std::size_t range_distance_(T begin, T end)
+             {
+                 return begin <= end ? static_cast<std::size_t>(end - begin)
+-                                    : throw "The start of the integer_sequence must not be "
+-                                            "greater than the end";
++                                    : 0; //assert(false && "The start of the integer_sequence must not be "
++                                         //"greater than the end");
+             }
+ 
+             template <std::size_t End, typename State, indices_strategy_ Status>
+diff --git a/include/range/v3/algorithm/aux_/merge_n.hpp b/include/range/v3/algorithm/aux_/merge_n.hpp
+index 04b2ed9..edc5738 100755
+--- a/include/range/v3/algorithm/aux_/merge_n.hpp
++++ b/include/range/v3/algorithm/aux_/merge_n.hpp
+@@ -28,7 +28,7 @@
+ #ifndef RANGES_V3_ALGORITHM_AUX_MERGE_N_HPP
+ #define RANGES_V3_ALGORITHM_AUX_MERGE_N_HPP
+ 
+-#include <tuple>
++#include <sycl/tuple.h>
+ #include <range/v3/range_fwd.hpp>
+ #include <range/v3/begin_end.hpp>
+ #include <range/v3/distance.hpp>
+diff --git a/include/range/v3/algorithm/aux_/merge_n_with_buffer.hpp b/include/range/v3/algorithm/aux_/merge_n_with_buffer.hpp
+index 67f94f9..08c4117 100755
+--- a/include/range/v3/algorithm/aux_/merge_n_with_buffer.hpp
++++ b/include/range/v3/algorithm/aux_/merge_n_with_buffer.hpp
+@@ -28,7 +28,7 @@
+ #ifndef RANGES_V3_ALGORITHM_AUX_MERGE_N_WITH_BUFFER_HPP
+ #define RANGES_V3_ALGORITHM_AUX_MERGE_N_WITH_BUFFER_HPP
+ 
+-#include <tuple>
++#include <sycl/tuple.h>
+ #include <range/v3/range_fwd.hpp>
+ #include <range/v3/utility/functional.hpp>
+ #include <range/v3/utility/iterator_concepts.hpp>
+diff --git a/include/range/v3/algorithm/aux_/sort_n_with_buffer.hpp b/include/range/v3/algorithm/aux_/sort_n_with_buffer.hpp
+index 4d0bcb5..70a6bf5 100755
+--- a/include/range/v3/algorithm/aux_/sort_n_with_buffer.hpp
++++ b/include/range/v3/algorithm/aux_/sort_n_with_buffer.hpp
+@@ -28,7 +28,7 @@
+ #ifndef RANGES_V3_ALGORITHM_AUX_SORT_N_WITH_BUFFER_HPP
+ #define RANGES_V3_ALGORITHM_AUX_SORT_N_WITH_BUFFER_HPP
+ 
+-#include <tuple>
++#include <sycl/tuple.h>
+ #include <range/v3/range_fwd.hpp>
+ #include <range/v3/utility/iterator.hpp>
+ #include <range/v3/utility/functional.hpp>
+diff --git a/include/range/v3/algorithm/copy_n.hpp b/include/range/v3/algorithm/copy_n.hpp
+index 020f46c..3c96cd1 100755
+--- a/include/range/v3/algorithm/copy_n.hpp
++++ b/include/range/v3/algorithm/copy_n.hpp
+@@ -13,7 +13,7 @@
+ #ifndef RANGES_V3_ALGORITHM_COPY_N_HPP
+ #define RANGES_V3_ALGORITHM_COPY_N_HPP
+ 
+-#include <tuple>
++#include <sycl/tuple.h>
+ #include <utility>
+ #include <functional>
+ #include <range/v3/range_fwd.hpp>
+diff --git a/include/range/v3/algorithm/generate_n.hpp b/include/range/v3/algorithm/generate_n.hpp
+index bdc6e81..af65234 100755
+--- a/include/range/v3/algorithm/generate_n.hpp
++++ b/include/range/v3/algorithm/generate_n.hpp
+@@ -13,7 +13,7 @@
+ #ifndef RANGES_V3_ALGORITHM_GENERATE_N_HPP
+ #define RANGES_V3_ALGORITHM_GENERATE_N_HPP
+ 
+-#include <tuple>
++#include <sycl/tuple.h>
+ #include <utility>
+ #include <range/v3/range_fwd.hpp>
+ #include <range/v3/begin_end.hpp>
+diff --git a/include/range/v3/algorithm/merge.hpp b/include/range/v3/algorithm/merge.hpp
+index 08b5c3e..c916776 100755
+--- a/include/range/v3/algorithm/merge.hpp
++++ b/include/range/v3/algorithm/merge.hpp
+@@ -28,7 +28,7 @@
+ #ifndef RANGES_V3_ALGORITHM_MERGE_HPP
+ #define RANGES_V3_ALGORITHM_MERGE_HPP
+ 
+-#include <tuple>
++#include <sycl/tuple.h>
+ #include <range/v3/range_fwd.hpp>
+ #include <range/v3/begin_end.hpp>
+ #include <range/v3/range_concepts.hpp>
+diff --git a/include/range/v3/algorithm/partition_copy.hpp b/include/range/v3/algorithm/partition_copy.hpp
+index b952b35..d49586c 100755
+--- a/include/range/v3/algorithm/partition_copy.hpp
++++ b/include/range/v3/algorithm/partition_copy.hpp
+@@ -13,7 +13,7 @@
+ #ifndef RANGES_V3_ALGORITHM_PARTITION_COPY_HPP
+ #define RANGES_V3_ALGORITHM_PARTITION_COPY_HPP
+ 
+-#include <tuple>
++#include <sycl/tuple.h>
+ #include <meta/meta.hpp>
+ #include <range/v3/range_fwd.hpp>
+ #include <range/v3/begin_end.hpp>
+diff --git a/include/range/v3/algorithm/set_algorithm.hpp b/include/range/v3/algorithm/set_algorithm.hpp
+index f6865b0..baa5039 100755
+--- a/include/range/v3/algorithm/set_algorithm.hpp
++++ b/include/range/v3/algorithm/set_algorithm.hpp
+@@ -21,7 +21,7 @@
+ #ifndef RANGES_V3_ALGORITHM_SET_ALGORITHM_HPP
+ #define RANGES_V3_ALGORITHM_SET_ALGORITHM_HPP
+ 
+-#include <tuple>
++#include <sycl/tuple.h>
+ #include <utility>
+ #include <range/v3/range_fwd.hpp>
+ #include <range/v3/begin_end.hpp>
+diff --git a/include/range/v3/algorithm/transform.hpp b/include/range/v3/algorithm/transform.hpp
+index ebff231..49128f6 100755
+--- a/include/range/v3/algorithm/transform.hpp
++++ b/include/range/v3/algorithm/transform.hpp
+@@ -13,7 +13,7 @@
+ #ifndef RANGES_V3_ALGORITHM_TRANSFORM_HPP
+ #define RANGES_V3_ALGORITHM_TRANSFORM_HPP
+ 
+-#include <tuple>
++#include <sycl/tuple.h>
+ #include <utility>
+ #include <meta/meta.hpp>
+ #include <range/v3/range_fwd.hpp>
+diff --git a/include/range/v3/detail/config.hpp b/include/range/v3/detail/config.hpp
+index 8940e4c..9d403d4 100755
+--- a/include/range/v3/detail/config.hpp
++++ b/include/range/v3/detail/config.hpp
+@@ -294,12 +294,13 @@
+ 
+ #endif  // RANGES_CXX_INLINE_VARIABLES
+ 
++// why is SYCL complaining about constexpr vars
+ #if RANGES_CXX_INLINE_VARIABLES < RANGES_CXX_INLINE_VARIABLES_17
+ #define RANGES_INLINE_VARIABLE(type, name)                  \
+-    inline namespace                   \
++    inline namespace                                        \
+     {                                                       \
+-        constexpr auto& name = static_const<type>::value;   \
+-    }                                                     
++        constexpr auto name = static_const<type>::value;   \
++    }
+ 
+ #else  // RANGES_CXX_INLINE_VARIABLES >= RANGES_CXX_INLINE_VARIABLES_17
+ #define RANGES_INLINE_VARIABLE(type, name) \
+diff --git a/include/range/v3/detail/variant.hpp b/include/range/v3/detail/variant.hpp
+index 392de4f..fcf020f 100755
+--- a/include/range/v3/detail/variant.hpp
++++ b/include/range/v3/detail/variant.hpp
+@@ -15,7 +15,7 @@
+ #define RANGES_V3_DETAIL_VARIANT_HPP
+ 
+ #include <new>
+-#include <tuple>
++#include <sycl/tuple.h>
+ #include <memory>
+ #include <utility>
+ #include <iterator>
+@@ -369,7 +369,7 @@ namespace ranges
+             template<std::size_t N, typename... Ts>
+             struct construct_fn
+             {
+-                std::tuple<Ts...> args_;
++                sycl_tuple<Ts...> args_;
+ 
+                 template<typename U, std::size_t ...Is>
+                 void construct_(U &u, meta::index_sequence<Is...>)
+@@ -408,7 +408,7 @@ namespace ranges
+                 [[noreturn]] meta::if_c<M != N> operator()(indexed_element<U, M>) const
+                 {
+ #ifndef __device_code__
+-                    throw bad_variant_access("bad variant access");
++                  //  throw bad_variant_access("bad variant access");
+ #endif
+                 }
+                 template<typename U>
+@@ -753,12 +753,12 @@ namespace std
+ {
+     template<typename...Ts>
+     struct tuple_size<ranges::variant<Ts...>>
+-      : tuple_size<tuple<Ts...>>
++      : tuple_size<sycl_tuple<Ts...>>
+     {};
+ 
+     template<size_t I, typename...Ts>
+     struct tuple_element<I, ranges::variant<Ts...>>
+-      : tuple_element<I, tuple<Ts...>>
++      : tuple_element<I, sycl_tuple<Ts...>>
+     {};
+ }
+ 
+diff --git a/include/range/v3/utility/common_tuple.hpp b/include/range/v3/utility/common_tuple.hpp
+index 66936bf..d50ad2f 100755
+--- a/include/range/v3/utility/common_tuple.hpp
++++ b/include/range/v3/utility/common_tuple.hpp
+@@ -29,27 +29,27 @@ namespace ranges
+         namespace detail
+         {
+             template<typename ...Us, typename Tup, std::size_t...Is>
+-            std::tuple<Us...> to_std_tuple(Tup && tup, meta::index_sequence<Is...>)
++            sycl_tuple<Us...> to_std_tuple(Tup && tup, meta::index_sequence<Is...>)
+             {
+-                return std::tuple<Us...>{std::get<Is>(std::forward<Tup>(tup))...};
++                return sycl_tuple<Us...>{std::get<Is>(std::forward<Tup>(tup))...};
+             }
+         }
+         /// \endcond
+ 
+         template<typename ...Ts>
+         struct common_tuple
+-          : std::tuple<Ts...>
++          : sycl_tuple<Ts...>
+         {
+         private:
+             template<typename That, std::size_t...Is>
+             common_tuple(That && that, meta::index_sequence<Is...>)
+-              : std::tuple<Ts...>{std::get<Is>(std::forward<That>(that))...}
++              : sycl_tuple<Ts...>{std::get<Is>(std::forward<That>(that))...}
+             {}
+-            std::tuple<Ts...> & base() noexcept
++            sycl_tuple<Ts...> & base() noexcept
+             {
+                 return *this;
+             }
+-            std::tuple<Ts...> const & base() const noexcept
++            sycl_tuple<Ts...> const & base() const noexcept
+             {
+                 return *this;
+             }
+@@ -67,29 +67,29 @@ namespace ranges
+             CONCEPT_REQUIRES(meta::and_c<(bool) DefaultConstructible<Ts>()...>::value)
+             common_tuple()
+                 noexcept(meta::and_c<std::is_nothrow_default_constructible<Ts>::value...>::value)
+-              : std::tuple<Ts...>{}
++              : sycl_tuple<Ts...>{}
+             {}
+             template<typename...Us,
+                 CONCEPT_REQUIRES_(meta::and_c<(bool) Constructible<Ts, Us &&>()...>::value)>
+             explicit common_tuple(Us &&... us)
+                 noexcept(meta::and_c<std::is_nothrow_constructible<Ts, Us &&>::value...>::value)
+-              : std::tuple<Ts...>{std::forward<Us>(us)...}
++              : sycl_tuple<Ts...>{std::forward<Us>(us)...}
+             {}
+             template<typename...Us,
+                 CONCEPT_REQUIRES_(meta::and_c<(bool) Constructible<Ts, Us &>()...>::value)>
+-            common_tuple(std::tuple<Us...> &that)
++            common_tuple(sycl_tuple<Us...> &that)
+                 noexcept(meta::and_c<std::is_nothrow_constructible<Ts, Us &>::value...>::value)
+               : common_tuple(that, meta::make_index_sequence<sizeof...(Ts)>{})
+             {}
+             template<typename...Us,
+                 CONCEPT_REQUIRES_(meta::and_c<(bool) Constructible<Ts, Us const &>()...>::value)>
+-            common_tuple(std::tuple<Us...> const &that)
++            common_tuple(sycl_tuple<Us...> const &that)
+                 noexcept(meta::and_c<std::is_nothrow_constructible<Ts, Us const &>::value...>::value)
+               : common_tuple(that, meta::make_index_sequence<sizeof...(Ts)>{})
+             {}
+             template<typename...Us,
+                 CONCEPT_REQUIRES_(meta::and_c<(bool) Constructible<Ts, Us &&>()...>::value)>
+-            common_tuple(std::tuple<Us...> &&that)
++            common_tuple(sycl_tuple<Us...> &&that)
+                 noexcept(meta::and_c<std::is_nothrow_constructible<Ts, Us &&>::value...>::value)
+               : common_tuple(std::move(that), meta::make_index_sequence<sizeof...(Ts)>{})
+             {}
+@@ -97,7 +97,7 @@ namespace ranges
+             // Assignment
+             template<typename...Us,
+                 CONCEPT_REQUIRES_(meta::and_c<(bool) Assignable<Ts &, Us &>()...>::value)>
+-            common_tuple &operator=(std::tuple<Us...> &that)
++            common_tuple &operator=(sycl_tuple<Us...> &that)
+                 noexcept(meta::and_c<std::is_nothrow_assignable<Ts &, Us &>::value...>::value)
+             {
+                 (void)tuple_transform(base(), that, element_assign_{});
+@@ -105,7 +105,7 @@ namespace ranges
+             }
+             template<typename...Us,
+                 CONCEPT_REQUIRES_(meta::and_c<(bool) Assignable<Ts &, Us const &>()...>::value)>
+-            common_tuple &operator=(std::tuple<Us...> const & that)
++            common_tuple &operator=(sycl_tuple<Us...> const & that)
+                 noexcept(meta::and_c<std::is_nothrow_assignable<Ts &, Us const &>::value...>::value)
+             {
+                 (void)tuple_transform(base(), that, element_assign_{});
+@@ -113,7 +113,7 @@ namespace ranges
+             }
+             template<typename...Us,
+                 CONCEPT_REQUIRES_(meta::and_c<(bool) Assignable<Ts &, Us &&>()...>::value)>
+-            common_tuple &operator=(std::tuple<Us...> &&that)
++            common_tuple &operator=(sycl_tuple<Us...> &&that)
+                 noexcept(meta::and_c<std::is_nothrow_assignable<Ts &, Us &&>::value...>::value)
+             {
+                 (void)tuple_transform(base(), std::move(that), element_assign_{});
+@@ -123,21 +123,21 @@ namespace ranges
+             // Conversion
+             template<typename ...Us,
+                 CONCEPT_REQUIRES_(meta::and_c<(bool) Constructible<Us, Ts &>()...>::value)>
+-            operator std::tuple<Us...> () &
++            operator sycl_tuple<Us...> () &
+                 noexcept(meta::and_c<std::is_nothrow_constructible<Us, Ts &>::value...>::value)
+             {
+                 return detail::to_std_tuple<Us...>(*this, meta::make_index_sequence<sizeof...(Ts)>{});
+             }
+             template<typename ...Us,
+                 CONCEPT_REQUIRES_(meta::and_c<(bool) Constructible<Us, Ts const &>()...>::value)>
+-            operator std::tuple<Us...> () const &
++            operator sycl_tuple<Us...> () const &
+                 noexcept(meta::and_c<std::is_nothrow_constructible<Us, Ts const &>::value...>::value)
+             {
+                 return detail::to_std_tuple<Us...>(*this, meta::make_index_sequence<sizeof...(Ts)>{});
+             }
+             template<typename ...Us,
+                 CONCEPT_REQUIRES_(meta::and_c<(bool) Constructible<Us, Ts &&>()...>::value)>
+-            operator std::tuple<Us...> () &&
++            operator sycl_tuple<Us...> () &&
+                 noexcept(meta::and_c<std::is_nothrow_constructible<Us, Ts &&>::value...>::value)
+             {
+                 return detail::to_std_tuple<Us...>(std::move(*this), meta::make_index_sequence<sizeof...(Ts)>{});
+@@ -154,13 +154,13 @@ namespace ranges
+         }\
+         template<typename...Ts, typename...Us,\
+             CONCEPT_REQUIRES_(meta::and_c<(bool) CONCEPT<Ts, Us>()...>::value)>\
+-        bool operator OP(std::tuple<Ts...> const &a, common_tuple<Us...> const &b)\
++        bool operator OP(sycl_tuple<Ts...> const &a, common_tuple<Us...> const &b)\
+         {\
+             return a OP b.base();\
+         }\
+         template<typename...Ts, typename...Us,\
+             CONCEPT_REQUIRES_(meta::and_c<(bool) CONCEPT<Ts, Us>()...>::value)>\
+-        bool operator OP(common_tuple<Ts...> const &a, std::tuple<Us...> const &b)\
++        bool operator OP(common_tuple<Ts...> const &a, sycl_tuple<Us...> const &b)\
+         {\
+             return a.base() OP b;\
+         }\
+@@ -406,7 +406,7 @@ namespace ranges
+                 meta::if_<
+                     meta::any_of<meta::list<Ts...>, meta::quote<std::is_reference>>,
+                     common_tuple<Ts...>,
+-                    std::tuple<Ts...>>;
++                    sycl_tuple<Ts...>>;
+         }
+ 
+         // common_type for pairs
+@@ -430,14 +430,14 @@ namespace ranges
+ 
+         // common_type for tuples
+         template<typename ...Ts, typename ...Us>
+-        struct common_type<common_tuple<Ts...>, std::tuple<Us...>>
+-          : detail::common_type_tuple_like<common_tuple<Ts...>, std::tuple<Us...>,
++        struct common_type<common_tuple<Ts...>, sycl_tuple<Us...>>
++          : detail::common_type_tuple_like<common_tuple<Ts...>, sycl_tuple<Us...>,
+                 meta::quote<detail::make_common_tuple>>
+         {};
+ 
+         template<typename ...Ts, typename ...Us>
+-        struct common_type<std::tuple<Ts...>, common_tuple<Us...>>
+-          : detail::common_type_tuple_like<std::tuple<Ts...>, common_tuple<Us...>,
++        struct common_type<sycl_tuple<Ts...>, common_tuple<Us...>>
++          : detail::common_type_tuple_like<sycl_tuple<Ts...>, common_tuple<Us...>,
+                 meta::quote<detail::make_common_tuple>>
+         {};
+ 
+@@ -489,17 +489,17 @@ namespace ranges
+ 
+         // common reference for tuples
+         template<typename ...Ts, typename ...Us, typename Qual1, typename Qual2>
+-        struct basic_common_reference<common_tuple<Ts...>, std::tuple<Us...>, Qual1, Qual2>
++        struct basic_common_reference<common_tuple<Ts...>, sycl_tuple<Us...>, Qual1, Qual2>
+           : detail::common_ref_tuple_like<
+                 common_tuple<meta::invoke<Qual1, Ts>...>,
+-                std::tuple<meta::invoke<Qual2, Us>...>,
++                sycl_tuple<meta::invoke<Qual2, Us>...>,
+                 meta::quote<detail::make_common_tuple>>
+         {};
+ 
+         template<typename ...Ts, typename ...Us, typename Qual1, typename Qual2>
+-        struct basic_common_reference<std::tuple<Ts...>, common_tuple<Us...>, Qual1, Qual2>
++        struct basic_common_reference<sycl_tuple<Ts...>, common_tuple<Us...>, Qual1, Qual2>
+           : detail::common_ref_tuple_like<
+-                std::tuple<meta::invoke<Qual1, Ts>...>,
++                sycl_tuple<meta::invoke<Qual1, Ts>...>,
+                 common_tuple<meta::invoke<Qual2, Us>...>,
+                 meta::quote<detail::make_common_tuple>>
+         {};
+diff --git a/include/range/v3/utility/common_type.hpp b/include/range/v3/utility/common_type.hpp
+index 38e30c9..07444f3 100755
+--- a/include/range/v3/utility/common_type.hpp
++++ b/include/range/v3/utility/common_type.hpp
+@@ -25,15 +25,15 @@
+ //    out a bajillion copies to handle all combinations of cv and ref
+ //    qualifiers.
+ 
+-#ifndef RANGES_NO_STD_FORWARD_DECLARATIONS
+-// Non-portable forward declarations of standard containers
+-RANGES_BEGIN_NAMESPACE_STD
+-    template<typename...Ts>
+-    class tuple;
+-RANGES_END_NAMESPACE_STD
+-#else
+-#include <tuple>
+-#endif
++//#ifndef RANGES_NO_STD_FORWARD_DECLARATIONS
++//// Non-portable forward declarations of standard containers
++//RANGES_BEGIN_NAMESPACE_STD
++//    template<typename...Ts>
++//    class tuple;
++//RANGES_END_NAMESPACE_STD
++//#else
++#include <sycl/tuple.h>
++//#endif
+ 
+ namespace ranges
+ {
+@@ -313,12 +313,12 @@ namespace ranges
+         template<typename F1, typename S1, typename F2, typename S2>
+         struct common_type<common_pair<F1, S1>, common_pair<F2, S2>>;
+ 
+-        // common_type for std::tuples
++        // common_type for sycl_tuples
+         template<typename ...Ts, typename ...Us>
+-        struct common_type<common_tuple<Ts...>, std::tuple<Us...>>;
++        struct common_type<common_tuple<Ts...>, sycl_tuple<Us...>>;
+ 
+         template<typename ...Ts, typename ...Us>
+-        struct common_type<std::tuple<Ts...>, common_tuple<Us...>>;
++        struct common_type<sycl_tuple<Ts...>, common_tuple<Us...>>;
+ 
+         template<typename ...Ts, typename ...Us>
+         struct common_type<common_tuple<Ts...>, common_tuple<Us...>>;
+@@ -333,12 +333,12 @@ namespace ranges
+         template<typename F1, typename S1, typename F2, typename S2, typename Qual1, typename Qual2>
+         struct basic_common_reference<common_pair<F1, S1>, common_pair<F2, S2>, Qual1, Qual2>;
+ 
+-        // A common reference for std::tuples
++        // A common reference for sycl_tuples
+         template<typename ...Ts, typename ...Us, typename Qual1, typename Qual2>
+-        struct basic_common_reference<common_tuple<Ts...>, std::tuple<Us...>, Qual1, Qual2>;
++        struct basic_common_reference<common_tuple<Ts...>, sycl_tuple<Us...>, Qual1, Qual2>;
+ 
+         template<typename ...Ts, typename ...Us, typename Qual1, typename Qual2>
+-        struct basic_common_reference<std::tuple<Ts...>, common_tuple<Us...>, Qual1, Qual2>;
++        struct basic_common_reference<sycl_tuple<Ts...>, common_tuple<Us...>, Qual1, Qual2>;
+ 
+         template<typename ...Ts, typename ...Us, typename Qual1, typename Qual2>
+         struct basic_common_reference<common_tuple<Ts...>, common_tuple<Us...>, Qual1, Qual2>;
+diff --git a/include/range/v3/utility/compressed_pair.hpp b/include/range/v3/utility/compressed_pair.hpp
+index 030354b..51e9a69 100755
+--- a/include/range/v3/utility/compressed_pair.hpp
++++ b/include/range/v3/utility/compressed_pair.hpp
+@@ -55,9 +55,9 @@ namespace ranges
+ 
+                 template<typename... Us,
+                     meta::if_<meta::strict_and<std::is_constructible<Us, Ts const &>...>, int> = 0>
+-                constexpr operator std::tuple<Us...> () const
++                constexpr operator sycl_tuple<Us...> () const
+                 {
+-                    return std::tuple<Us...>{get<Is>(*this)...};
++                    return sycl_tuple<Us...>{get<Is>(*this)...};
+                 }
+             };
+ 
+diff --git a/include/range/v3/utility/dangling.hpp b/include/range/v3/utility/dangling.hpp
+index d6c2bfe..06f9708 100755
+--- a/include/range/v3/utility/dangling.hpp
++++ b/include/range/v3/utility/dangling.hpp
+@@ -20,15 +20,16 @@
+ #include <range/v3/utility/static_const.hpp>
+ #include <range/v3/utility/tagged_pair.hpp>
+ 
+-#ifndef RANGES_NO_STD_FORWARD_DECLARATIONS
+-// Non-portable forward declarations of standard containers
+-RANGES_BEGIN_NAMESPACE_STD
+-    template<typename...Ts>
+-    class tuple;
+-RANGES_END_NAMESPACE_STD
+-#else
+-#include <tuple>
+-#endif
++//#ifndef RANGES_NO_STD_FORWARD_DECLARATIONS
++//// Non-portable forward declarations of standard containers
++//RANGES_BEGIN_NAMESPACE_STD
++//    template<typename...Ts>
++//    class tuple;
++//#error here
++//RANGES_END_NAMESPACE_STD
++//#else
++#include <sycl/tuple.h>
++//#endif
+ 
+ namespace ranges
+ {
+@@ -131,21 +132,21 @@ namespace ranges
+                 return {(*this)(static_cast<T &&>(p.first)), (*this)(static_cast<U &&>(p.second))};
+             }
+             template<typename ...Ts>
+-            constexpr std::tuple<result_t<Ts>...> operator()(std::tuple<Ts...> &tup) const
++            constexpr sycl_tuple<result_t<Ts>...> operator()(sycl_tuple<Ts...> &tup) const
+             {
+-                return this->sanitize_tuple<std::tuple<result_t<Ts>...>>(tup,
++                return this->sanitize_tuple<sycl_tuple<result_t<Ts>...>>(tup,
+                     meta::list<Ts &...>{}, meta::make_index_sequence<sizeof...(Ts)>{});
+             }
+             template<typename ...Ts>
+-            constexpr std::tuple<result_t<Ts>...> operator()(std::tuple<Ts...> const &tup) const
++            constexpr sycl_tuple<result_t<Ts>...> operator()(sycl_tuple<Ts...> const &tup) const
+             {
+-                return this->sanitize_tuple<std::tuple<result_t<Ts>...>>(tup,
++                return this->sanitize_tuple<sycl_tuple<result_t<Ts>...>>(tup,
+                     meta::list<Ts const &...>{}, meta::make_index_sequence<sizeof...(Ts)>{});
+             }
+             template<typename ...Ts>
+-            constexpr std::tuple<result_t<Ts>...> operator()(std::tuple<Ts...> &&tup) const
++            constexpr sycl_tuple<result_t<Ts>...> operator()(sycl_tuple<Ts...> &&tup) const
+             {
+-                return this->sanitize_tuple<std::tuple<result_t<Ts>...>>(std::move(tup),
++                return this->sanitize_tuple<sycl_tuple<result_t<Ts>...>>(std::move(tup),
+                     meta::list<Ts...>{}, meta::make_index_sequence<sizeof...(Ts)>{});
+             }
+             template<typename Base, typename... Tags>
+@@ -190,7 +191,7 @@ namespace ranges
+ 
+         /// \ingroup group-core
+         /// \return the result of replacing all \c ranges::dangling<T> objects with
+-        /// \c ranges::dangling<void>, introspecting \c std::pair and \c std::tuple
++        /// \c ranges::dangling<void>, introspecting \c std::pair and \c sycl_tuple
+         /// objects recursively.
+         RANGES_INLINE_VARIABLE(sanitize_fn, sanitize)
+     }
+diff --git a/include/range/v3/utility/swap.hpp b/include/range/v3/utility/swap.hpp
+index d61478c..d7874f2 100755
+--- a/include/range/v3/utility/swap.hpp
++++ b/include/range/v3/utility/swap.hpp
+@@ -16,7 +16,7 @@
+ #ifndef RANGES_V3_UTILITY_SWAP_HPP
+ #define RANGES_V3_UTILITY_SWAP_HPP
+ 
+-#include <tuple>
++#include <sycl/tuple.h>
+ #include <utility>
+ #include <type_traits>
+ #include <meta/meta.hpp>
+@@ -58,7 +58,7 @@ namespace ranges
+             template<typename ...Ts, typename ...Us>
+             RANGES_CXX14_CONSTEXPR
+             meta::if_c<meta::and_c<is_swappable<Ts, Us>::value...>::value>
+-            swap(std::tuple<Ts...> &&left, std::tuple<Us...> &&right)
++            swap(sycl_tuple<Ts...> &&left, sycl_tuple<Us...> &&right)
+                 noexcept(meta::and_c<is_nothrow_swappable<Ts, Us>::value...>::value);
+ 
+             // Function wrapper here, now that declarations have been seen.
+@@ -105,7 +105,7 @@ namespace ranges
+ 
+             template<typename ...Ts, typename ...Us, std::size_t ...Is>
+             RANGES_CXX14_CONSTEXPR
+-            void tuple_swap_(std::tuple<Ts...> &&left, std::tuple<Us...> &&right, meta::index_sequence<Is...>)
++            void tuple_swap_(sycl_tuple<Ts...> &&left, sycl_tuple<Us...> &&right, meta::index_sequence<Is...>)
+             {
+                 detail::ignore_unused(
+                     (swap(std::get<Is>(std::move(left)), std::get<Is>(std::move(right))), 42)...);
+@@ -114,7 +114,7 @@ namespace ranges
+             template<typename ...Ts, typename ...Us>
+             RANGES_CXX14_CONSTEXPR
+             meta::if_c<meta::and_c<is_swappable<Ts, Us>::value...>::value>
+-            swap(std::tuple<Ts...> &&left, std::tuple<Us...> &&right)
++            swap(sycl_tuple<Ts...> &&left, sycl_tuple<Us...> &&right)
+                 noexcept(meta::and_c<is_nothrow_swappable<Ts, Us>::value...>::value)
+             {
+                 adl_swap_detail::tuple_swap_(std::move(left), std::move(right),
+diff --git a/include/range/v3/utility/tagged_tuple.hpp b/include/range/v3/utility/tagged_tuple.hpp
+index 2bd27df..3434e40 100755
+--- a/include/range/v3/utility/tagged_tuple.hpp
++++ b/include/range/v3/utility/tagged_tuple.hpp
+@@ -13,7 +13,7 @@
+ #ifndef RANGES_V3_UTILITY_TAGGED_TUPLE_HPP
+ #define RANGES_V3_UTILITY_TAGGED_TUPLE_HPP
+ 
+-#include <tuple>
++#include <sycl/tuple.h>
+ #include <range/v3/range_fwd.hpp>
+ #include <range/v3/utility/tagged_pair.hpp>
+ 
+@@ -23,7 +23,7 @@ namespace ranges
+     {
+         template<typename... Ts>
+         using tagged_tuple =
+-            tagged<std::tuple<detail::tag_elem<Ts>...>, detail::tag_spec<Ts>...>;
++            tagged<sycl_tuple<detail::tag_elem<Ts>...>, detail::tag_spec<Ts>...>;
+ 
+         template<typename...Tags, typename...Ts>
+         constexpr tagged_tuple<Tags(bind_element_t<Ts>)...>
+diff --git a/include/range/v3/utility/tuple_algorithm.hpp b/include/range/v3/utility/tuple_algorithm.hpp
+index 04d7841..b9d274a 100755
+--- a/include/range/v3/utility/tuple_algorithm.hpp
++++ b/include/range/v3/utility/tuple_algorithm.hpp
+@@ -14,7 +14,9 @@
+ #ifndef RANGES_V3_UTILITY_TUPLE_ALGORITHM_HPP
+ #define RANGES_V3_UTILITY_TUPLE_ALGORITHM_HPP
+ 
+-#include <tuple>
++//#include <sycl/tuple.h>
++
++#include <sycl/tuple.h>
+ #include <utility>
+ #include <type_traits>
+ #include <initializer_list>
+@@ -64,14 +66,14 @@ namespace ranges
+             static auto impl1(Tup && tup, Fun fun, meta::index_sequence<Is...>)
+             RANGES_DECLTYPE_AUTO_RETURN_NOEXCEPT
+             (
+-                std::tuple<decltype(fun(std::get<Is>(std::forward<Tup>(tup))))...>{
++                sycl_tuple<decltype(fun(std::get<Is>(std::forward<Tup>(tup))))...>{
+                     fun(std::get<Is>(std::forward<Tup>(tup)))...}
+             )
+             template<typename Tup0, typename Tup1, typename Fun, std::size_t...Is>
+             static auto impl2(Tup0 && tup0, Tup1 && tup1, Fun fun, meta::index_sequence<Is...>)
+             RANGES_DECLTYPE_AUTO_RETURN_NOEXCEPT
+             (
+-                std::tuple<decltype(fun(std::get<Is>(std::forward<Tup0>(tup0)),
++                sycl_tuple<decltype(fun(std::get<Is>(std::forward<Tup0>(tup0)),
+                                         std::get<Is>(std::forward<Tup1>(tup1))))...>{
+                     fun(std::get<Is>(std::forward<Tup0>(tup0)),
+                         std::get<Is>(std::forward<Tup1>(tup1)))...}
+@@ -164,7 +166,7 @@ namespace ranges
+             auto operator()(Ts &&...ts) const
+             RANGES_DECLTYPE_AUTO_RETURN_NOEXCEPT
+             (
+-                std::make_tuple(std::forward<Ts>(ts)...)
++                sycl_make_tuple(std::forward<Ts>(ts)...)
+             )
+         };
+ 
+diff --git a/include/range/v3/view/concat.hpp b/include/range/v3/view/concat.hpp
+index 7332488..2cd6e0a 100755
+--- a/include/range/v3/view/concat.hpp
++++ b/include/range/v3/view/concat.hpp
+@@ -14,7 +14,7 @@
+ #ifndef RANGES_V3_VIEW_CONCAT_HPP
+ #define RANGES_V3_VIEW_CONCAT_HPP
+ 
+-#include <tuple>
++#include <sycl/tuple.h>
+ #include <utility>
+ #include <type_traits>
+ #include <meta/meta.hpp>
+@@ -77,7 +77,7 @@ namespace ranges
+             using difference_type_ = common_type_t<range_difference_t<Rngs>...>;
+             using size_type_ = meta::_t<std::make_unsigned<difference_type_>>;
+             static constexpr std::size_t cranges{sizeof...(Rngs)};
+-            std::tuple<Rngs...> rngs_;
++            sycl_tuple<Rngs...> rngs_;
+ 
+             template<bool IsConst>
+             struct sentinel;
+diff --git a/include/range/v3/view/zip.hpp b/include/range/v3/view/zip.hpp
+index 2678bc5..d94b131 100755
+--- a/include/range/v3/view/zip.hpp
++++ b/include/range/v3/view/zip.hpp
+@@ -14,7 +14,7 @@
+ #ifndef RANGES_V3_VIEW_ZIP_HPP
+ #define RANGES_V3_VIEW_ZIP_HPP
+ 
+-#include <tuple>
++#include <sycl/tuple.h>
+ #include <utility>
+ #include <meta/meta.hpp>
+ #include <range/v3/range_fwd.hpp>
+@@ -39,7 +39,7 @@ namespace ranges
+                 template<typename ...Its,
+                     CONCEPT_REQUIRES_(meta::and_<Readable<Its>...>() && sizeof...(Its) != 2)>
+                 auto operator()(copy_tag, Its...) const ->
+-                    std::tuple<iterator_value_t<Its>...>;
++                    sycl_tuple<iterator_value_t<Its>...>;
+ 
+                 // tuple reference
+                 template<typename ...Its,
+diff --git a/include/range/v3/view/zip_with.hpp b/include/range/v3/view/zip_with.hpp
+index 502b56a..b65f117 100755
+--- a/include/range/v3/view/zip_with.hpp
++++ b/include/range/v3/view/zip_with.hpp
+@@ -14,7 +14,7 @@
+ #ifndef RANGES_V3_VIEW_ZIP_WITH_HPP
+ #define RANGES_V3_VIEW_ZIP_WITH_HPP
+ 
+-#include <tuple>
++#include <sycl/tuple.h>
+ #include <limits>
+ #include <utility>
+ #include <functional>
+@@ -133,7 +133,7 @@ namespace ranges
+         private:
+             friend range_access;
+             semiregular_t<function_type<Fun>> fun_;
+-            std::tuple<Rngs...> rngs_;
++            sycl_tuple<Rngs...> rngs_;
+             using difference_type_ = common_type_t<range_difference_t<Rngs>...>;
+             using size_type_ = meta::_t<std::make_unsigned<difference_type_>>;
+ 
+@@ -144,7 +144,7 @@ namespace ranges
+                 friend sentinel;
+                 using fun_ref_ = semiregular_ref_or_val_t<function_type<Fun>, true>;
+                 fun_ref_ fun_;
+-                std::tuple<range_iterator_t<Rngs>...> its_;
++                sycl_tuple<range_iterator_t<Rngs>...> its_;
+ 
+             public:
+                 using difference_type =
+@@ -155,7 +155,7 @@ namespace ranges
+                     detail::decay_t<decltype(fun_(copy_tag{}, range_iterator_t<Rngs>{}...))>;
+ 
+                 cursor() = default;
+-                cursor(fun_ref_ fun, std::tuple<range_iterator_t<Rngs>...> its)
++                cursor(fun_ref_ fun, sycl_tuple<range_iterator_t<Rngs>...> its)
+                   : fun_(std::move(fun)), its_(std::move(its))
+                 {}
+                 auto get() const
+@@ -224,10 +224,10 @@ namespace ranges
+             struct sentinel
+             {
+             private:
+-                std::tuple<range_sentinel_t<Rngs>...> ends_;
++                sycl_tuple<range_sentinel_t<Rngs>...> ends_;
+             public:
+                 sentinel() = default;
+-                sentinel(detail::any, std::tuple<range_sentinel_t<Rngs>...> ends)
++                sentinel(detail::any, sycl_tuple<range_sentinel_t<Rngs>...> ends)
+                   : ends_(std::move(ends))
+                 {}
+                 bool equal(cursor const &pos) const
+diff --git a/include/sycl/tuple.h b/include/sycl/tuple.h
+new file mode 100644
+index 0000000..615a236
+--- /dev/null
++++ b/include/sycl/tuple.h
+@@ -0,0 +1,332 @@
++// This file is part of VisionCpp, a lightweight C++ template library
++// for computer vision and image processing.
++//
++// Copyright (C) 2016 Codeplay Software Limited. All Rights Reserved.
++//
++// Contact: visioncpp@codeplay.com
++//
++// Licensed under the Apache License, Version 2.0 (the "License");
++// you may not use this file except in compliance with the License.
++// You may obtain a copy of the License at
++//
++//     http://www.apache.org/licenses/LICENSE-2.0
++//
++// Unless required by applicable law or agreed to in writing, software
++// distributed under the License is distributed on an "AS IS" BASIS,
++// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++// See the License for the specific language governing permissions and
++// limitations under the License.
++
++/// \file tuple.hpp
++/// \brief Tuples standard layout implementation.
++/// http://en.cppreference.com/w/cpp/utility/tuple
++
++#ifndef VISIONCPP_INCLUDE_FRAMEWORK_TOOLS_TUPLE_HPP_
++#define VISIONCPP_INCLUDE_FRAMEWORK_TOOLS_TUPLE_HPP_
++
++namespace visioncpp {
++namespace internal {
++namespace tools {
++/// \brief Contains standard layout tuple implementation.
++namespace tuple {
++/// \struct EnableIf
++/// \brief The EnableIf struct is used to statically define type based on the
++/// condition.
++template<bool, typename T = void>
++struct EnableIf {};
++/// \brief Specialisation of the \ref EnableIf when the condition is matched.
++template<typename T>
++struct EnableIf<true, T> {
++  typedef T type;
++};
++
++/// \struct Tuple
++/// \brief The tuple is a fixed-size collection of heterogeneous values.
++/// \tparam Ts...	-	the types of the elements that the tuple stores.
++/// Empty list is supported.
++template<class... Ts>
++struct Tuple {};
++
++/// \brief Specialisation of the \ref Tuple class when it has at least one
++/// element.
++/// \tparam t : the type of the first element in the tuple.
++/// \tparam ts... the rest of the elements in the tuple. Ts... can be empty.
++template<class T, class... Ts>
++struct Tuple<T, Ts...> {
++  constexpr Tuple() {}
++
++  Tuple(T t, Ts... ts) : head(t), tail(ts...) {}
++
++  T head;
++  Tuple<Ts...> tail;
++
++};
++
++/// \struct ElemTypeHolder
++/// \brief ElemTypeHolder class is used to specify the types of the
++/// elements inside the tuple.
++/// \tparam size_t The number of elements inside the tuple.
++/// \tparam class The tuple class.
++template<size_t, class>
++struct ElemTypeHolder;
++
++/// \brief Specialisation of the \ref ElemTypeHolder class when the number of
++/// the
++/// elements inside the tuple is 1.
++template<class T, class... Ts>
++struct ElemTypeHolder<0, Tuple<T, Ts...>> {
++  typedef T type;
++};
++
++/// \brief Specialisation of the \ref ElemTypeHolder class when the number of
++/// the
++/// elements inside the tuple is bigger than 1. It recursively calls itself to
++/// detect the type of each element in the tuple.
++/// \tparam T : the type of the first element in the tuple.
++/// \tparam Ts... the rest of the elements in the tuple. Ts... can be empty.
++/// \tparam K is the Kth element in the tuple.
++template<size_t k, class T, class... Ts>
++struct ElemTypeHolder<k, Tuple<T, Ts...>> {
++  typedef typename ElemTypeHolder<k - 1, Tuple<Ts...>>::type type;
++};
++
++/// get
++/// \brief Extracts the first element from the tuple.
++/// K=0 represents the first element of the tuple. The tuple cannot be empty.
++/// \tparam Ts... are the elements type in the tuple.
++/// \param t is the tuple whose contents to extract.
++/// \return  typename ElemTypeHolder<0, Tuple<Ts...>>\::type &>\::type
++template<size_t k, class... Ts>
++typename EnableIf<k == 0,
++                  typename ElemTypeHolder<0, Tuple<Ts...>>::type &>::type
++get(Tuple<Ts...> &t) {
++  return t.head;
++}
++
++/// get
++/// \brief Extracts the Kth element from the tuple.
++/// \tparam K is an integer value in [0,sizeof...(Types)) range.
++/// \tparam T is the (sizeof...(Types) -(K+1)) element in the tuple.
++/// \tparam Ts... are the elements type in the tuple.
++/// \param t is the tuple whose contents to extract.
++/// \return  typename ElemTypeHolder<K, Tuple<Ts...>>\::type &>\::type
++template<size_t k, class T, class... Ts>
++typename EnableIf<k != 0,
++                  typename ElemTypeHolder<k, Tuple<T, Ts...>>::type &>::type
++get(Tuple<T, Ts...> &t) {
++  return get<k - 1>(t.tail);
++}
++
++/// get
++/// \brief Extracts the first element from the tuple when the tuple and all the
++/// elements inside it are const.
++/// K=0 represents the first element of the tuple. The tuple cannot be empty.
++/// \tparam Ts... are the elements type in the tuple.
++/// \param t is the const tuple whose contents to extract.
++/// \return  const typename ElemTypeHolder<0, Tuple<Ts...>>\::type &>\::type
++template<size_t k, class... Ts>
++typename EnableIf<k == 0,
++                  const typename ElemTypeHolder<0, Tuple<Ts...>>::type &>::type
++get(const Tuple<Ts...> &t) {
++  return t.head;
++}
++
++/// get
++/// \brief Extracts the Kth element from the tuple when the tuple and all the
++/// elements inside are const.
++/// \tparam K is an integer value in [0,sizeof...(Types)) range.
++/// \tparam T is the (sizeof...(Types) -(K+1)) element in the tuple.
++/// \tparam Ts... are the elements type in the tuple.
++/// \param t is the const tuple whose contents to extract.
++/// \return  const typename ElemTypeHolder<K, Tuple<Ts...>>\::type &>\::type
++template<size_t k, class T, class... Ts>
++typename EnableIf<
++    k != 0, const typename ElemTypeHolder<k, Tuple<T, Ts...>>::type &>::type
++get(const Tuple<T, Ts...> &t) {
++  return get<k - 1>(t.tail);
++}
++
++/// make_tuple
++/// \brief Creates a tuple object, deducing the target type from the types of
++/// the arguments.
++/// \tparam Args the type of the arguments to construct the tuple from.
++/// \param args zero or more arguments to construct the tuple from.
++/// \return Tuple<Args...>
++template<typename... Args>
++Tuple<Args...> make_tuple(Args... args) {
++  return Tuple<Args...>(args...);
++}
++
++/// size
++/// \brief Returns the number of the elements in the tuple as a
++/// compile-time expression.
++/// \tparam Args the type of the arguments to construct the tuple from.
++/// \return size_t
++template<typename... Args>
++static constexpr size_t size(Tuple<Args...> &) {
++  return sizeof...(Args);
++}
++
++/// \struct Index_list
++/// \brief Creates a list of indices created for the elements in the tuple.
++/// \tparam Is... a list of indices from range of [0 to sizeof...(tuple
++/// elements)).
++template<size_t... Is>
++struct Index_list {};
++
++/// \struct RangeBuilder
++/// \brief Collects internal details for index ranges generation [MIN, MAX).
++/// Declares primary template for the RangeBuilder.
++/// \tparam MIN is the starting index in the tuple.
++/// \tparam N represents sizeof..(elemens)- sizeof...(Is)
++/// \tparam Is... Collection of so far generated indices.
++template<size_t MIN, size_t N, size_t... Is>
++struct RangeBuilder;
++
++/// \brief Specialisation of the \ref RangeBuilder when the
++/// MIN==MAX. In this case the Is... contains [0 to sizeof...(tuple elements))
++/// indices.
++/// \tparam MIN is the starting index of the tuple.
++/// \tparam Is is collection of [0 to sizeof...(tuple elements)) indices.
++template<size_t MIN, size_t... Is>
++struct RangeBuilder<MIN, MIN, Is...> {
++  typedef Index_list<Is...> type;
++};
++
++/// \brief Specialisation of the RangeBuilder class when N!=MIN.
++/// In this case we are recursively subtracting the N by one and adding one
++/// index to the Is... list until MIN==N.
++/// \tparam MIN is the starting index in the tuple.
++/// \tparam N represents reduction value from MAX which is equal to
++/// sizeof..(elemens)- sizeof...(Is).
++/// \tparam Is... Collection of so far generated indices.
++template<size_t MIN, size_t N, size_t... Is>
++struct RangeBuilder : public RangeBuilder<MIN, N - 1, N - 1, Is...> {};
++
++/// \brief IndexRange that returns a index from range of [MIN, MAX).
++/// \tparam MIN is the starting index in the tuple.
++/// \tparam MAX is the size of the tuple.
++template<size_t MIN, size_t MAX>
++using Index_range = typename RangeBuilder<MIN, MAX>::type;
++
++/// append_impl
++/// \brief Unpacks the elements of the input tuple t and creates a new tuple
++/// by adding the element a at the end of it.
++/// \tparam Args... the type of the elements inside the tuple t.
++/// \tparam T the type of the new element that is going to be added at the end
++/// of the returned tuple.
++/// \tparam I... is the list of indices from [0 to sizeof...(t)) range.
++/// \param t the tuple on which we want to append a.
++/// \param a the new elements that are going to be added to the returned tuple.
++/// \return Tuple<Args..., T>
++template<typename... Args, typename T, size_t... I>
++Tuple<Args..., T> append_impl(internal::tools::tuple::Tuple<Args...> t, T a,
++                              internal::tools::tuple::Index_list<I...>) {
++  return internal::tools::tuple::make_tuple(get<I>(t)..., a);
++}
++
++/// append
++/// \brief the deduction function for \ref append_impl that automatically
++/// generates the \ref Index_range.
++/// \tparam Args... the type of the elements inside the tuple t.
++/// \tparam T the type of the new element that is going to be added at the end
++/// of the returned tuple.
++/// \param t the tuple on which we want to append a.
++/// \param a the new elements that are going to be added to the returned tuple.
++/// \return Tuple<Args..., T>
++template<typename... Args, typename T>
++Tuple<Args..., T> append(Tuple<Args...> t, T a) {
++  return internal::tools::tuple::append_impl(
++      t, a, internal::tools::tuple::Index_range<0, sizeof...(Args)>());
++}
++
++/// append_impl
++/// \brief This is a specialisation of the \ref append_impl for the
++/// concatenation
++/// of the t2 tupe at the end of the t1 tuple. Both tuples are unpacked.
++/// Index_range is generated for each of them and output tuple T is created.
++/// The return tuple contains both elements of t1 and t2 tuples.
++/// \tparam Args1... The type of the t1 tuple.
++/// \tparam Args2... The type of the t2 tuple.
++/// \tparam I1... The list of the indices from [0 to sizeof...(t1)) range.
++/// \tparam I2... The list of the indices from [0 to sizeof...(t2)) range.
++/// \param t1 Is the tuple on which we want to append the t2 tuple.
++/// \param t2 Is the tuple to be appended.
++/// \return Tuple<Args1..., Args2...>
++template<typename... Args1, typename... Args2, size_t... I1, size_t... I2>
++Tuple<Args1..., Args2...> append_impl(
++    internal::tools::tuple::Tuple<Args1...> t1,
++    internal::tools::tuple::Tuple<Args2...> t2,
++    internal::tools::tuple::Index_list<I1...>,
++    internal::tools::tuple::Index_list<I2...>) {
++  return internal::tools::tuple::make_tuple(
++      internal::tools::tuple::get<I1>(t1)...,
++      internal::tools::tuple::get<I2>(t2)...);
++}
++
++/// append
++/// \brief Deduction function of the \ref append_impl for the append of the
++/// tuple
++/// t2 to the t1 tuple. The \ref Index_range for both tuple is automatically
++/// generated.
++/// \tparam Args1... The type of the t1 tuple.
++/// \tparam Args2... The type of the t2 tuple.
++/// \param t1 Is the tuple on which we want to append the t2 tuple.
++/// \param t2 Is the tuple to be appended.
++/// \return Tuple<Args1..., Args2...>
++template<typename... Args1, typename... Args2>
++Tuple<Args1..., Args2...> append(internal::tools::tuple::Tuple<Args1...> t1,
++                                 internal::tools::tuple::Tuple<Args2...> t2) {
++  return internal::tools::tuple::append_impl(
++      t1, t2, internal::tools::tuple::Index_range<0, sizeof...(Args1)>(),
++      internal::tools::tuple::Index_range<0, sizeof...(Args2)>());
++}
++
++}  // tuple
++}  // tools
++}  // internal
++}  // visioncpp
++
++#if 0
++
++template<typename... Ts>
++using sycl_tuple = std::tuple<Ts...>;
++#else
++
++template<typename... Ts>
++using sycl_tuple = visioncpp::internal::tools::tuple::Tuple<Ts...>;
++
++namespace std{
++using visioncpp::internal::tools::tuple::get;
++}
++
++namespace std {
++template<class... Types>
++class tuple_size<sycl_tuple<Types...> >
++    : public std::integral_constant<std::size_t, sizeof...(Types)> {
++};
++
++template<std::size_t I, class T>
++struct tuple_element;
++
++// recursive case
++template<std::size_t I, class Head, class... Tail>
++struct tuple_element<I, sycl_tuple<Head, Tail...>>
++    : tuple_element<I - 1, sycl_tuple<Tail...>> {
++};
++
++// base case
++template<class Head, class... Tail>
++struct tuple_element<0, sycl_tuple<Head, Tail...>> {
++  typedef Head type;
++};
++}
++
++#endif
++
++template<typename... Args>
++sycl_tuple<Args...> sycl_make_tuple(Args... args) {
++  return sycl_tuple<Args...>(args...);
++}
++
++#endif  // VISIONCPP_INCLUDE_FRAMEWORK_TOOLS_TUPLE_HPP_
+\ No newline at end of file
+diff --git a/test/algorithm/partition_copy.cpp b/test/algorithm/partition_copy.cpp
+index ab9bcd7..1adaba6 100755
+--- a/test/algorithm/partition_copy.cpp
++++ b/test/algorithm/partition_copy.cpp
+@@ -22,7 +22,7 @@
+ //
+ //===----------------------------------------------------------------------===//
+ 
+-#include <tuple>
++#include <sycl/tuple.h>
+ #include <range/v3/core.hpp>
+ #include <range/v3/algorithm/partition_copy.hpp>
+ #include <range/v3/view/counted.hpp>
+@@ -42,7 +42,7 @@ test_iter()
+     const int ia[] = {1, 2, 3, 4, 6, 8, 5, 7};
+     int r1[10] = {0};
+     int r2[10] = {0};
+-    typedef std::tuple<Iter, output_iterator<int*>,  int*> P;
++    typedef sycl_tuple<Iter, output_iterator<int*>,  int*> P;
+     P p = ranges::partition_copy(Iter(std::begin(ia)),
+                                  Sent(std::end(ia)),
+                                  output_iterator<int*>(r1), r2, is_odd());
+@@ -66,7 +66,7 @@ test_range()
+     const int ia[] = {1, 2, 3, 4, 6, 8, 5, 7};
+     int r1[10] = {0};
+     int r2[10] = {0};
+-    typedef std::tuple<Iter, output_iterator<int*>,  int*> P;
++    typedef sycl_tuple<Iter, output_iterator<int*>,  int*> P;
+     P p = ranges::partition_copy(::as_lvalue(ranges::make_iterator_range(Iter(std::begin(ia)),
+                                                            Sent(std::end(ia)))),
+                                  output_iterator<int*>(r1), r2, is_odd());
+@@ -94,7 +94,7 @@ void test_proj()
+     const S ia[] = {S{1}, S{2}, S{3}, S{4}, S{6}, S{8}, S{5}, S{7}};
+     S r1[10] = {S{0}};
+     S r2[10] = {S{0}};
+-    typedef std::tuple<S const *, S*,  S*> P;
++    typedef sycl_tuple<S const *, S*,  S*> P;
+     P p = ranges::partition_copy(ia, r1, r2, is_odd(), &S::i);
+     CHECK(std::get<0>(p) == std::end(ia));
+     CHECK(std::get<1>(p) == r1 + 4);
+diff --git a/test/algorithm/set_symmetric_difference.hpp b/test/algorithm/set_symmetric_difference.hpp
+index b2e40c1..21c84d2 100755
+--- a/test/algorithm/set_symmetric_difference.hpp
++++ b/test/algorithm/set_symmetric_difference.hpp
+@@ -43,7 +43,7 @@ test_iter()
+     auto set_symmetric_difference = ::make_testable_2(ranges::set_symmetric_difference);
+ 
+     set_symmetric_difference(Iter1(ia), Iter1(ia+sa), Iter2(ib), Iter2(ib+sb), OutIter(ic)).
+-        check([&](std::tuple<Iter1, Iter2, OutIter> res)
++        check([&](sycl_tuple<Iter1, Iter2, OutIter> res)
+         {
+             CHECK((base(std::get<2>(res)) - ic) == sr);
+             CHECK(std::lexicographical_compare(ic, base(std::get<2>(res)), ir, ir+sr) == false);
+@@ -52,7 +52,7 @@ test_iter()
+     );
+ 
+     set_symmetric_difference(Iter1(ib), Iter1(ib+sb), Iter2(ia), Iter2(ia+sa), OutIter(ic)).
+-        check([&](std::tuple<Iter1, Iter2, OutIter> res)
++        check([&](sycl_tuple<Iter1, Iter2, OutIter> res)
+         {
+             CHECK((base(std::get<2>(res)) - ic) == sr);
+             CHECK(std::lexicographical_compare(ic, base(std::get<2>(res)), ir, ir+sr) == false);
+@@ -76,7 +76,7 @@ test_comp()
+     auto set_symmetric_difference = ::make_testable_2(ranges::set_symmetric_difference);
+ 
+     set_symmetric_difference(Iter1(ia), Iter1(ia+sa), Iter2(ib), Iter2(ib+sb), OutIter(ic), std::less<int>()).
+-        check([&](std::tuple<Iter1, Iter2, OutIter> res)
++        check([&](sycl_tuple<Iter1, Iter2, OutIter> res)
+         {
+             CHECK((base(std::get<2>(res)) - ic) == sr);
+             CHECK(std::lexicographical_compare(ic, base(std::get<2>(res)), ir, ir+sr) == false);
+@@ -85,7 +85,7 @@ test_comp()
+     );
+ 
+     set_symmetric_difference(Iter1(ib), Iter1(ib+sb), Iter2(ia), Iter2(ia+sa), OutIter(ic), std::less<int>()).
+-        check([&](std::tuple<Iter1, Iter2, OutIter> res)
++        check([&](sycl_tuple<Iter1, Iter2, OutIter> res)
+         {
+             CHECK((base(std::get<2>(res)) - ic) == sr);
+             CHECK(std::lexicographical_compare(ic, base(std::get<2>(res)), ir, ir+sr) == false);
+@@ -284,13 +284,13 @@ int main()
+         int ir[] = {1, 2, 3, 3, 3, 4, 4, 6};
+         const int sr = sizeof(ir)/sizeof(ir[0]);
+ 
+-        std::tuple<S *, T *, U *> res1 =
++        sycl_tuple<S *, T *, U *> res1 =
+             ranges::set_symmetric_difference(ia, ib, ic, std::less<int>(), &S::i, &T::j);
+         CHECK((std::get<2>(res1) - ic) == sr);
+         CHECK(ranges::lexicographical_compare(ic, std::get<2>(res1), ir, ir+sr, std::less<int>(), &U::k) == false);
+         ranges::fill(ic, U{0});
+ 
+-        std::tuple<T *, S *, U *> res2 =
++        sycl_tuple<T *, S *, U *> res2 =
+             ranges::set_symmetric_difference(ib, ia, ic, std::less<int>(), &T::j, &S::i);
+         CHECK((std::get<2>(res2) - ic) == sr);
+         CHECK(ranges::lexicographical_compare(ic, std::get<2>(res2), ir, ir+sr, std::less<int>(), &U::k) == false);
+diff --git a/test/algorithm/set_union.hpp b/test/algorithm/set_union.hpp
+index fca2811..26be918 100755
+--- a/test/algorithm/set_union.hpp
++++ b/test/algorithm/set_union.hpp
+@@ -40,7 +40,7 @@ test()
+     int ir[] = {1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 6};
+     const int sr = sizeof(ir)/sizeof(ir[0]);
+ 
+-    using R = std::tuple<Iter1, Iter2, OutIter>;
++    using R = sycl_tuple<Iter1, Iter2, OutIter>;
+     auto set_union = make_testable_2(ranges::set_union);
+ 
+     auto checker = [&](R res)
+@@ -244,13 +244,13 @@ int main()
+         int ir[] = {1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 6};
+         const int sr = sizeof(ir)/sizeof(ir[0]);
+ 
+-        using R = std::tuple<S *, T*, U*>;
++        using R = sycl_tuple<S *, T*, U*>;
+         R res = ranges::set_union(ia, ib, ic, std::less<int>(), &S::i, &T::j);
+         CHECK((std::get<2>(res) - ic) == sr);
+         CHECK(ranges::lexicographical_compare(ic, std::get<2>(res), ir, ir+sr, std::less<int>(), &U::k) == false);
+         ranges::fill(ic, U{0});
+ 
+-        using R2 = std::tuple<T *, S*, U*>;
++        using R2 = sycl_tuple<T *, S*, U*>;
+         R2 res2 = ranges::set_union(ib, ia, ic, std::less<int>(), &T::j, &S::i);
+         CHECK((std::get<2>(res2) - ic) == sr);
+         CHECK(ranges::lexicographical_compare(ic, std::get<2>(res2), ir, ir+sr, std::less<int>(), &U::k) == false);
+diff --git a/test/algorithm/transform.cpp b/test/algorithm/transform.cpp
+index 1b0d9cf..1160d45 100755
+--- a/test/algorithm/transform.cpp
++++ b/test/algorithm/transform.cpp
+@@ -90,7 +90,7 @@ test2()
+         int ia[] = {0, 1, 2, 3, 4};
+         constexpr unsigned sa = ranges::size(ia);
+         int ib[sa] = {1, 2, 3, 4, 5};
+-        std::tuple<InIter1, InIter2, OutIter> r =
++        sycl_tuple<InIter1, InIter2, OutIter> r =
+             ranges::transform(InIter1(ib), sentinel<int const *>(ib + sa), InIter2(ia),
+                               OutIter(ib), std::minus<int>());
+         CHECK(base(std::get<0>(r)) == ib + sa);
+@@ -107,7 +107,7 @@ test2()
+         int ia[] = {0, 1, 2, 3, 4};
+         constexpr unsigned sa = ranges::size(ia);
+         int ib[sa] = {1, 2, 3, 4, 5};
+-        std::tuple<InIter1, InIter2, OutIter> r =
++        sycl_tuple<InIter1, InIter2, OutIter> r =
+             ranges::transform(InIter1(ib), sentinel<int const *>(ib + sa),
+                               InIter2(ia), sentinel<int const *>(ia + sa),
+                               OutIter(ib), std::minus<int>());
+@@ -126,7 +126,7 @@ test2()
+         constexpr unsigned sa = ranges::size(ia);
+         int ib[sa] = {1, 2, 3, 4, 5};
+         auto rng0 = ranges::make_iterator_range(InIter1(ib), sentinel<int const *>(ib + sa));
+-        std::tuple<InIter1, InIter2, OutIter> r =
++        sycl_tuple<InIter1, InIter2, OutIter> r =
+             ranges::transform(rng0, InIter2(ia),
+                               OutIter(ib), std::minus<int>());
+         CHECK(base(std::get<0>(r)) == ib + sa);
+@@ -163,7 +163,7 @@ test2()
+         int ib[sa] = {1, 2, 3, 4, 5};
+         auto rng0 = ranges::make_iterator_range(InIter1(ib), sentinel<int const *>(ib + sa));
+         auto rng1 = ranges::make_iterator_range(InIter2(ia), sentinel<int const *>(ia + sa));
+-        std::tuple<InIter1, InIter2, OutIter> r =
++        sycl_tuple<InIter1, InIter2, OutIter> r =
+             ranges::transform(rng0, rng1, OutIter(ib), std::minus<int>());
+         CHECK(base(std::get<0>(r)) == ib + sa);
+         CHECK(base(std::get<1>(r)) == ia + sa);
+diff --git a/test/utility/basic_iterator.cpp b/test/utility/basic_iterator.cpp
+index 29dc6c8..28ea818 100755
+--- a/test/utility/basic_iterator.cpp
++++ b/test/utility/basic_iterator.cpp
+@@ -10,7 +10,7 @@
+ // Project home: https://github.com/ericniebler/range-v3
+ 
+ #include <cstring>
+-#include <tuple>
++#include <sycl/tuple.h>
+ #include <range/v3/utility/basic_iterator.hpp>
+ #include <range/v3/utility/common_tuple.hpp>
+ #include "../simple_test.hpp"
+@@ -264,7 +264,7 @@ namespace test_move_only
+         template<class J, CONCEPT_REQUIRES_(ranges::ConvertibleTo<J, I>())>
+         zip1_cursor(zip1_cursor<J> that) : it_(std::move(that.it_)) {}
+ 
+-        using value_type = std::tuple<ranges::iterator_value_t<I>>;
++        using value_type = sycl_tuple<ranges::iterator_value_t<I>>;
+         using reference = ranges::common_tuple<ranges::iterator_reference_t<I>>;
+         using rvalue_reference = ranges::common_tuple<ranges::iterator_rvalue_reference_t<I>>;
+         reference get() const { return reference{*it_}; }
+@@ -275,22 +275,22 @@ namespace test_move_only
+         bool equal(zip1_cursor const &that) const { return it_ == that.it_; }
+     };
+ 
+-    CONCEPT_ASSERT(ranges::detail::OutputCursor<zip1_cursor<MoveOnly*>, std::tuple<MoveOnly>&&>());
++    CONCEPT_ASSERT(ranges::detail::OutputCursor<zip1_cursor<MoveOnly*>, sycl_tuple<MoveOnly>&&>());
+     CONCEPT_ASSERT(ranges::detail::ForwardCursor<zip1_cursor<MoveOnly*>>());
+ 
+     template<class I>
+     using iterator = ranges::basic_iterator<zip1_cursor<I>>;
+ 
+-    CONCEPT_ASSERT(ranges::OutputIterator<iterator<MoveOnly*>, std::tuple<MoveOnly>&&>());
++    CONCEPT_ASSERT(ranges::OutputIterator<iterator<MoveOnly*>, sycl_tuple<MoveOnly>&&>());
+     CONCEPT_ASSERT(ranges::ForwardIterator<iterator<MoveOnly*>>());
+ 
+     void test()
+     {
+         MoveOnly buf[10] = {};
+         iterator<MoveOnly*> i(buf);
+-        *i = std::tuple<MoveOnly>{};
++        *i = sycl_tuple<MoveOnly>{};
+         ranges::common_tuple<MoveOnly&> x = *i; (void)x;
+-        std::tuple<MoveOnly> v = ranges::iter_move(i);
++        sycl_tuple<MoveOnly> v = ranges::iter_move(i);
+         *i = std::move(v);
+     }
+ }
+diff --git a/test/utility/meta.cpp b/test/utility/meta.cpp
+index bdaa25b..01c2997 100755
+--- a/test/utility/meta.cpp
++++ b/test/utility/meta.cpp
+@@ -13,7 +13,7 @@
+ //
+ // Project home: https://github.com/ericniebler/range-v3
+ //
+-#include <tuple>
++#include <sycl/tuple.h>
+ #include <meta/meta.hpp>
+ #include "../simple_test.hpp"
+ 
+@@ -32,7 +32,7 @@ namespace tc_detail
+ }
+ 
+ template <typename... Tuples,
+-          typename Res = apply<quote<std::tuple>, concat<as_list<Tuples>...>>>
++          typename Res = apply<quote<sycl_tuple>, concat<as_list<Tuples>...>>>
+ Res tuple_cat(Tuples &&... tpls)
+ {
+     static constexpr std::size_t N = sizeof...(Tuples);
+@@ -50,13 +50,13 @@ Res tuple_cat(Tuples &&... tpls)
+ 
+ void test_tuple_cat()
+ {
+-    std::tuple<int, short, long> t1;
+-    std::tuple<> t2;
+-    std::tuple<float, double, long double> t3;
+-    std::tuple<void *, char *> t4;
++    sycl_tuple<int, short, long> t1;
++    sycl_tuple<> t2;
++    sycl_tuple<float, double, long double> t3;
++    sycl_tuple<void *, char *> t4;
+ 
+     auto x = ::tuple_cat(t1, t2, t3, t4);
+-    using expected_type = std::tuple<int, short, long, float, double, long double, void *, char *>;
++    using expected_type = sycl_tuple<int, short, long, float, double, long double, void *, char *>;
+     static_assert(std::is_same<decltype(x), expected_type>::value, "");
+ }
+ 
+@@ -70,7 +70,7 @@ static_assert(none_of<list<int, short, long>, quote<std::is_floating_point>>::va
+ static_assert(!any_of<list<int, short, long>, quote<std::is_floating_point>>::value, "");
+ static_assert(any_of<list<int, short, long, float>, quote<std::is_floating_point>>::value, "");
+ 
+-static_assert(std::is_same<invoke<uncurry<curry<quote_trait<id>>>, std::tuple<int, short, double>>,
++static_assert(std::is_same<invoke<uncurry<curry<quote_trait<id>>>, sycl_tuple<int, short, double>>,
+                            list<int, short, double>>::value,
+               "");
+ 
+diff --git a/test/utility/swap.cpp b/test/utility/swap.cpp
+index becfce0..7df80b6 100755
+--- a/test/utility/swap.cpp
++++ b/test/utility/swap.cpp
+@@ -14,7 +14,7 @@
+ //
+ 
+ #include <iostream>
+-#include <tuple>
++#include <sycl/tuple.h>
+ #include <memory>
+ #include <vector>
+ #include <complex>
+@@ -64,8 +64,8 @@ int main()
+ 
+ #ifndef _LIBCPP_VERSION
+     // Swap tuples of pair proxies
+-    ranges::swap(std::make_tuple(std::make_pair(std::ref(a),std::ref(b)), std::make_pair(std::ref(c),std::ref(d))),
+-                 std::make_tuple(std::make_pair(std::ref(e),std::ref(f)), std::make_pair(std::ref(g),std::ref(h))));
++    ranges::swap(sycl_make_tuple(std::make_pair(std::ref(a),std::ref(b)), std::make_pair(std::ref(c),std::ref(d))),
++                 sycl_make_tuple(std::make_pair(std::ref(e),std::ref(f)), std::make_pair(std::ref(g),std::ref(h))));
+     CHECK(a == 24);
+     CHECK(b == 82);
+     CHECK(c == 42);
+diff --git a/test/view/transform.cpp b/test/view/transform.cpp
+index 334a33b..ffb3eee 100755
+--- a/test/view/transform.cpp
++++ b/test/view/transform.cpp
+@@ -123,11 +123,11 @@ int main()
+ 
+         auto rng = view::transform(v0, v1, [](std::string& s0, std::string& s1){return std::tie(s0, s1);});
+         using R = decltype(rng);
+-        CONCEPT_ASSERT(Same<range_value_t<R>, std::tuple<std::string&, std::string&>>());
+-        CONCEPT_ASSERT(Same<range_reference_t<R>, std::tuple<std::string&, std::string&>>());
+-        CONCEPT_ASSERT(Same<range_rvalue_reference_t<R>, std::tuple<std::string&, std::string&>>());
++        CONCEPT_ASSERT(Same<range_value_t<R>, sycl_tuple<std::string&, std::string&>>());
++        CONCEPT_ASSERT(Same<range_reference_t<R>, sycl_tuple<std::string&, std::string&>>());
++        CONCEPT_ASSERT(Same<range_rvalue_reference_t<R>, sycl_tuple<std::string&, std::string&>>());
+ 
+-        using T = std::tuple<std::string, std::string>;
++        using T = sycl_tuple<std::string, std::string>;
+         ::check_equal(rng, {T{"a","x"}, T{"b","y"}, T{"c","z"}});
+     }
+ 
+@@ -139,17 +139,17 @@ int main()
+ 
+         auto fun = overload(
+             [](I i, I j)           { return std::tie(*i, *j); },
+-            [](copy_tag, I, I) { return std::tuple<std::string, std::string>{}; },
+-            [](move_tag, I i, I j) { return std::tuple<std::string&&, std::string&&>{
++            [](copy_tag, I, I) { return sycl_tuple<std::string, std::string>{}; },
++            [](move_tag, I i, I j) { return sycl_tuple<std::string&&, std::string&&>{
+                 std::move(*i), std::move(*j)}; } );
+ 
+         auto rng = view::iter_transform(v0, v1, fun);
+         using R = decltype(rng);
+-        CONCEPT_ASSERT(Same<range_value_t<R>, std::tuple<std::string, std::string>>());
+-        CONCEPT_ASSERT(Same<range_reference_t<R>, std::tuple<std::string&, std::string&>>());
+-        CONCEPT_ASSERT(Same<range_rvalue_reference_t<R>, std::tuple<std::string&&, std::string&&>>());
++        CONCEPT_ASSERT(Same<range_value_t<R>, sycl_tuple<std::string, std::string>>());
++        CONCEPT_ASSERT(Same<range_reference_t<R>, sycl_tuple<std::string&, std::string&>>());
++        CONCEPT_ASSERT(Same<range_rvalue_reference_t<R>, sycl_tuple<std::string&&, std::string&&>>());
+ 
+-        using T = std::tuple<std::string, std::string>;
++        using T = sycl_tuple<std::string, std::string>;
+         ::check_equal(rng, {T{"a","x"}, T{"b","y"}, T{"c","z"}});
+     }
+ 
+diff --git a/test/view/zip.cpp b/test/view/zip.cpp
+index 828327d..a06326a 100755
+--- a/test/view/zip.cpp
++++ b/test/view/zip.cpp
+@@ -38,15 +38,15 @@ int main()
+ 
+     // All bounded ranges, but one single-pass
+     {
+-        std::stringstream str{"john paul george ringo"};
+-        using V = std::tuple<int, std::string, std::string>;
++        std::stringstream str{"john paul georgFe ringo"};
++        using V = sycl_tuple<int, std::string, std::string>;
+         auto && rng = view::zip(vi, vs, istream<std::string>(str) | view::bounded);
+         using Rng = decltype((rng));
+         ::models_not<concepts::BoundedView>(rng);
+         ::models_not<concepts::SizedView>(rng);
+         CONCEPT_ASSERT(Same<
+             range_value_t<Rng>,
+-            std::tuple<int, std::string, std::string>>());
++            sycl_tuple<int, std::string, std::string>>());
+         CONCEPT_ASSERT(Same<
+             range_reference_t<Rng>,
+             common_tuple<int &, std::string const &, std::string &>>());
+@@ -67,7 +67,7 @@ int main()
+     // Mixed ranges and bounded ranges
+     {
+         std::stringstream str{"john paul george ringo"};
+-        using V = std::tuple<int, std::string, std::string>;
++        using V = sycl_tuple<int, std::string, std::string>;
+         auto && rng = view::zip(vi, vs, istream<std::string>(str));
+         ::models<concepts::View>(rng);
+         ::models_not<concepts::SizedView>(rng);
