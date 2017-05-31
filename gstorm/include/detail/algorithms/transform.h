@@ -16,7 +16,9 @@ namespace gstorm {
 namespace gpu {
 namespace algorithm {
 
-class TransformKernel;
+template <int x, typename... Ts>
+class TransformKernel{};
+
 
 template<typename InRng, typename OutRng, typename UnaryFunc>
 void transform(const InRng &in, OutRng &out, UnaryFunc func, cl::sycl::handler &cgh) {
@@ -27,7 +29,7 @@ void transform(const InRng &in, OutRng &out, UnaryFunc func, cl::sycl::handler &
   const auto inIt = in.begin();
   auto outIt = out.begin();
 
-  cgh.parallel_for<class TransformKernel>(config, [=](cl::sycl::nd_item<1> id) {
+  cgh.parallel_for<class TransformKernel<1, InRng, OutRng, UnaryFunc>>(config, [=](cl::sycl::nd_item<1> id) {
     auto gid = static_cast<size_t>(id.get_global(0));
     *(outIt + gid) = func(*(inIt + gid));
   });

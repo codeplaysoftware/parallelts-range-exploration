@@ -20,9 +20,9 @@
 // on the device side
 // TODO: make a own optional implementation that does nocht
 //       belong to the STL
-#include "../../meta/optional"
+#include <meta/optional>
 #include <detail/ranges/vector_base.h>
-#include "../../meta/executor.h"
+#include <meta/executor.h>
 
 namespace gstorm {
 
@@ -41,6 +41,8 @@ struct range_forward_traits {
 };
 }
 
+
+// this is the main container used in sycl parallel algorihtms
 
 namespace range{
 template<typename T>
@@ -67,9 +69,13 @@ public:
     using difference_type = typename T::difference_type;
     using iterator_category = std::random_access_iterator_tag;
     using pointer = value_type *;
-    using sycl_accessor_type = cl::sycl::accessor<value_type, 1, cl::sycl::access::mode::read_write, cl::sycl::access::target::global_buffer>;
 
-    iterator(size_t offset = 0, ptrdiff_t ref_back = 0) : accessor(), owner(ref_back), it(offset), _id(99999) {
+    // define the accessor's type
+    using sycl_accessor_type = cl::sycl::accessor<value_type, 1,
+                                                  cl::sycl::access::mode::read_write,
+                                                  cl::sycl::access::target::global_buffer>;
+
+    iterator(size_t offset = 0, ptrdiff_t ref_back = 0) : accessor(), owner(ref_back), it(offset), _id(-1) {
 #ifndef __SYCL_DEVICE_ONLY__
       if (owner != 0)
         _id = (reinterpret_cast<gvector*>(owner))->registerIterator(*this); // this should never be executed on the device
@@ -78,12 +84,12 @@ public:
 
     ~iterator(){
 #ifndef __SYCL_DEVICE_ONLY__
-      if (owner != 0 && _id != 99999)
+      if (owner != 0 && _id != -1)
         (reinterpret_cast<gvector*>(owner))->forgetIterator(_id); // this should never be executed on the device
 #endif
     }
 
-    iterator(const iterator& other) : owner(other.owner), it(other.it), _id(99999){
+    iterator(const iterator& other) : owner(other.owner), it(other.it), _id(-1){
       if (other.hasAccessor())
         accessor.emplace(other.accessor.value());
       else {
@@ -102,8 +108,9 @@ public:
     void setAccessor(sycl_accessor_type acc) { accessor.emplace(acc); }
 
     explicit iterator(sycl_accessor_type acc, size_t offset = 0, ptrdiff_t ref_back = 0) : accessor(acc),
-                                                                                                owner(ref_back), it(offset), _id(99999) {
-    }
+                                                                                           owner(ref_back),
+                                                                                           it(offset),
+                                                                                           _id(-1) {}
 
     reference operator*() {
       return accessor.value()[it];
@@ -211,26 +218,33 @@ public:
 
   using sentinel = iterator;
 
+  friend struct iterator;
+
   gvector() : gvector_base(), _buffer(nullptr), _size(0)  {}
 
-  gvector(size_t size) : gvector_base(), _buffer(new cl::sycl::buffer<typename T::value_type>(size)),
+  gvector(size_t size) : gvector_base(),
+                         _buffer(new cl::sycl::buffer<typename T::value_type>(size)),
                          _size(size) {
 
   }
 
-  gvector(size_t size, value_type value) : gvector_base(), _buffer(new cl::sycl::buffer<typename T::value_type>(size)),
+  gvector(size_t size, value_type value) : gvector_base(),
+                                           _buffer(new cl::sycl::buffer<typename T::value_type>(size)),
                                            _size(size) {
-//    gpu::algorithm::fill(*this, value);
+    // TODO: call a fill algorithm to initalize the gvector to respect RAII
   }
 
-  gvector(T &vec) : gvector_base(), _buffer(new cl::sycl::buffer<typename T::value_type>(vec.data(), vec.size())),
-                    _size(vec.size())  {
-  }
+  gvector(T &vec) : gvector_base(),
+                    _buffer(new cl::sycl::buffer<typename T::value_type>(vec.data(), vec.size())),
+                    _size(vec.size())  {}
 
   ~gvector() {}
 
-  gvector(const gvector &src) = delete;
+  gvector(const gvector &src) = delete; // coping a gvector is not allowed yet
 
+
+  // move ctor for the gvector class
+  // the move ctor will update to the new pointer by its bound executor
   gvector(gvector &&other) {
     _buffer = std::move(other._buffer);
     other._buffer.reset(nullptr);
@@ -243,6 +257,8 @@ public:
     _exec->updateGVector(_id, this);
   }
 
+  // move assignment for the gvector class
+  // the move assignment will update to the new pointer by its bound executor
   gvector &operator=(gvector &&other) {
     _buffer = std::move(other._buffer);
     other._buffer.reset(nullptr);
@@ -283,16 +299,14 @@ public:
   size_t size() const { return _size; }
 
   void resize(size_type size) {
-//    auto new_buffer = new cl::sycl::buffer<typename T::value_type>(size);
-//    if (_buffer)
-//      _buffer->copyTo(new_buffer->get());
-//    _size = size;
-//    _buffer.reset(new_buffer);
+    // TODO: implement it
   }
 
   operator typename std::remove_cv<T>::type() const {
     T tmp(_size);
     // download data to tmp
+    // TODO: implement it to allow for a gvector to be asigned to an std::vector for
+    // data transfer back to the host
     return tmp;
   }
 
@@ -301,6 +315,9 @@ public:
     std::swap(_size, other._size);
   }
 
+
+  // host access
+  // TODO: check if this is save or not
   typename T::value_type *data() {
     auto accesor =
         _buffer->template get_access<cl::sycl::access::mode::read_write, cl::sycl::access::target::host_buffer>();
@@ -319,16 +336,24 @@ public:
     return accesor[n];
   }
 
+protected:
+  // an iterator has to register itself by its container
+  // this is necessary to allow the container to update each iterator
+  // as soon as the accessor is valid
   auto registerIterator(iterator& it) {
     auto pair = std::make_pair(_iterators.size(), &it);
     _iterators.insert(pair);
     return pair.first;
   }
 
+  // if a iterator is destroyed it tells its container to forget it
   void forgetIterator(size_t id){
     _iterators[id] = nullptr;
   }
 
+private:
+  // this is called by the gvector's base class gvector_base and is triggert after the
+  // executor updates the gvectors cgh
   virtual void updateAccessors() override {
     auto acc = _buffer->template get_access<cl::sycl::access::mode::read_write>(*_cgh);
     for (auto& p : _iterators) {
@@ -338,7 +363,7 @@ public:
     }
   }
 
-private:
+
   std::unique_ptr<cl::sycl::buffer < typename T::value_type>> _buffer;
   std::map<size_t, iterator*> _iterators;
   size_t _size;

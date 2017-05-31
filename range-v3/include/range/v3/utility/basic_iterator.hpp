@@ -417,22 +417,37 @@ namespace ranges
         /// @{
         ///
         template<typename T>
-        struct basic_mixin : private box<T>
+        struct basic_mixin //: private box<T>
         {
             CONCEPT_REQUIRES(DefaultConstructible<T>())
             constexpr basic_mixin()
-              : box<T>{}
+              : value{}
             {}
             CONCEPT_REQUIRES(MoveConstructible<T>())
             constexpr basic_mixin(T &&t)
-              : box<T>(detail::move(t))
+              : value(detail::move(t))
             {}
             CONCEPT_REQUIRES(CopyConstructible<T>())
             constexpr basic_mixin(T const &t)
-              : box<T>(t)
+              : value(t)
             {}
         protected:
-            using box<T>::get;
+         //   using box<T>::get;
+
+          T value;
+
+          RANGES_CXX14_CONSTEXPR T &get() & noexcept
+          {
+            return value;
+          }
+          constexpr T const &get() const & noexcept
+          {
+            return value;
+          }
+          RANGES_CXX14_CONSTEXPR T &&get() && noexcept
+          {
+            return detail::move(value);
+          }
         };
 
         template<typename S>

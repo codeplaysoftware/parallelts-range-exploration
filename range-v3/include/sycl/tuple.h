@@ -55,7 +55,7 @@ template<class T, class... Ts>
 struct Tuple<T, Ts...> {
   constexpr Tuple() {}
 
-  Tuple(T t, Ts... ts) : head(t), tail(ts...) {}
+  Tuple(T t, Ts... ts) : head(std::forward<T>(t)), tail(std::forward<Ts>(ts)...) {}
 
   T head;
   Tuple<Ts...> tail;
@@ -287,7 +287,7 @@ Tuple<Args1..., Args2...> append(internal::tools::tuple::Tuple<Args1...> t1,
 }  // internal
 }  // visioncpp
 
-#if 0
+#if 0 // set to 1 to use std::tuple
 
 template<typename... Ts>
 using sycl_tuple = std::tuple<Ts...>;

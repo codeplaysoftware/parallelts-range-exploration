@@ -150,8 +150,8 @@ namespace ranges
                     !std::is_default_constructible<Fn>::value &&
                     !std::is_copy_assignable<Fn>::value>;
 
-            template<typename>
-            constexpr box_compress box_compression_(...)
+            template<typename T, typename... Ts>
+            constexpr box_compress box_compression_(T, Ts...)
             {
                 return box_compress::none;
             }

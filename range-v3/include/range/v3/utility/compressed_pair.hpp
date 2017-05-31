@@ -39,8 +39,10 @@ namespace ranges
             template<typename List, typename Indices> struct compressed_tuple_;
             template<typename... Ts, std::size_t... Is>
             struct compressed_tuple_<meta::list<Ts...>, meta::index_sequence<Is...>>
-              : storage<Ts, Is, Ts...>...
+              //: storage<Ts, Is, Ts...>...
             {
+                sycl_tuple<Ts...> _tpl;
+
                 static_assert(Same<meta::index_sequence<Is...>,
                     meta::make_index_sequence<sizeof...(Is)>>(), "What madness is this?!?");
 
@@ -50,14 +52,30 @@ namespace ranges
                 template<typename... Args,
                     meta::if_<meta::strict_and<std::is_constructible<Ts, Args>...>, int> = 0>
                 constexpr compressed_tuple_(Args &&... args)
-                  : storage<Ts, Is, Ts...>{detail::forward<Args>(args)}...
+                  : _tpl(std::forward<Args>(args)...) //storage<Ts, Is, Ts...>{detail::forward<Args>(args)}...
                 {}
 
                 template<typename... Us,
                     meta::if_<meta::strict_and<std::is_constructible<Us, Ts const &>...>, int> = 0>
                 constexpr operator sycl_tuple<Us...> () const
                 {
-                    return sycl_tuple<Us...>{get<Is>(*this)...};
+                    return _tpl; // sycl_tuple<Us...>{get<Is>(*this)...};
+                }
+
+                template<size_t I>
+                RANGES_CXX14_CONSTEXPR auto &get() & noexcept
+                {
+                    return std::get<I>(_tpl);
+                }
+                template<size_t I>
+                constexpr auto const &get() const & noexcept
+                {
+                    return std::get<I>(_tpl);
+                }
+                template<size_t I>
+                RANGES_CXX14_CONSTEXPR auto &&get() && noexcept
+                {
+                    return detail::move(std::get<I>(_tpl));
                 }
             };
 
@@ -68,17 +86,17 @@ namespace ranges
             template<std::size_t I, typename... Ts, std::size_t... Is, typename T = meta::at_c<meta::list<Ts...>, I>>
             RANGES_CXX14_CONSTEXPR T &get(compressed_tuple_<meta::list<Ts...>, meta::index_sequence<Is...>> &tuple) noexcept
             {
-                return static_cast<storage<T, I, Ts...> &>(tuple).get();
+                return tuple.template get<I>();// static_cast<storage<T, I, Ts...> &>(tuple).get();
             }
             template<std::size_t I, typename... Ts, std::size_t... Is, typename T = meta::at_c<meta::list<Ts...>, I>>
             constexpr T const &get(compressed_tuple_<meta::list<Ts...>, meta::index_sequence<Is...>> const &tuple) noexcept
             {
-                return static_cast<storage<T, I, Ts...> const &>(tuple).get();
+                return tuple.template get<I>();// static_cast<storage<T, I, Ts...> const &>(tuple).get();
             }
             template<std::size_t I, typename... Ts, std::size_t... Is, typename T = meta::at_c<meta::list<Ts...>, I>>
             RANGES_CXX14_CONSTEXPR T && get(compressed_tuple_<meta::list<Ts...>, meta::index_sequence<Is...>> && tuple) noexcept
             {
-                return static_cast<storage<T, I, Ts...> &&>(tuple).get();
+                return tuple.template get<I>();// static_cast<storage<T, I, Ts...> &&>(tuple).get();
             }
         }
         using compressed_tuple_detail::compressed_tuple;
