@@ -13,22 +13,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="92394a9c-e3ff-484d-805b-c8abffe74159" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../range-v3/.idea/vcs.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tryout/compile_host.sh" afterPath="$PROJECT_DIR$/tryout/compile_host.sh" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tryout/tryout.cpp" afterPath="$PROJECT_DIR$/tryout/tryout.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../gstorm/include/detail/algorithms/reduce.h" afterPath="$PROJECT_DIR$/../gstorm/include/detail/algorithms/reduce.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../gstorm/include/detail/algorithms/transform.h" afterPath="$PROJECT_DIR$/../gstorm/include/detail/algorithms/transform.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../gstorm/include/detail/ranges/vector.h" afterPath="$PROJECT_DIR$/../gstorm/include/detail/ranges/vector.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../gstorm/include/detail/ranges/vector_base.h" afterPath="$PROJECT_DIR$/../gstorm/include/detail/ranges/vector_base.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../gstorm/include/gstorm.h" afterPath="$PROJECT_DIR$/../gstorm/include/gstorm.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../gstorm/include/meta/executor.h" afterPath="$PROJECT_DIR$/../gstorm/include/meta/executor.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../range-v3/include/range/v3/utility/basic_iterator.hpp" afterPath="$PROJECT_DIR$/../range-v3/include/range/v3/utility/basic_iterator.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../range-v3/include/range/v3/utility/box.hpp" afterPath="$PROJECT_DIR$/../range-v3/include/range/v3/utility/box.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../range-v3/include/range/v3/utility/compressed_pair.hpp" afterPath="$PROJECT_DIR$/../range-v3/include/range/v3/utility/compressed_pair.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../range-v3/include/range/v3/utility/tagged_pair.hpp" afterPath="$PROJECT_DIR$/../range-v3/include/range/v3/utility/tagged_pair.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../range-v3/include/range/v3/view_adaptor.hpp" afterPath="$PROJECT_DIR$/../range-v3/include/range/v3/view_adaptor.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../range-v3/include/sycl/tuple.h" afterPath="$PROJECT_DIR$/../range-v3/include/sycl/tuple.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../range-v3/include/range/v3/utility/functional.hpp" afterPath="$PROJECT_DIR$/../range-v3/include/range/v3/utility/functional.hpp" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -41,7 +28,7 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="tryout.cpp" pinned="false" current-in-tab="false">
+      <file leaf-file-name="tryout.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tryout/tryout.cpp">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="359">
@@ -64,9 +51,69 @@
             <state relative-caret-position="216">
               <caret line="54" column="23" lean-forward="true" selection-start-line="54" selection-start-column="23" selection-end-line="54" selection-end-column="23" />
               <folding>
-                <element signature="e#5725#5760#0" expanded="true" />
-                <element signature="e#5903#5942#0" expanded="true" />
-                <element signature="e#6768#6893#0" expanded="true" />
+                <marker date="1496235430955" expanded="true" signature="779:20044" ph="{...}" />
+                <marker date="1496235430955" expanded="true" signature="809:20042" ph="{...}" />
+                <marker date="1496235430955" expanded="true" signature="862:2181" ph="{...}" />
+                <marker date="1496235430955" expanded="true" signature="2179:2181" ph="{...}" />
+                <marker date="1496235430955" expanded="true" signature="6225:13740" ph="{...}" />
+                <marker date="1496235430955" expanded="true" signature="6307:6674" ph="{...}" />
+                <marker date="1496235430955" expanded="true" signature="6593:6660" ph="{...}" />
+                <marker date="1496235430955" expanded="true" signature="6757:6890" ph="&lt;A=Adapt,R=decltype(std::declval&lt;A const&amp;&gt;().get(std::declval&lt;BaseIter const&amp;&gt;()))&gt;" />
+                <marker date="1496235430955" expanded="true" signature="7050:7435" ph="{...}" />
+                <marker date="1496235430955" expanded="false" signature="7448:7567" ph="&lt;A=Adapt,=decltype(std::declval&lt;A&amp;&gt;().next(std::declval&lt;BaseIter&amp;&gt;()))&gt;" />
+                <marker date="1496235430955" expanded="true" signature="7604:7659" ph="{...}" />
+                <marker date="1496235430955" expanded="false" signature="7672:7927" ph="&lt;A=Adapt,=decltype(std::declval&lt;A const&amp;&gt;().equal(std::declval&lt;BaseIter const&amp;&gt;(),std::declval&lt;BaseIter const&amp;&gt;(),std::declval&lt;A const&amp;&gt;()))&gt;" />
+                <marker date="1496235430955" expanded="true" signature="8003:8095" ph="{...}" />
+                <marker date="1496235430955" expanded="false" signature="8108:8316" ph="&lt;A=Adapt,=decltype(std::declval&lt;A const&amp;&gt;().equal(std::declval&lt;BaseIter const&amp;&gt;(),std::declval&lt;BaseIter const&amp;&gt;()))&gt;" />
+                <marker date="1496235430955" expanded="true" signature="8393:8470" ph="{...}" />
+                <marker date="1496235430955" expanded="false" signature="8483:8520" ph="&lt;C=adaptor_cursor&gt;" />
+                <marker date="1496235430955" expanded="true" signature="8662:8724" ph="{...}" />
+                <marker date="1496235430955" expanded="false" signature="8737:8857" ph="&lt;A=Adapt,=decltype(std::declval&lt;A&amp;&gt;().prev(std::declval&lt;BaseIter&amp;&gt;()))&gt;" />
+                <marker date="1496235430955" expanded="true" signature="8894:8949" ph="{...}" />
+                <marker date="1496235430955" expanded="false" signature="8962:9088" ph="&lt;A=Adapt,=decltype(std::declval&lt;A&amp;&gt;().advance(std::declval&lt;BaseIter&amp;&gt;(),0))&gt;" />
+                <marker date="1496235430955" expanded="true" signature="9161:9222" ph="{...}" />
+                <marker date="1496235430955" expanded="false" signature="9235:9498" ph="&lt;A=Adapt,R=decltype(std::declval&lt;A const&amp;&gt;().distance_to(std::declval&lt;BaseIter const&amp;&gt;(),std::declval&lt;BaseIter const&amp;&gt;(),std::declval&lt;A const&amp;&gt;()))&gt;" />
+                <marker date="1496235430955" expanded="true" signature="9577:9675" ph="{...}" />
+                <marker date="1496235430955" expanded="false" signature="9688:9904" ph="&lt;A=Adapt,R=decltype(std::declval&lt;A const&amp;&gt;().distance_to(std::declval&lt;BaseIter const&amp;&gt;(),std::declval&lt;BaseIter const&amp;&gt;()))&gt;" />
+                <marker date="1496235430955" expanded="true" signature="9984:10067" ph="{...}" />
+                <marker date="1496235430955" expanded="false" signature="10080:10117" ph="&lt;C=adaptor_cursor&gt;" />
+                <marker date="1496235430955" expanded="true" signature="10271:10339" ph="{...}" />
+                <marker date="1496235430955" expanded="false" signature="10421:10583" ph="&lt;A=Adapt,X=decltype(std::declval&lt;A const&amp;&gt;().indirect_move(std::declval&lt;BaseIter const&amp;&gt;()))&gt;" />
+                <marker date="1496235430955" expanded="true" signature="10767:11526" ph="{...}" />
+                <marker date="1496235430955" expanded="false" signature="11726:11986" ph="&lt;A=Adapt,R=decltype(std::declval&lt;A const&amp;&gt;().get(std::declval&lt;BaseIter const&amp;&gt;(),detail::adaptor_base_current_mem_fn{})),X=iterator_rvalue_reference_t&lt;BaseIter&gt;&gt;" />
+                <marker date="1496235430955" expanded="true" signature="12135:12205" ph="{...}" />
+                <marker date="1496235430955" expanded="false" signature="12392:12569" ph="&lt;A=Adapt,R=decltype(std::declval&lt;A const&amp;&gt;().get(std::declval&lt;BaseIter const&amp;&gt;())),X=aux::move_t&lt;R&gt;&gt;" />
+                <marker date="1496235430955" expanded="true" signature="12773:13299" ph="{...}" />
+                <marker date="1496235430955" expanded="true" signature="13622:13680" ph="{...}" />
+                <marker date="1496235430955" expanded="false" signature="13873:13916" ph="&lt;BaseSent,Adapt&gt;" />
+                <marker date="1496235430955" expanded="true" signature="14010:15979" ph="{...}" />
+                <marker date="1496235430955" expanded="true" signature="14213:14582" ph="{...}" />
+                <marker date="1496235430955" expanded="true" signature="14501:14568" ph="{...}" />
+                <marker date="1496235430955" expanded="false" signature="14717:14991" ph="&lt;I,IA,A=Adapt,=decltype(std::declval&lt;A const&amp;&gt;().empty(std::declval&lt;I const&amp;&gt;(),std::declval&lt;IA const&amp;&gt;(),std::declval&lt;BaseSent const&amp;&gt;()))&gt;" />
+                <marker date="1496235430955" expanded="true" signature="15084:15176" ph="{...}" />
+                <marker date="1496235430955" expanded="false" signature="15189:15415" ph="&lt;I,IA,A=Adapt,=decltype(std::declval&lt;A const&amp;&gt;().empty(std::declval&lt;I const&amp;&gt;(),std::declval&lt;BaseSent const&amp;&gt;()))&gt;" />
+                <marker date="1496235430955" expanded="true" signature="15509:15586" ph="{...}" />
+                <marker date="1496235430955" expanded="false" signature="15599:15663" ph="&lt;I,IA,S=adaptor_sentinel&gt;" />
+                <marker date="1496235430955" expanded="true" signature="15822:15884" ph="{...}" />
+                <marker date="1496235430955" expanded="false" signature="15990:16010" ph="&lt;D&gt;" />
+                <marker date="1496235430955" expanded="false" signature="16140:16160" ph="&lt;D&gt;" />
+                <marker date="1496235430955" expanded="true" signature="16217:16597" ph="&lt;~&gt;" />
+                <marker date="1496235430955" expanded="true" signature="16245:16414" ph="&lt;~&gt;" />
+                <marker date="1496235430955" expanded="false" signature="16608:16717" ph="&lt;Derived,BaseRng,cardinality Cardinality&gt;" />
+                <marker date="1496235430955" expanded="true" signature="16800:20019" ph="{...}" />
+                <marker date="1496235430955" expanded="true" signature="17314:17358" ph="{...}" />
+                <marker date="1496235430955" expanded="true" signature="17418:17460" ph="{...}" />
+                <marker date="1496235430955" expanded="true" signature="17518:17560" ph="{...}" />
+                <marker date="1496235430955" expanded="false" signature="17574:17643" ph="&lt;D=Derived,CONCEPT_REQUIRES_(Same&lt;D,Derived&gt;())&gt;" />
+                <marker date="1496235430955" expanded="true" signature="17703:17901" ph="{...}" />
+                <marker date="1496235430955" expanded="false" signature="17914:17983" ph="&lt;D=Derived,CONCEPT_REQUIRES_(Same&lt;D,Derived&gt;())&gt;" />
+                <marker date="1496235430955" expanded="true" signature="18043:18237" ph="{...}" />
+                <marker date="1496235430955" expanded="false" signature="18525:18640" ph="&lt;D=Derived,CONCEPT_REQUIRES_(Same&lt;D,Derived&gt;()&amp;&amp;View&lt;base_range_t const&gt;())&gt;" />
+                <marker date="1496235430955" expanded="true" signature="18712:18910" ph="{...}" />
+                <marker date="1496235430955" expanded="false" signature="18923:19038" ph="&lt;D=Derived,CONCEPT_REQUIRES_(Same&lt;D,Derived&gt;()&amp;&amp;View&lt;base_range_t const&gt;())&gt;" />
+                <marker date="1496235430955" expanded="true" signature="19110:19304" ph="{...}" />
+                <marker date="1496235430955" expanded="true" signature="19836:19880" ph="{...}" />
+                <marker date="1496235430955" expanded="true" signature="19965:20009" ph="{...}" />
               </folding>
             </state>
           </provider>
@@ -75,17 +122,29 @@
       <file leaf-file-name="compressed_pair.hpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../range-v3/include/range/v3/utility/compressed_pair.hpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="461">
-              <caret line="107" column="29" lean-forward="false" selection-start-line="107" selection-start-column="24" selection-end-line="107" selection-end-column="29" />
+            <state relative-caret-position="189">
+              <caret line="91" column="29" lean-forward="false" selection-start-line="91" selection-start-column="29" selection-end-line="91" selection-end-column="29" />
               <folding>
                 <element signature="e#456#478#0" expanded="true" />
-                <element signature="e#1516#1549#0" expanded="true" />
-                <element signature="e#1596#1631#0" expanded="true" />
-                <element signature="e#2081#2193#0" expanded="true" />
-                <element signature="e#2410#2526#0" expanded="true" />
-                <element signature="e#2724#2734#0" expanded="true" />
-                <element signature="e#2903#2913#0" expanded="true" />
-                <element signature="e#3081#3091#0" expanded="true" />
+                <marker date="1496235401471" expanded="true" signature="5395:5850" ph="{...}" />
+                <marker date="1496235401471" expanded="true" signature="5395:6387" ph="{...}" />
+                <marker date="1496235401471" expanded="true" signature="5395:6389" ph="{...}" />
+                <marker date="1496235401471" expanded="false" signature="5485:5697" ph="&lt;F,S,meta::if_&lt;meta::strict_and&lt;std::is_constructible&lt;F,First const&amp;&gt;,std::is_constructible&lt;S,Second const&amp;&gt;&gt;,int&gt;=0&gt;" />
+                <marker date="1496235401471" expanded="true" signature="5543:5692" ph="&lt;~&gt;" />
+                <marker date="1496235401471" expanded="true" signature="5560:5686" ph="&lt;~&gt;" />
+                <marker date="1496235401471" expanded="true" signature="5766:5840" ph="{...}" />
+                <marker date="1496235401471" expanded="true" signature="5900:6224" ph="{...}" />
+                <marker date="1496235401471" expanded="false" signature="5914:5955" ph="&lt;First,Second&gt;" />
+                <marker date="1496235401471" expanded="true" signature="6119:6214" ph="{...}" />
+                <marker date="1496235401471" expanded="true" signature="6502:7478" ph="{...}" />
+                <marker date="1496235401471" expanded="false" signature="6508:6546" ph="&lt;...Ts,size_t...Is&gt;" />
+                <marker date="1496235401471" expanded="false" signature="6738:6786" ph="&lt;size_t I,...Ts,size_t...Is&gt;" />
+                <marker date="1496235401471" expanded="true" signature="6925:6989" ph="{...}" />
+                <marker date="1496235401471" expanded="false" signature="6996:7037" ph="&lt;First,Second&gt;" />
+                <marker date="1496235401471" expanded="false" signature="7157:7198" ph="&lt;First,Second&gt;" />
+                <marker date="1496235401471" expanded="true" signature="7277:7312" ph="{...}" />
+                <marker date="1496235401471" expanded="false" signature="7319:7360" ph="&lt;First,Second&gt;" />
+                <marker date="1496235401471" expanded="true" signature="7439:7475" ph="{...}" />
               </folding>
             </state>
           </provider>
@@ -110,6 +169,30 @@
                 <element signature="e#1373#1414#0" expanded="true" />
                 <element signature="e#1524#1588#0" expanded="true" />
                 <element signature="e#1845#1877#0" expanded="true" />
+                <marker date="1496235415647" expanded="true" signature="649:6204" ph="{...}" />
+                <marker date="1496235415647" expanded="true" signature="1329:5575" ph="{...}" />
+                <marker date="1496235415647" expanded="true" signature="1972:5564" ph="{...}" />
+                <marker date="1496235415647" expanded="false" signature="2120:2144" ph="&lt;Other&gt;" />
+                <marker date="1496235415647" expanded="true" signature="2212:2314" ph="&lt;~&gt;" />
+                <marker date="1496235415647" expanded="false" signature="2918:2984" ph="&lt;Other,=meta::if_&lt;can_convert&lt;Other&gt;&gt;&gt;" />
+                <marker date="1496235415647" expanded="false" signature="3221:3287" ph="&lt;Other,=meta::if_&lt;can_convert&lt;Other&gt;&gt;&gt;" />
+                <marker date="1496235415647" expanded="false" signature="3541:3607" ph="&lt;Other,=meta::if_&lt;can_convert&lt;Other&gt;&gt;&gt;" />
+                <marker date="1496235415647" expanded="true" signature="3806:3937" ph="{...}" />
+                <marker date="1496235415647" expanded="false" signature="3954:4020" ph="&lt;Other,=meta::if_&lt;can_convert&lt;Other&gt;&gt;&gt;" />
+                <marker date="1496235415647" expanded="true" signature="4228:4364" ph="{...}" />
+                <marker date="1496235415647" expanded="false" signature="4381:4579" ph="&lt;U,=meta::if_c&lt;!std::is_same&lt;tagged,detail::decay_t&lt;U&gt;&gt;::value&gt;,=decltype(std::declval&lt;Base&amp;&gt;()=std::declval&lt;U&gt;())&gt;" />
+                <marker date="1496235415647" expanded="true" signature="4745:4867" ph="{...}" />
+                <marker date="1496235415647" expanded="false" signature="4884:4909" ph="&lt;int dummy_=42&gt;" />
+                <marker date="1496235415647" expanded="true" signature="5122:5230" ph="{...}" />
+                <marker date="1496235415647" expanded="false" signature="5247:5272" ph="&lt;int dummy_=42&gt;" />
+                <marker date="1496235415647" expanded="true" signature="5500:5550" ph="{...}" />
+                <marker date="1496235415647" expanded="false" signature="5622:5654" ph="&lt;F,S&gt;" />
+                <marker date="1496235415647" expanded="true" signature="5701:5815" ph="&lt;~&gt;" />
+                <marker date="1496235415647" expanded="false" signature="5826:5980" ph="&lt;Tag1,Tag2,T1,T2,R=tagged_pair&lt;Tag1(bind_element_t&lt;T1&gt;),Tag2(bind_element_t&lt;T2&gt;)&gt;&gt;" />
+                <marker date="1496235415647" expanded="true" signature="6116:6198" ph="{...}" />
+                <marker date="1496235415647" expanded="true" signature="10767:11092" ph="{...}" />
+                <marker date="1496235415647" expanded="false" signature="10773:10817" ph="&lt;Untagged,...Tags&gt;" />
+                <marker date="1496235415647" expanded="false" signature="10924:10978" ph="&lt;size_t N,Untagged,...Tags&gt;" />
               </folding>
             </state>
           </provider>
@@ -118,8 +201,8 @@
       <file leaf-file-name="basic_iterator.hpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../range-v3/include/range/v3/utility/basic_iterator.hpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="342">
-              <caret line="440" column="25" lean-forward="true" selection-start-line="440" selection-start-column="25" selection-end-line="440" selection-end-column="25" />
+            <state relative-caret-position="199">
+              <caret line="628" column="21" lean-forward="false" selection-start-line="628" selection-start-column="21" selection-end-line="628" selection-end-column="21" />
               <folding>
                 <element signature="e#18436#18448#0" expanded="true" />
                 <element signature="e#20503#20529#0" expanded="true" />
@@ -128,7 +211,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="box.hpp" pinned="false" current-in-tab="true">
+      <file leaf-file-name="box.hpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../range-v3/include/range/v3/utility/box.hpp">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="-362">
@@ -139,6 +222,16 @@
                 <element signature="e#5556#5697#0" expanded="true" />
                 <element signature="e#6046#6144#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="functional.hpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../range-v3/include/range/v3/utility/functional.hpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="454">
+              <caret line="753" column="38" lean-forward="true" selection-start-line="753" selection-start-column="38" selection-end-line="753" selection-end-column="38" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -178,6 +271,7 @@
         <option value="$PROJECT_DIR$/../range-v3/include/range/v3/utility/compressed_pair.hpp" />
         <option value="$PROJECT_DIR$/tryout/tryout.cpp" />
         <option value="$PROJECT_DIR$/../range-v3/include/range/v3/utility/box.hpp" />
+        <option value="$PROJECT_DIR$/../range-v3/include/range/v3/utility/functional.hpp" />
       </list>
     </option>
   </component>
@@ -480,12 +574,12 @@
       <workItem from="1494714020161" duration="1478000" />
       <workItem from="1494715973682" duration="1174000" />
       <workItem from="1496044486207" duration="9492000" />
-      <workItem from="1496229943386" duration="3884000" />
+      <workItem from="1496229943386" duration="5465000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="37128000" />
+    <option name="totallyTimeSpent" value="38709000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1920" height="1052" extended-state="6" />
@@ -524,14 +618,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/../gstorm/include/detail/ranges/vector.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1241">
-          <caret line="73" column="0" lean-forward="false" selection-start-line="73" selection-start-column="0" selection-end-line="75" selection-end-column="91" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../gstorm/include/gstorm.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
@@ -585,9 +671,69 @@
         <state relative-caret-position="2737">
           <caret line="161" column="64" lean-forward="false" selection-start-line="161" selection-start-column="64" selection-end-line="161" selection-end-column="64" />
           <folding>
-            <element signature="e#5725#5760#0" expanded="true" />
-            <element signature="e#5903#5942#0" expanded="true" />
-            <element signature="e#6768#6893#0" expanded="true" />
+            <marker date="1496235430955" expanded="true" signature="779:20044" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="809:20042" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="862:2181" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="2179:2181" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="6225:13740" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="6307:6674" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="6593:6660" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="6757:6890" ph="&lt;A=Adapt,R=decltype(std::declval&lt;A const&amp;&gt;().get(std::declval&lt;BaseIter const&amp;&gt;()))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="7050:7435" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="7448:7567" ph="&lt;A=Adapt,=decltype(std::declval&lt;A&amp;&gt;().next(std::declval&lt;BaseIter&amp;&gt;()))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="7604:7659" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="7672:7927" ph="&lt;A=Adapt,=decltype(std::declval&lt;A const&amp;&gt;().equal(std::declval&lt;BaseIter const&amp;&gt;(),std::declval&lt;BaseIter const&amp;&gt;(),std::declval&lt;A const&amp;&gt;()))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="8003:8095" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="8108:8316" ph="&lt;A=Adapt,=decltype(std::declval&lt;A const&amp;&gt;().equal(std::declval&lt;BaseIter const&amp;&gt;(),std::declval&lt;BaseIter const&amp;&gt;()))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="8393:8470" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="8483:8520" ph="&lt;C=adaptor_cursor&gt;" />
+            <marker date="1496235430955" expanded="true" signature="8662:8724" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="8737:8857" ph="&lt;A=Adapt,=decltype(std::declval&lt;A&amp;&gt;().prev(std::declval&lt;BaseIter&amp;&gt;()))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="8894:8949" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="8962:9088" ph="&lt;A=Adapt,=decltype(std::declval&lt;A&amp;&gt;().advance(std::declval&lt;BaseIter&amp;&gt;(),0))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="9161:9222" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="9235:9498" ph="&lt;A=Adapt,R=decltype(std::declval&lt;A const&amp;&gt;().distance_to(std::declval&lt;BaseIter const&amp;&gt;(),std::declval&lt;BaseIter const&amp;&gt;(),std::declval&lt;A const&amp;&gt;()))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="9577:9675" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="9688:9904" ph="&lt;A=Adapt,R=decltype(std::declval&lt;A const&amp;&gt;().distance_to(std::declval&lt;BaseIter const&amp;&gt;(),std::declval&lt;BaseIter const&amp;&gt;()))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="9984:10067" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="10080:10117" ph="&lt;C=adaptor_cursor&gt;" />
+            <marker date="1496235430955" expanded="true" signature="10271:10339" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="10421:10583" ph="&lt;A=Adapt,X=decltype(std::declval&lt;A const&amp;&gt;().indirect_move(std::declval&lt;BaseIter const&amp;&gt;()))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="10767:11526" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="11726:11986" ph="&lt;A=Adapt,R=decltype(std::declval&lt;A const&amp;&gt;().get(std::declval&lt;BaseIter const&amp;&gt;(),detail::adaptor_base_current_mem_fn{})),X=iterator_rvalue_reference_t&lt;BaseIter&gt;&gt;" />
+            <marker date="1496235430955" expanded="true" signature="12135:12205" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="12392:12569" ph="&lt;A=Adapt,R=decltype(std::declval&lt;A const&amp;&gt;().get(std::declval&lt;BaseIter const&amp;&gt;())),X=aux::move_t&lt;R&gt;&gt;" />
+            <marker date="1496235430955" expanded="true" signature="12773:13299" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="13622:13680" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="13873:13916" ph="&lt;BaseSent,Adapt&gt;" />
+            <marker date="1496235430955" expanded="true" signature="14010:15979" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="14213:14582" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="14501:14568" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="14717:14991" ph="&lt;I,IA,A=Adapt,=decltype(std::declval&lt;A const&amp;&gt;().empty(std::declval&lt;I const&amp;&gt;(),std::declval&lt;IA const&amp;&gt;(),std::declval&lt;BaseSent const&amp;&gt;()))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="15084:15176" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="15189:15415" ph="&lt;I,IA,A=Adapt,=decltype(std::declval&lt;A const&amp;&gt;().empty(std::declval&lt;I const&amp;&gt;(),std::declval&lt;BaseSent const&amp;&gt;()))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="15509:15586" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="15599:15663" ph="&lt;I,IA,S=adaptor_sentinel&gt;" />
+            <marker date="1496235430955" expanded="true" signature="15822:15884" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="15990:16010" ph="&lt;D&gt;" />
+            <marker date="1496235430955" expanded="false" signature="16140:16160" ph="&lt;D&gt;" />
+            <marker date="1496235430955" expanded="true" signature="16217:16597" ph="&lt;~&gt;" />
+            <marker date="1496235430955" expanded="true" signature="16245:16414" ph="&lt;~&gt;" />
+            <marker date="1496235430955" expanded="false" signature="16608:16717" ph="&lt;Derived,BaseRng,cardinality Cardinality&gt;" />
+            <marker date="1496235430955" expanded="true" signature="16800:20019" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="17314:17358" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="17418:17460" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="17518:17560" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="17574:17643" ph="&lt;D=Derived,CONCEPT_REQUIRES_(Same&lt;D,Derived&gt;())&gt;" />
+            <marker date="1496235430955" expanded="true" signature="17703:17901" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="17914:17983" ph="&lt;D=Derived,CONCEPT_REQUIRES_(Same&lt;D,Derived&gt;())&gt;" />
+            <marker date="1496235430955" expanded="true" signature="18043:18237" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="18525:18640" ph="&lt;D=Derived,CONCEPT_REQUIRES_(Same&lt;D,Derived&gt;()&amp;&amp;View&lt;base_range_t const&gt;())&gt;" />
+            <marker date="1496235430955" expanded="true" signature="18712:18910" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="18923:19038" ph="&lt;D=Derived,CONCEPT_REQUIRES_(Same&lt;D,Derived&gt;()&amp;&amp;View&lt;base_range_t const&gt;())&gt;" />
+            <marker date="1496235430955" expanded="true" signature="19110:19304" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="19836:19880" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="19965:20009" ph="{...}" />
           </folding>
         </state>
       </provider>
@@ -598,13 +744,25 @@
           <caret line="36" column="30" lean-forward="false" selection-start-line="36" selection-start-column="30" selection-end-line="36" selection-end-column="30" />
           <folding>
             <element signature="e#456#478#0" expanded="true" />
-            <element signature="e#1516#1549#0" expanded="true" />
-            <element signature="e#1596#1631#0" expanded="true" />
-            <element signature="e#2081#2193#0" expanded="true" />
-            <element signature="e#2410#2526#0" expanded="true" />
-            <element signature="e#2724#2734#0" expanded="true" />
-            <element signature="e#2903#2913#0" expanded="true" />
-            <element signature="e#3081#3091#0" expanded="true" />
+            <marker date="1496235401471" expanded="true" signature="5395:5850" ph="{...}" />
+            <marker date="1496235401471" expanded="true" signature="5395:6387" ph="{...}" />
+            <marker date="1496235401471" expanded="true" signature="5395:6389" ph="{...}" />
+            <marker date="1496235401471" expanded="false" signature="5485:5697" ph="&lt;F,S,meta::if_&lt;meta::strict_and&lt;std::is_constructible&lt;F,First const&amp;&gt;,std::is_constructible&lt;S,Second const&amp;&gt;&gt;,int&gt;=0&gt;" />
+            <marker date="1496235401471" expanded="true" signature="5543:5692" ph="&lt;~&gt;" />
+            <marker date="1496235401471" expanded="true" signature="5560:5686" ph="&lt;~&gt;" />
+            <marker date="1496235401471" expanded="true" signature="5766:5840" ph="{...}" />
+            <marker date="1496235401471" expanded="true" signature="5900:6224" ph="{...}" />
+            <marker date="1496235401471" expanded="false" signature="5914:5955" ph="&lt;First,Second&gt;" />
+            <marker date="1496235401471" expanded="true" signature="6119:6214" ph="{...}" />
+            <marker date="1496235401471" expanded="true" signature="6502:7478" ph="{...}" />
+            <marker date="1496235401471" expanded="false" signature="6508:6546" ph="&lt;...Ts,size_t...Is&gt;" />
+            <marker date="1496235401471" expanded="false" signature="6738:6786" ph="&lt;size_t I,...Ts,size_t...Is&gt;" />
+            <marker date="1496235401471" expanded="true" signature="6925:6989" ph="{...}" />
+            <marker date="1496235401471" expanded="false" signature="6996:7037" ph="&lt;First,Second&gt;" />
+            <marker date="1496235401471" expanded="false" signature="7157:7198" ph="&lt;First,Second&gt;" />
+            <marker date="1496235401471" expanded="true" signature="7277:7312" ph="{...}" />
+            <marker date="1496235401471" expanded="false" signature="7319:7360" ph="&lt;First,Second&gt;" />
+            <marker date="1496235401471" expanded="true" signature="7439:7475" ph="{...}" />
           </folding>
         </state>
       </provider>
@@ -659,6 +817,30 @@
             <element signature="e#1373#1414#0" expanded="true" />
             <element signature="e#1524#1588#0" expanded="true" />
             <element signature="e#1845#1877#0" expanded="true" />
+            <marker date="1496235415647" expanded="true" signature="649:6204" ph="{...}" />
+            <marker date="1496235415647" expanded="true" signature="1329:5575" ph="{...}" />
+            <marker date="1496235415647" expanded="true" signature="1972:5564" ph="{...}" />
+            <marker date="1496235415647" expanded="false" signature="2120:2144" ph="&lt;Other&gt;" />
+            <marker date="1496235415647" expanded="true" signature="2212:2314" ph="&lt;~&gt;" />
+            <marker date="1496235415647" expanded="false" signature="2918:2984" ph="&lt;Other,=meta::if_&lt;can_convert&lt;Other&gt;&gt;&gt;" />
+            <marker date="1496235415647" expanded="false" signature="3221:3287" ph="&lt;Other,=meta::if_&lt;can_convert&lt;Other&gt;&gt;&gt;" />
+            <marker date="1496235415647" expanded="false" signature="3541:3607" ph="&lt;Other,=meta::if_&lt;can_convert&lt;Other&gt;&gt;&gt;" />
+            <marker date="1496235415647" expanded="true" signature="3806:3937" ph="{...}" />
+            <marker date="1496235415647" expanded="false" signature="3954:4020" ph="&lt;Other,=meta::if_&lt;can_convert&lt;Other&gt;&gt;&gt;" />
+            <marker date="1496235415647" expanded="true" signature="4228:4364" ph="{...}" />
+            <marker date="1496235415647" expanded="false" signature="4381:4579" ph="&lt;U,=meta::if_c&lt;!std::is_same&lt;tagged,detail::decay_t&lt;U&gt;&gt;::value&gt;,=decltype(std::declval&lt;Base&amp;&gt;()=std::declval&lt;U&gt;())&gt;" />
+            <marker date="1496235415647" expanded="true" signature="4745:4867" ph="{...}" />
+            <marker date="1496235415647" expanded="false" signature="4884:4909" ph="&lt;int dummy_=42&gt;" />
+            <marker date="1496235415647" expanded="true" signature="5122:5230" ph="{...}" />
+            <marker date="1496235415647" expanded="false" signature="5247:5272" ph="&lt;int dummy_=42&gt;" />
+            <marker date="1496235415647" expanded="true" signature="5500:5550" ph="{...}" />
+            <marker date="1496235415647" expanded="false" signature="5622:5654" ph="&lt;F,S&gt;" />
+            <marker date="1496235415647" expanded="true" signature="5701:5815" ph="&lt;~&gt;" />
+            <marker date="1496235415647" expanded="false" signature="5826:5980" ph="&lt;Tag1,Tag2,T1,T2,R=tagged_pair&lt;Tag1(bind_element_t&lt;T1&gt;),Tag2(bind_element_t&lt;T2&gt;)&gt;&gt;" />
+            <marker date="1496235415647" expanded="true" signature="6116:6198" ph="{...}" />
+            <marker date="1496235415647" expanded="true" signature="10767:11092" ph="{...}" />
+            <marker date="1496235415647" expanded="false" signature="10773:10817" ph="&lt;Untagged,...Tags&gt;" />
+            <marker date="1496235415647" expanded="false" signature="10924:10978" ph="&lt;size_t N,Untagged,...Tags&gt;" />
           </folding>
         </state>
       </provider>
@@ -692,13 +874,25 @@
           <caret line="36" column="30" lean-forward="false" selection-start-line="36" selection-start-column="30" selection-end-line="36" selection-end-column="30" />
           <folding>
             <element signature="e#456#478#0" expanded="true" />
-            <element signature="e#1516#1549#0" expanded="true" />
-            <element signature="e#1596#1631#0" expanded="true" />
-            <element signature="e#2081#2193#0" expanded="true" />
-            <element signature="e#2410#2526#0" expanded="true" />
-            <element signature="e#2724#2734#0" expanded="true" />
-            <element signature="e#2903#2913#0" expanded="true" />
-            <element signature="e#3081#3091#0" expanded="true" />
+            <marker date="1496235401471" expanded="true" signature="5395:5850" ph="{...}" />
+            <marker date="1496235401471" expanded="true" signature="5395:6387" ph="{...}" />
+            <marker date="1496235401471" expanded="true" signature="5395:6389" ph="{...}" />
+            <marker date="1496235401471" expanded="false" signature="5485:5697" ph="&lt;F,S,meta::if_&lt;meta::strict_and&lt;std::is_constructible&lt;F,First const&amp;&gt;,std::is_constructible&lt;S,Second const&amp;&gt;&gt;,int&gt;=0&gt;" />
+            <marker date="1496235401471" expanded="true" signature="5543:5692" ph="&lt;~&gt;" />
+            <marker date="1496235401471" expanded="true" signature="5560:5686" ph="&lt;~&gt;" />
+            <marker date="1496235401471" expanded="true" signature="5766:5840" ph="{...}" />
+            <marker date="1496235401471" expanded="true" signature="5900:6224" ph="{...}" />
+            <marker date="1496235401471" expanded="false" signature="5914:5955" ph="&lt;First,Second&gt;" />
+            <marker date="1496235401471" expanded="true" signature="6119:6214" ph="{...}" />
+            <marker date="1496235401471" expanded="true" signature="6502:7478" ph="{...}" />
+            <marker date="1496235401471" expanded="false" signature="6508:6546" ph="&lt;...Ts,size_t...Is&gt;" />
+            <marker date="1496235401471" expanded="false" signature="6738:6786" ph="&lt;size_t I,...Ts,size_t...Is&gt;" />
+            <marker date="1496235401471" expanded="true" signature="6925:6989" ph="{...}" />
+            <marker date="1496235401471" expanded="false" signature="6996:7037" ph="&lt;First,Second&gt;" />
+            <marker date="1496235401471" expanded="false" signature="7157:7198" ph="&lt;First,Second&gt;" />
+            <marker date="1496235401471" expanded="true" signature="7277:7312" ph="{...}" />
+            <marker date="1496235401471" expanded="false" signature="7319:7360" ph="&lt;First,Second&gt;" />
+            <marker date="1496235401471" expanded="true" signature="7439:7475" ph="{...}" />
           </folding>
         </state>
       </provider>
@@ -711,6 +905,30 @@
             <element signature="e#1373#1414#0" expanded="true" />
             <element signature="e#1524#1588#0" expanded="true" />
             <element signature="e#1845#1877#0" expanded="true" />
+            <marker date="1496235415647" expanded="true" signature="649:6204" ph="{...}" />
+            <marker date="1496235415647" expanded="true" signature="1329:5575" ph="{...}" />
+            <marker date="1496235415647" expanded="true" signature="1972:5564" ph="{...}" />
+            <marker date="1496235415647" expanded="false" signature="2120:2144" ph="&lt;Other&gt;" />
+            <marker date="1496235415647" expanded="true" signature="2212:2314" ph="&lt;~&gt;" />
+            <marker date="1496235415647" expanded="false" signature="2918:2984" ph="&lt;Other,=meta::if_&lt;can_convert&lt;Other&gt;&gt;&gt;" />
+            <marker date="1496235415647" expanded="false" signature="3221:3287" ph="&lt;Other,=meta::if_&lt;can_convert&lt;Other&gt;&gt;&gt;" />
+            <marker date="1496235415647" expanded="false" signature="3541:3607" ph="&lt;Other,=meta::if_&lt;can_convert&lt;Other&gt;&gt;&gt;" />
+            <marker date="1496235415647" expanded="true" signature="3806:3937" ph="{...}" />
+            <marker date="1496235415647" expanded="false" signature="3954:4020" ph="&lt;Other,=meta::if_&lt;can_convert&lt;Other&gt;&gt;&gt;" />
+            <marker date="1496235415647" expanded="true" signature="4228:4364" ph="{...}" />
+            <marker date="1496235415647" expanded="false" signature="4381:4579" ph="&lt;U,=meta::if_c&lt;!std::is_same&lt;tagged,detail::decay_t&lt;U&gt;&gt;::value&gt;,=decltype(std::declval&lt;Base&amp;&gt;()=std::declval&lt;U&gt;())&gt;" />
+            <marker date="1496235415647" expanded="true" signature="4745:4867" ph="{...}" />
+            <marker date="1496235415647" expanded="false" signature="4884:4909" ph="&lt;int dummy_=42&gt;" />
+            <marker date="1496235415647" expanded="true" signature="5122:5230" ph="{...}" />
+            <marker date="1496235415647" expanded="false" signature="5247:5272" ph="&lt;int dummy_=42&gt;" />
+            <marker date="1496235415647" expanded="true" signature="5500:5550" ph="{...}" />
+            <marker date="1496235415647" expanded="false" signature="5622:5654" ph="&lt;F,S&gt;" />
+            <marker date="1496235415647" expanded="true" signature="5701:5815" ph="&lt;~&gt;" />
+            <marker date="1496235415647" expanded="false" signature="5826:5980" ph="&lt;Tag1,Tag2,T1,T2,R=tagged_pair&lt;Tag1(bind_element_t&lt;T1&gt;),Tag2(bind_element_t&lt;T2&gt;)&gt;&gt;" />
+            <marker date="1496235415647" expanded="true" signature="6116:6198" ph="{...}" />
+            <marker date="1496235415647" expanded="true" signature="10767:11092" ph="{...}" />
+            <marker date="1496235415647" expanded="false" signature="10773:10817" ph="&lt;Untagged,...Tags&gt;" />
+            <marker date="1496235415647" expanded="false" signature="10924:10978" ph="&lt;size_t N,Untagged,...Tags&gt;" />
           </folding>
         </state>
       </provider>
@@ -769,9 +987,69 @@
         <state relative-caret-position="2737">
           <caret line="161" column="95" lean-forward="false" selection-start-line="161" selection-start-column="95" selection-end-line="161" selection-end-column="95" />
           <folding>
-            <element signature="e#5725#5760#0" expanded="true" />
-            <element signature="e#5903#5942#0" expanded="true" />
-            <element signature="e#6768#6893#0" expanded="true" />
+            <marker date="1496235430955" expanded="true" signature="779:20044" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="809:20042" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="862:2181" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="2179:2181" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="6225:13740" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="6307:6674" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="6593:6660" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="6757:6890" ph="&lt;A=Adapt,R=decltype(std::declval&lt;A const&amp;&gt;().get(std::declval&lt;BaseIter const&amp;&gt;()))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="7050:7435" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="7448:7567" ph="&lt;A=Adapt,=decltype(std::declval&lt;A&amp;&gt;().next(std::declval&lt;BaseIter&amp;&gt;()))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="7604:7659" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="7672:7927" ph="&lt;A=Adapt,=decltype(std::declval&lt;A const&amp;&gt;().equal(std::declval&lt;BaseIter const&amp;&gt;(),std::declval&lt;BaseIter const&amp;&gt;(),std::declval&lt;A const&amp;&gt;()))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="8003:8095" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="8108:8316" ph="&lt;A=Adapt,=decltype(std::declval&lt;A const&amp;&gt;().equal(std::declval&lt;BaseIter const&amp;&gt;(),std::declval&lt;BaseIter const&amp;&gt;()))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="8393:8470" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="8483:8520" ph="&lt;C=adaptor_cursor&gt;" />
+            <marker date="1496235430955" expanded="true" signature="8662:8724" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="8737:8857" ph="&lt;A=Adapt,=decltype(std::declval&lt;A&amp;&gt;().prev(std::declval&lt;BaseIter&amp;&gt;()))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="8894:8949" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="8962:9088" ph="&lt;A=Adapt,=decltype(std::declval&lt;A&amp;&gt;().advance(std::declval&lt;BaseIter&amp;&gt;(),0))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="9161:9222" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="9235:9498" ph="&lt;A=Adapt,R=decltype(std::declval&lt;A const&amp;&gt;().distance_to(std::declval&lt;BaseIter const&amp;&gt;(),std::declval&lt;BaseIter const&amp;&gt;(),std::declval&lt;A const&amp;&gt;()))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="9577:9675" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="9688:9904" ph="&lt;A=Adapt,R=decltype(std::declval&lt;A const&amp;&gt;().distance_to(std::declval&lt;BaseIter const&amp;&gt;(),std::declval&lt;BaseIter const&amp;&gt;()))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="9984:10067" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="10080:10117" ph="&lt;C=adaptor_cursor&gt;" />
+            <marker date="1496235430955" expanded="true" signature="10271:10339" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="10421:10583" ph="&lt;A=Adapt,X=decltype(std::declval&lt;A const&amp;&gt;().indirect_move(std::declval&lt;BaseIter const&amp;&gt;()))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="10767:11526" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="11726:11986" ph="&lt;A=Adapt,R=decltype(std::declval&lt;A const&amp;&gt;().get(std::declval&lt;BaseIter const&amp;&gt;(),detail::adaptor_base_current_mem_fn{})),X=iterator_rvalue_reference_t&lt;BaseIter&gt;&gt;" />
+            <marker date="1496235430955" expanded="true" signature="12135:12205" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="12392:12569" ph="&lt;A=Adapt,R=decltype(std::declval&lt;A const&amp;&gt;().get(std::declval&lt;BaseIter const&amp;&gt;())),X=aux::move_t&lt;R&gt;&gt;" />
+            <marker date="1496235430955" expanded="true" signature="12773:13299" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="13622:13680" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="13873:13916" ph="&lt;BaseSent,Adapt&gt;" />
+            <marker date="1496235430955" expanded="true" signature="14010:15979" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="14213:14582" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="14501:14568" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="14717:14991" ph="&lt;I,IA,A=Adapt,=decltype(std::declval&lt;A const&amp;&gt;().empty(std::declval&lt;I const&amp;&gt;(),std::declval&lt;IA const&amp;&gt;(),std::declval&lt;BaseSent const&amp;&gt;()))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="15084:15176" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="15189:15415" ph="&lt;I,IA,A=Adapt,=decltype(std::declval&lt;A const&amp;&gt;().empty(std::declval&lt;I const&amp;&gt;(),std::declval&lt;BaseSent const&amp;&gt;()))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="15509:15586" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="15599:15663" ph="&lt;I,IA,S=adaptor_sentinel&gt;" />
+            <marker date="1496235430955" expanded="true" signature="15822:15884" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="15990:16010" ph="&lt;D&gt;" />
+            <marker date="1496235430955" expanded="false" signature="16140:16160" ph="&lt;D&gt;" />
+            <marker date="1496235430955" expanded="true" signature="16217:16597" ph="&lt;~&gt;" />
+            <marker date="1496235430955" expanded="true" signature="16245:16414" ph="&lt;~&gt;" />
+            <marker date="1496235430955" expanded="false" signature="16608:16717" ph="&lt;Derived,BaseRng,cardinality Cardinality&gt;" />
+            <marker date="1496235430955" expanded="true" signature="16800:20019" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="17314:17358" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="17418:17460" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="17518:17560" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="17574:17643" ph="&lt;D=Derived,CONCEPT_REQUIRES_(Same&lt;D,Derived&gt;())&gt;" />
+            <marker date="1496235430955" expanded="true" signature="17703:17901" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="17914:17983" ph="&lt;D=Derived,CONCEPT_REQUIRES_(Same&lt;D,Derived&gt;())&gt;" />
+            <marker date="1496235430955" expanded="true" signature="18043:18237" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="18525:18640" ph="&lt;D=Derived,CONCEPT_REQUIRES_(Same&lt;D,Derived&gt;()&amp;&amp;View&lt;base_range_t const&gt;())&gt;" />
+            <marker date="1496235430955" expanded="true" signature="18712:18910" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="18923:19038" ph="&lt;D=Derived,CONCEPT_REQUIRES_(Same&lt;D,Derived&gt;()&amp;&amp;View&lt;base_range_t const&gt;())&gt;" />
+            <marker date="1496235430955" expanded="true" signature="19110:19304" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="19836:19880" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="19965:20009" ph="{...}" />
           </folding>
         </state>
       </provider>
@@ -796,9 +1074,69 @@
         <state relative-caret-position="3349">
           <caret line="197" column="45" lean-forward="false" selection-start-line="197" selection-start-column="45" selection-end-line="197" selection-end-column="45" />
           <folding>
-            <element signature="e#5725#5760#0" expanded="true" />
-            <element signature="e#5903#5942#0" expanded="true" />
-            <element signature="e#6768#6893#0" expanded="true" />
+            <marker date="1496235430955" expanded="true" signature="779:20044" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="809:20042" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="862:2181" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="2179:2181" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="6225:13740" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="6307:6674" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="6593:6660" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="6757:6890" ph="&lt;A=Adapt,R=decltype(std::declval&lt;A const&amp;&gt;().get(std::declval&lt;BaseIter const&amp;&gt;()))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="7050:7435" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="7448:7567" ph="&lt;A=Adapt,=decltype(std::declval&lt;A&amp;&gt;().next(std::declval&lt;BaseIter&amp;&gt;()))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="7604:7659" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="7672:7927" ph="&lt;A=Adapt,=decltype(std::declval&lt;A const&amp;&gt;().equal(std::declval&lt;BaseIter const&amp;&gt;(),std::declval&lt;BaseIter const&amp;&gt;(),std::declval&lt;A const&amp;&gt;()))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="8003:8095" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="8108:8316" ph="&lt;A=Adapt,=decltype(std::declval&lt;A const&amp;&gt;().equal(std::declval&lt;BaseIter const&amp;&gt;(),std::declval&lt;BaseIter const&amp;&gt;()))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="8393:8470" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="8483:8520" ph="&lt;C=adaptor_cursor&gt;" />
+            <marker date="1496235430955" expanded="true" signature="8662:8724" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="8737:8857" ph="&lt;A=Adapt,=decltype(std::declval&lt;A&amp;&gt;().prev(std::declval&lt;BaseIter&amp;&gt;()))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="8894:8949" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="8962:9088" ph="&lt;A=Adapt,=decltype(std::declval&lt;A&amp;&gt;().advance(std::declval&lt;BaseIter&amp;&gt;(),0))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="9161:9222" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="9235:9498" ph="&lt;A=Adapt,R=decltype(std::declval&lt;A const&amp;&gt;().distance_to(std::declval&lt;BaseIter const&amp;&gt;(),std::declval&lt;BaseIter const&amp;&gt;(),std::declval&lt;A const&amp;&gt;()))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="9577:9675" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="9688:9904" ph="&lt;A=Adapt,R=decltype(std::declval&lt;A const&amp;&gt;().distance_to(std::declval&lt;BaseIter const&amp;&gt;(),std::declval&lt;BaseIter const&amp;&gt;()))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="9984:10067" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="10080:10117" ph="&lt;C=adaptor_cursor&gt;" />
+            <marker date="1496235430955" expanded="true" signature="10271:10339" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="10421:10583" ph="&lt;A=Adapt,X=decltype(std::declval&lt;A const&amp;&gt;().indirect_move(std::declval&lt;BaseIter const&amp;&gt;()))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="10767:11526" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="11726:11986" ph="&lt;A=Adapt,R=decltype(std::declval&lt;A const&amp;&gt;().get(std::declval&lt;BaseIter const&amp;&gt;(),detail::adaptor_base_current_mem_fn{})),X=iterator_rvalue_reference_t&lt;BaseIter&gt;&gt;" />
+            <marker date="1496235430955" expanded="true" signature="12135:12205" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="12392:12569" ph="&lt;A=Adapt,R=decltype(std::declval&lt;A const&amp;&gt;().get(std::declval&lt;BaseIter const&amp;&gt;())),X=aux::move_t&lt;R&gt;&gt;" />
+            <marker date="1496235430955" expanded="true" signature="12773:13299" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="13622:13680" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="13873:13916" ph="&lt;BaseSent,Adapt&gt;" />
+            <marker date="1496235430955" expanded="true" signature="14010:15979" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="14213:14582" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="14501:14568" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="14717:14991" ph="&lt;I,IA,A=Adapt,=decltype(std::declval&lt;A const&amp;&gt;().empty(std::declval&lt;I const&amp;&gt;(),std::declval&lt;IA const&amp;&gt;(),std::declval&lt;BaseSent const&amp;&gt;()))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="15084:15176" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="15189:15415" ph="&lt;I,IA,A=Adapt,=decltype(std::declval&lt;A const&amp;&gt;().empty(std::declval&lt;I const&amp;&gt;(),std::declval&lt;BaseSent const&amp;&gt;()))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="15509:15586" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="15599:15663" ph="&lt;I,IA,S=adaptor_sentinel&gt;" />
+            <marker date="1496235430955" expanded="true" signature="15822:15884" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="15990:16010" ph="&lt;D&gt;" />
+            <marker date="1496235430955" expanded="false" signature="16140:16160" ph="&lt;D&gt;" />
+            <marker date="1496235430955" expanded="true" signature="16217:16597" ph="&lt;~&gt;" />
+            <marker date="1496235430955" expanded="true" signature="16245:16414" ph="&lt;~&gt;" />
+            <marker date="1496235430955" expanded="false" signature="16608:16717" ph="&lt;Derived,BaseRng,cardinality Cardinality&gt;" />
+            <marker date="1496235430955" expanded="true" signature="16800:20019" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="17314:17358" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="17418:17460" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="17518:17560" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="17574:17643" ph="&lt;D=Derived,CONCEPT_REQUIRES_(Same&lt;D,Derived&gt;())&gt;" />
+            <marker date="1496235430955" expanded="true" signature="17703:17901" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="17914:17983" ph="&lt;D=Derived,CONCEPT_REQUIRES_(Same&lt;D,Derived&gt;())&gt;" />
+            <marker date="1496235430955" expanded="true" signature="18043:18237" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="18525:18640" ph="&lt;D=Derived,CONCEPT_REQUIRES_(Same&lt;D,Derived&gt;()&amp;&amp;View&lt;base_range_t const&gt;())&gt;" />
+            <marker date="1496235430955" expanded="true" signature="18712:18910" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="18923:19038" ph="&lt;D=Derived,CONCEPT_REQUIRES_(Same&lt;D,Derived&gt;()&amp;&amp;View&lt;base_range_t const&gt;())&gt;" />
+            <marker date="1496235430955" expanded="true" signature="19110:19304" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="19836:19880" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="19965:20009" ph="{...}" />
           </folding>
         </state>
       </provider>
@@ -809,13 +1147,25 @@
           <caret line="101" column="15" lean-forward="false" selection-start-line="101" selection-start-column="15" selection-end-line="101" selection-end-column="15" />
           <folding>
             <element signature="e#456#478#0" expanded="true" />
-            <element signature="e#1516#1549#0" expanded="true" />
-            <element signature="e#1596#1631#0" expanded="true" />
-            <element signature="e#2081#2193#0" expanded="true" />
-            <element signature="e#2410#2526#0" expanded="true" />
-            <element signature="e#2724#2734#0" expanded="true" />
-            <element signature="e#2903#2913#0" expanded="true" />
-            <element signature="e#3081#3091#0" expanded="true" />
+            <marker date="1496235401471" expanded="true" signature="5395:5850" ph="{...}" />
+            <marker date="1496235401471" expanded="true" signature="5395:6387" ph="{...}" />
+            <marker date="1496235401471" expanded="true" signature="5395:6389" ph="{...}" />
+            <marker date="1496235401471" expanded="false" signature="5485:5697" ph="&lt;F,S,meta::if_&lt;meta::strict_and&lt;std::is_constructible&lt;F,First const&amp;&gt;,std::is_constructible&lt;S,Second const&amp;&gt;&gt;,int&gt;=0&gt;" />
+            <marker date="1496235401471" expanded="true" signature="5543:5692" ph="&lt;~&gt;" />
+            <marker date="1496235401471" expanded="true" signature="5560:5686" ph="&lt;~&gt;" />
+            <marker date="1496235401471" expanded="true" signature="5766:5840" ph="{...}" />
+            <marker date="1496235401471" expanded="true" signature="5900:6224" ph="{...}" />
+            <marker date="1496235401471" expanded="false" signature="5914:5955" ph="&lt;First,Second&gt;" />
+            <marker date="1496235401471" expanded="true" signature="6119:6214" ph="{...}" />
+            <marker date="1496235401471" expanded="true" signature="6502:7478" ph="{...}" />
+            <marker date="1496235401471" expanded="false" signature="6508:6546" ph="&lt;...Ts,size_t...Is&gt;" />
+            <marker date="1496235401471" expanded="false" signature="6738:6786" ph="&lt;size_t I,...Ts,size_t...Is&gt;" />
+            <marker date="1496235401471" expanded="true" signature="6925:6989" ph="{...}" />
+            <marker date="1496235401471" expanded="false" signature="6996:7037" ph="&lt;First,Second&gt;" />
+            <marker date="1496235401471" expanded="false" signature="7157:7198" ph="&lt;First,Second&gt;" />
+            <marker date="1496235401471" expanded="true" signature="7277:7312" ph="{...}" />
+            <marker date="1496235401471" expanded="false" signature="7319:7360" ph="&lt;First,Second&gt;" />
+            <marker date="1496235401471" expanded="true" signature="7439:7475" ph="{...}" />
           </folding>
         </state>
       </provider>
@@ -980,20 +1330,69 @@
         <state relative-caret-position="216">
           <caret line="54" column="23" lean-forward="true" selection-start-line="54" selection-start-column="23" selection-end-line="54" selection-end-column="23" />
           <folding>
-            <element signature="e#5725#5760#0" expanded="true" />
-            <element signature="e#5903#5942#0" expanded="true" />
-            <element signature="e#6768#6893#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../range-v3/include/range/v3/utility/basic_iterator.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="342">
-          <caret line="440" column="25" lean-forward="true" selection-start-line="440" selection-start-column="25" selection-end-line="440" selection-end-column="25" />
-          <folding>
-            <element signature="e#18436#18448#0" expanded="true" />
-            <element signature="e#20503#20529#0" expanded="true" />
+            <marker date="1496235430955" expanded="true" signature="779:20044" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="809:20042" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="862:2181" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="2179:2181" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="6225:13740" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="6307:6674" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="6593:6660" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="6757:6890" ph="&lt;A=Adapt,R=decltype(std::declval&lt;A const&amp;&gt;().get(std::declval&lt;BaseIter const&amp;&gt;()))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="7050:7435" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="7448:7567" ph="&lt;A=Adapt,=decltype(std::declval&lt;A&amp;&gt;().next(std::declval&lt;BaseIter&amp;&gt;()))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="7604:7659" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="7672:7927" ph="&lt;A=Adapt,=decltype(std::declval&lt;A const&amp;&gt;().equal(std::declval&lt;BaseIter const&amp;&gt;(),std::declval&lt;BaseIter const&amp;&gt;(),std::declval&lt;A const&amp;&gt;()))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="8003:8095" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="8108:8316" ph="&lt;A=Adapt,=decltype(std::declval&lt;A const&amp;&gt;().equal(std::declval&lt;BaseIter const&amp;&gt;(),std::declval&lt;BaseIter const&amp;&gt;()))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="8393:8470" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="8483:8520" ph="&lt;C=adaptor_cursor&gt;" />
+            <marker date="1496235430955" expanded="true" signature="8662:8724" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="8737:8857" ph="&lt;A=Adapt,=decltype(std::declval&lt;A&amp;&gt;().prev(std::declval&lt;BaseIter&amp;&gt;()))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="8894:8949" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="8962:9088" ph="&lt;A=Adapt,=decltype(std::declval&lt;A&amp;&gt;().advance(std::declval&lt;BaseIter&amp;&gt;(),0))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="9161:9222" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="9235:9498" ph="&lt;A=Adapt,R=decltype(std::declval&lt;A const&amp;&gt;().distance_to(std::declval&lt;BaseIter const&amp;&gt;(),std::declval&lt;BaseIter const&amp;&gt;(),std::declval&lt;A const&amp;&gt;()))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="9577:9675" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="9688:9904" ph="&lt;A=Adapt,R=decltype(std::declval&lt;A const&amp;&gt;().distance_to(std::declval&lt;BaseIter const&amp;&gt;(),std::declval&lt;BaseIter const&amp;&gt;()))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="9984:10067" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="10080:10117" ph="&lt;C=adaptor_cursor&gt;" />
+            <marker date="1496235430955" expanded="true" signature="10271:10339" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="10421:10583" ph="&lt;A=Adapt,X=decltype(std::declval&lt;A const&amp;&gt;().indirect_move(std::declval&lt;BaseIter const&amp;&gt;()))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="10767:11526" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="11726:11986" ph="&lt;A=Adapt,R=decltype(std::declval&lt;A const&amp;&gt;().get(std::declval&lt;BaseIter const&amp;&gt;(),detail::adaptor_base_current_mem_fn{})),X=iterator_rvalue_reference_t&lt;BaseIter&gt;&gt;" />
+            <marker date="1496235430955" expanded="true" signature="12135:12205" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="12392:12569" ph="&lt;A=Adapt,R=decltype(std::declval&lt;A const&amp;&gt;().get(std::declval&lt;BaseIter const&amp;&gt;())),X=aux::move_t&lt;R&gt;&gt;" />
+            <marker date="1496235430955" expanded="true" signature="12773:13299" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="13622:13680" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="13873:13916" ph="&lt;BaseSent,Adapt&gt;" />
+            <marker date="1496235430955" expanded="true" signature="14010:15979" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="14213:14582" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="14501:14568" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="14717:14991" ph="&lt;I,IA,A=Adapt,=decltype(std::declval&lt;A const&amp;&gt;().empty(std::declval&lt;I const&amp;&gt;(),std::declval&lt;IA const&amp;&gt;(),std::declval&lt;BaseSent const&amp;&gt;()))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="15084:15176" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="15189:15415" ph="&lt;I,IA,A=Adapt,=decltype(std::declval&lt;A const&amp;&gt;().empty(std::declval&lt;I const&amp;&gt;(),std::declval&lt;BaseSent const&amp;&gt;()))&gt;" />
+            <marker date="1496235430955" expanded="true" signature="15509:15586" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="15599:15663" ph="&lt;I,IA,S=adaptor_sentinel&gt;" />
+            <marker date="1496235430955" expanded="true" signature="15822:15884" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="15990:16010" ph="&lt;D&gt;" />
+            <marker date="1496235430955" expanded="false" signature="16140:16160" ph="&lt;D&gt;" />
+            <marker date="1496235430955" expanded="true" signature="16217:16597" ph="&lt;~&gt;" />
+            <marker date="1496235430955" expanded="true" signature="16245:16414" ph="&lt;~&gt;" />
+            <marker date="1496235430955" expanded="false" signature="16608:16717" ph="&lt;Derived,BaseRng,cardinality Cardinality&gt;" />
+            <marker date="1496235430955" expanded="true" signature="16800:20019" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="17314:17358" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="17418:17460" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="17518:17560" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="17574:17643" ph="&lt;D=Derived,CONCEPT_REQUIRES_(Same&lt;D,Derived&gt;())&gt;" />
+            <marker date="1496235430955" expanded="true" signature="17703:17901" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="17914:17983" ph="&lt;D=Derived,CONCEPT_REQUIRES_(Same&lt;D,Derived&gt;())&gt;" />
+            <marker date="1496235430955" expanded="true" signature="18043:18237" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="18525:18640" ph="&lt;D=Derived,CONCEPT_REQUIRES_(Same&lt;D,Derived&gt;()&amp;&amp;View&lt;base_range_t const&gt;())&gt;" />
+            <marker date="1496235430955" expanded="true" signature="18712:18910" ph="{...}" />
+            <marker date="1496235430955" expanded="false" signature="18923:19038" ph="&lt;D=Derived,CONCEPT_REQUIRES_(Same&lt;D,Derived&gt;()&amp;&amp;View&lt;base_range_t const&gt;())&gt;" />
+            <marker date="1496235430955" expanded="true" signature="19110:19304" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="19836:19880" ph="{...}" />
+            <marker date="1496235430955" expanded="true" signature="19965:20009" ph="{...}" />
           </folding>
         </state>
       </provider>
@@ -1014,23 +1413,91 @@
             <element signature="e#1373#1414#0" expanded="true" />
             <element signature="e#1524#1588#0" expanded="true" />
             <element signature="e#1845#1877#0" expanded="true" />
+            <marker date="1496235415647" expanded="true" signature="649:6204" ph="{...}" />
+            <marker date="1496235415647" expanded="true" signature="1329:5575" ph="{...}" />
+            <marker date="1496235415647" expanded="true" signature="1972:5564" ph="{...}" />
+            <marker date="1496235415647" expanded="false" signature="2120:2144" ph="&lt;Other&gt;" />
+            <marker date="1496235415647" expanded="true" signature="2212:2314" ph="&lt;~&gt;" />
+            <marker date="1496235415647" expanded="false" signature="2918:2984" ph="&lt;Other,=meta::if_&lt;can_convert&lt;Other&gt;&gt;&gt;" />
+            <marker date="1496235415647" expanded="false" signature="3221:3287" ph="&lt;Other,=meta::if_&lt;can_convert&lt;Other&gt;&gt;&gt;" />
+            <marker date="1496235415647" expanded="false" signature="3541:3607" ph="&lt;Other,=meta::if_&lt;can_convert&lt;Other&gt;&gt;&gt;" />
+            <marker date="1496235415647" expanded="true" signature="3806:3937" ph="{...}" />
+            <marker date="1496235415647" expanded="false" signature="3954:4020" ph="&lt;Other,=meta::if_&lt;can_convert&lt;Other&gt;&gt;&gt;" />
+            <marker date="1496235415647" expanded="true" signature="4228:4364" ph="{...}" />
+            <marker date="1496235415647" expanded="false" signature="4381:4579" ph="&lt;U,=meta::if_c&lt;!std::is_same&lt;tagged,detail::decay_t&lt;U&gt;&gt;::value&gt;,=decltype(std::declval&lt;Base&amp;&gt;()=std::declval&lt;U&gt;())&gt;" />
+            <marker date="1496235415647" expanded="true" signature="4745:4867" ph="{...}" />
+            <marker date="1496235415647" expanded="false" signature="4884:4909" ph="&lt;int dummy_=42&gt;" />
+            <marker date="1496235415647" expanded="true" signature="5122:5230" ph="{...}" />
+            <marker date="1496235415647" expanded="false" signature="5247:5272" ph="&lt;int dummy_=42&gt;" />
+            <marker date="1496235415647" expanded="true" signature="5500:5550" ph="{...}" />
+            <marker date="1496235415647" expanded="false" signature="5622:5654" ph="&lt;F,S&gt;" />
+            <marker date="1496235415647" expanded="true" signature="5701:5815" ph="&lt;~&gt;" />
+            <marker date="1496235415647" expanded="false" signature="5826:5980" ph="&lt;Tag1,Tag2,T1,T2,R=tagged_pair&lt;Tag1(bind_element_t&lt;T1&gt;),Tag2(bind_element_t&lt;T2&gt;)&gt;&gt;" />
+            <marker date="1496235415647" expanded="true" signature="6116:6198" ph="{...}" />
+            <marker date="1496235415647" expanded="true" signature="10767:11092" ph="{...}" />
+            <marker date="1496235415647" expanded="false" signature="10773:10817" ph="&lt;Untagged,...Tags&gt;" />
+            <marker date="1496235415647" expanded="false" signature="10924:10978" ph="&lt;size_t N,Untagged,...Tags&gt;" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../range-v3/include/range/v3/utility/compressed_pair.hpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="461">
-          <caret line="107" column="29" lean-forward="false" selection-start-line="107" selection-start-column="24" selection-end-line="107" selection-end-column="29" />
+        <state relative-caret-position="189">
+          <caret line="91" column="29" lean-forward="false" selection-start-line="91" selection-start-column="29" selection-end-line="91" selection-end-column="29" />
           <folding>
             <element signature="e#456#478#0" expanded="true" />
-            <element signature="e#1516#1549#0" expanded="true" />
-            <element signature="e#1596#1631#0" expanded="true" />
-            <element signature="e#2081#2193#0" expanded="true" />
-            <element signature="e#2410#2526#0" expanded="true" />
-            <element signature="e#2724#2734#0" expanded="true" />
-            <element signature="e#2903#2913#0" expanded="true" />
-            <element signature="e#3081#3091#0" expanded="true" />
+            <marker date="1496235401471" expanded="true" signature="5395:5850" ph="{...}" />
+            <marker date="1496235401471" expanded="true" signature="5395:6387" ph="{...}" />
+            <marker date="1496235401471" expanded="true" signature="5395:6389" ph="{...}" />
+            <marker date="1496235401471" expanded="false" signature="5485:5697" ph="&lt;F,S,meta::if_&lt;meta::strict_and&lt;std::is_constructible&lt;F,First const&amp;&gt;,std::is_constructible&lt;S,Second const&amp;&gt;&gt;,int&gt;=0&gt;" />
+            <marker date="1496235401471" expanded="true" signature="5543:5692" ph="&lt;~&gt;" />
+            <marker date="1496235401471" expanded="true" signature="5560:5686" ph="&lt;~&gt;" />
+            <marker date="1496235401471" expanded="true" signature="5766:5840" ph="{...}" />
+            <marker date="1496235401471" expanded="true" signature="5900:6224" ph="{...}" />
+            <marker date="1496235401471" expanded="false" signature="5914:5955" ph="&lt;First,Second&gt;" />
+            <marker date="1496235401471" expanded="true" signature="6119:6214" ph="{...}" />
+            <marker date="1496235401471" expanded="true" signature="6502:7478" ph="{...}" />
+            <marker date="1496235401471" expanded="false" signature="6508:6546" ph="&lt;...Ts,size_t...Is&gt;" />
+            <marker date="1496235401471" expanded="false" signature="6738:6786" ph="&lt;size_t I,...Ts,size_t...Is&gt;" />
+            <marker date="1496235401471" expanded="true" signature="6925:6989" ph="{...}" />
+            <marker date="1496235401471" expanded="false" signature="6996:7037" ph="&lt;First,Second&gt;" />
+            <marker date="1496235401471" expanded="false" signature="7157:7198" ph="&lt;First,Second&gt;" />
+            <marker date="1496235401471" expanded="true" signature="7277:7312" ph="{...}" />
+            <marker date="1496235401471" expanded="false" signature="7319:7360" ph="&lt;First,Second&gt;" />
+            <marker date="1496235401471" expanded="true" signature="7439:7475" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../range-v3/include/range/v3/utility/box.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-362">
+          <caret line="173" column="12" lean-forward="true" selection-start-line="173" selection-start-column="12" selection-end-line="173" selection-end-column="12" />
+          <folding>
+            <element signature="e#4532#4560#0" expanded="true" />
+            <element signature="e#4714#5265#0" expanded="true" />
+            <element signature="e#5556#5697#0" expanded="true" />
+            <element signature="e#6046#6144#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../range-v3/include/range/v3/utility/functional.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="454">
+          <caret line="753" column="38" lean-forward="true" selection-start-line="753" selection-start-column="38" selection-end-line="753" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../range-v3/include/range/v3/utility/basic_iterator.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="199">
+          <caret line="628" column="21" lean-forward="false" selection-start-line="628" selection-start-column="21" selection-end-line="628" selection-end-column="21" />
+          <folding>
+            <element signature="e#18436#18448#0" expanded="true" />
+            <element signature="e#20503#20529#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1046,19 +1513,6 @@
             <element signature="e#755#820#0" expanded="true" />
             <element signature="e#1419#1431#0" expanded="true" />
             <element signature="e#1574#1586#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../range-v3/include/range/v3/utility/box.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-362">
-          <caret line="173" column="12" lean-forward="true" selection-start-line="173" selection-start-column="12" selection-end-line="173" selection-end-column="12" />
-          <folding>
-            <element signature="e#4532#4560#0" expanded="true" />
-            <element signature="e#4714#5265#0" expanded="true" />
-            <element signature="e#5556#5697#0" expanded="true" />
-            <element signature="e#6046#6144#0" expanded="true" />
           </folding>
         </state>
       </provider>

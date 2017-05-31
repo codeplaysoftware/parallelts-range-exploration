@@ -45,8 +45,8 @@ namespace gstorm
       using value_type = T;// std::remove_cv_t<std::remove_reference_t<decltype(*in.begin())>>;
 
       T result; //std::remove_reference_t<decltype(*in.begin())> result;
-      size_t distance = 128; //ranges::v3::distance(in);
-      size_t thread_count = std::max(128ul, distance);
+      size_t distance = ranges::v3::distance(in);
+      size_t thread_count = std::min(128ul, distance);
 
       std::vector<value_type> outVec(thread_count);
       {
@@ -56,6 +56,8 @@ namespace gstorm
           setCGH(cgh); // update the cgh in every vector registerd with this executor
           gstorm::gpu::algorithm::reduce(in, init, func, out, thread_count, cgh); // call reduce
         });
+
+        _queue.wait();
       }
       resetCGH();
       return  std::accumulate(outVec.begin(), outVec.end(), init, func);

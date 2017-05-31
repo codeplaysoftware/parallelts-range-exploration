@@ -730,17 +730,17 @@ namespace ranges
         struct reference_wrapper
         {
         private:
-            T *t_;
+            ptrdiff_t t_;
         public:
             using type = T;
             using reference = meta::if_c<RValue, T &&, T &>;
             constexpr reference_wrapper() = default;
             constexpr reference_wrapper(reference t) noexcept
-              : t_(std::addressof(t))
+              : t_(reinterpret_cast<ptrdiff_t >(std::addressof(t)))
             {}
             constexpr reference get() const noexcept
             {
-                return static_cast<reference>(*t_);
+                return static_cast<reference>(*reinterpret_cast<T*>(t_));
             }
             constexpr operator reference() const noexcept
             {

@@ -5,7 +5,7 @@
 #pragma once
 
 #include <range/v3/all.hpp>
-
+#include <iostream>
 namespace gstorm {
 namespace gpu {
 namespace algorithm {
@@ -18,11 +18,12 @@ auto reduce(InRng &in, T init, BinaryFunc func,
             cl::sycl::buffer<value_type, 1>& out, size_t thread_count,
             cl::sycl::handler &cgh) {
 
-  size_t distance = 128; // ranges::v3::distance(in);
-  cl::sycl::nd_range<1> config{distance, cl::sycl::range < 1 > {thread_count}};
+  size_t distance = ranges::v3::distance(in);
+  cl::sycl::nd_range<1> config{thread_count, cl::sycl::range < 1 > {thread_count}};
 
   auto wpt = distance / thread_count;
 
+  std::cout << distance << " " << thread_count << " " << wpt << std::endl;
   const auto inIt = in.begin();
   {
     auto outAcc = out.template get_access<cl::sycl::access::mode::write>(cgh);
