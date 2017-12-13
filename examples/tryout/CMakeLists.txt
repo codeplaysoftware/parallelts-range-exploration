@@ -31,3 +31,8 @@ add_app(dot_product)
 add_app(dot_product_zip)
 add_app(dot_product_zip_copy)
 # add_app(dot_product_slow)
+
+add_app(view_tail)
+add_app(view_take)
+add_app(view_drop)
+add_app(view_ints)
