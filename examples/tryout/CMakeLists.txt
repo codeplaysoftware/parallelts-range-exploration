@@ -39,3 +39,7 @@ add_app(view_drop)
 add_app(view_ints)
 add_app(view_slice)
 add_app(view_intersperse)
+
+# add_app(view_replace)
+# add_app(view_reverse)
+# add_app(view_stride)
