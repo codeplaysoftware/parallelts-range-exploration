@@ -1,17 +1,10 @@
 #include <gstorm.h>
 #include <vector>
 #include <iostream>
-#include <memory>
+#include <random>
 #include <range/v3/all.hpp>
-#include <type_traits>
-
-#include <CL/sycl.hpp>
 
 #include "experimental.h"
-
-using namespace gstorm;
-using namespace cl::sycl;
-using namespace ranges::v3;
 
 class Id {
   public:
@@ -27,31 +20,30 @@ int main() {
   std::default_random_engine generator;
   std::uniform_int_distribution<int> distribution(0,10);
 
-  auto generate_int = [&]() { return distribution(generator); };
+  auto generate_int =
+    [&generator, &distribution]() { return distribution(generator); };
 
+  // Input to the SYCL device
   std::vector<int> va(vsize);
+  ranges::generate(va, generate_int);
+
+  auto condition = [](auto a) { return a % 2 == 0; };
   std::vector<int> vb(vsize);
-
-  generate(va, generate_int);
-
   {
-    sycl_exec exec;
+    gstorm::sycl_exec exec;
 
     auto ga = std::experimental::copy(exec, va);
     auto gb = std::experimental::copy(exec, vb);
 
-    std::experimental::transform(exec, view::replace_if(ga, [](auto a) { return a % 2 == 0; }, 33), gb, Id{});
+    auto replaced = ranges::view::replace_if(ga, condition, 33);
+    std::experimental::transform(exec, replaced, gb, Id{});
   }
 
-  std::vector<int> gold(vsize);
+  auto expected = ranges::view::replace_if(va, condition, 33);
 
-  transform(view::replace(va, 3, 33), gold.begin(), Id{});
-
-  for (size_t i = 0; i < vsize; i++) {
-    if (gold[i] != vb[i]) {
-      std::cout << "Mismatch at position " << i << "\n";
-      return 1;
-    }
+  if (not ranges::equal(expected, vb)) {
+    std::cout << "Mismatch between expected and actual result!\n";
+    return 1;
   }
 
   std::cout << "All good!\n";

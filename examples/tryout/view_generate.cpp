@@ -20,7 +20,6 @@ int main() {
   auto add3 = [](auto a) { return a + 3; };
 
   std::vector<int> vb(vsize);
-
   {
     gstorm::sycl_exec exec;
 

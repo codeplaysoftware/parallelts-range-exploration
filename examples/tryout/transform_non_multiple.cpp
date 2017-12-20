@@ -1,17 +1,10 @@
 #include <gstorm.h>
 #include <vector>
 #include <iostream>
-#include <memory>
+#include <random>
 #include <range/v3/all.hpp>
-#include <type_traits>
-
-#include <CL/sycl.hpp>
 
 #include "experimental.h"
-
-using namespace gstorm;
-using namespace cl::sycl;
-using namespace ranges::v3;
 
 class TripleNum {
   public:
@@ -27,32 +20,28 @@ int main() {
   std::default_random_engine generator;
   std::uniform_int_distribution<int> distribution(0,10);
 
-  auto generate_int = [&]() { return distribution(generator); };
+  auto generate_int =
+    [&generator, &distribution]() { return distribution(generator); };
 
+  // Input to the SYCL device
   std::vector<int> va(vsize);
+  ranges::generate(va, generate_int);
+
   std::vector<int> vb(vsize);
-
-  generate(va, generate_int);
-
   {
-    sycl_exec exec;
+    gstorm::sycl_exec exec;
 
     auto ga = std::experimental::copy(exec, va);
     auto gb = std::experimental::copy(exec, vb);
 
     std::experimental::transform(exec, ga, gb, TripleNum{});
-
   }
 
-  std::vector<int> gold(vsize);
+  auto expected = va | ranges::view::transform(TripleNum{});
 
-  transform(va, gold.begin(), TripleNum{});
-
-  for (size_t i = 0; i < vsize; i++) {
-    if (gold[i] != vb[i]) {
-      std::cout << "Mismatch at position " << i << "\n";
-      return 1;
-    }
+  if (not ranges::equal(expected, vb)) {
+    std::cout << "Mismatch between expected and actual result!\n";
+    return 1;
   }
 
   std::cout << "All good!\n";

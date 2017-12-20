@@ -1,31 +1,10 @@
 #include <gstorm.h>
 #include <vector>
 #include <iostream>
-#include <memory>
+#include <random>
 #include <range/v3/all.hpp>
-#include <type_traits>
-
-#include <CL/sycl.hpp>
 
 #include "experimental.h"
-
-using namespace gstorm;
-using namespace cl::sycl;
-using namespace ranges::v3;
-
-struct Add {
-  constexpr Add() {};
-  int operator()(int a, int b) const {
-    return a + b;
-  }
-};
-
-struct Mult {
-  constexpr Mult() {};
-  int operator()(int a, int b) const {
-    return a * b;
-  }
-};
 
 int main() {
 
@@ -34,27 +13,28 @@ int main() {
   std::default_random_engine generator;
   std::uniform_int_distribution<int> distribution(0,10);
 
-  auto generate_int = [&]() { return distribution(generator); };
+  auto generate_int =
+    [&generator, &distribution]() { return distribution(generator); };
 
+  // Input to the SYCL device
   std::vector<int> va(vsize);
+  ranges::generate(va, generate_int);
 
-  generate(va, generate_int);
+  auto vb = ranges::view::ints(3, (int)vsize+3);
 
-  auto vb = view::ints(3, (int)vsize+3);
-
-  auto gold = accumulate(view::transform(va, vb, Mult{}), 0, Add{});
+  auto expected = ranges::accumulate(
+      ranges::view::transform(va, vb, std::multiplies<int>{}), 0, std::plus<int>{});
 
   {
-    sycl_exec exec;
+    gstorm::sycl_exec exec;
 
     auto ga = std::experimental::copy(exec, va);
-    // auto gb = std::experimental::copy(exec, vb);
 
-    auto multiplied = view::transform(ga, vb, Mult{});
-    auto result = std::experimental::reduce(exec, multiplied, 0, Add{});
+    auto multiplied = ranges::view::transform(ga, vb, std::multiplies<int>{});
+    auto result = std::experimental::reduce(exec, multiplied, 0, std::plus<int>{});
 
-    if (gold != result) {
-      std::cout << "Mismatch!\n";
+    if (expected != result) {
+      std::cout << "Mismatch between expected and actual result!\n";
       return 1;
     }
   }

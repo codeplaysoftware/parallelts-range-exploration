@@ -1,31 +1,16 @@
 #include <gstorm.h>
 #include <vector>
 #include <iostream>
-#include <memory>
+#include <random>
 #include <range/v3/all.hpp>
-#include <type_traits>
-
-#include <CL/sycl.hpp>
 
 #include "experimental.h"
-
-using namespace gstorm;
-using namespace cl::sycl;
-using namespace ranges::v3;
 
 class TripleNum {
   public:
   constexpr TripleNum() {};
   int operator()(int a) const {
     return a*3;
-  }
-};
-
-class Add3 {
-  public:
-  constexpr Add3() {};
-  int operator()(int a) const {
-    return a+3;
   }
 };
 
@@ -36,31 +21,33 @@ int main() {
   std::default_random_engine generator;
   std::uniform_int_distribution<int> distribution(0,10);
 
-  auto generate_int = [&]() { return distribution(generator); };
+  auto generate_int =
+    [&generator, &distribution]() { return distribution(generator); };
 
+  // Input to the SYCL device
   std::vector<int> va(vsize*2);
+  ranges::generate(va, generate_int);
+
+  auto add3 = [](auto a) { return a + 3; };
   std::vector<int> vb(vsize);
-
-  generate(va, generate_int);
-
   {
-    sycl_exec exec;
+    gstorm::sycl_exec exec;
 
     auto ga = std::experimental::copy(exec, va);
     auto gb = std::experimental::copy(exec, vb);
 
-    std::experimental::transform(exec, view::transform(view::slice(ga, vsize/2, vsize*3/4), Add3{}), gb, TripleNum{});
+    auto sliced = ranges::view::slice(ga, vsize/2, vsize*3/4)
+                | ranges::view::transform(add3);
+    std::experimental::transform(exec, sliced, gb, TripleNum{});
   }
 
-  std::vector<int> gold(vsize);
+  auto expected = ranges::view::slice(va, vsize/2, vsize*3/4)
+                | ranges::view::transform(add3)
+                | ranges::view::transform(TripleNum{});
 
-  transform(view::transform(view::slice(va, vsize/2, vsize*3/4), Add3{}), gold.begin(), TripleNum{});
-
-  for (size_t i = 0; i < vsize; i++) {
-    if (gold[i] != vb[i]) {
-      std::cout << "Mismatch at position " << i << "\n";
-      return 1;
-    }
+  if (not ranges::equal(expected, vb)) {
+    std::cout << "Mismatch between expected and actual result!\n";
+    return 1;
   }
 
   std::cout << "All good!\n";

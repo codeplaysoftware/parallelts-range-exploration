@@ -1,17 +1,9 @@
 #include <gstorm.h>
 #include <vector>
 #include <iostream>
-#include <memory>
 #include <range/v3/all.hpp>
-#include <type_traits>
-
-#include <CL/sycl.hpp>
 
 #include "experimental.h"
-
-using namespace gstorm;
-using namespace cl::sycl;
-using namespace ranges::v3;
 
 class TripleNum {
   public:
@@ -21,37 +13,31 @@ class TripleNum {
   }
 };
 
-class Add3 {
-  public:
-  constexpr Add3() {};
-  int operator()(int a) const {
-    return a+3;
-  }
-};
-
 int main() {
 
   size_t vsize = 1024;
 
+  auto add3 = [](auto a) { return a + 3; };
   std::vector<int> vb(vsize);
-
   {
-    sycl_exec exec;
+    gstorm::sycl_exec exec;
 
     auto gb = std::experimental::copy(exec, vb);
 
-    std::experimental::transform(exec, view::transform(view::ints(0, 1024) | view::drop_while([](auto a) { return a < 512; }), Add3{}), gb, TripleNum{});
+    auto ints = ranges::view::ints(0, 1024)
+              | ranges::view::drop_while([](auto a) { return a < 512; })
+              | ranges::view::transform(add3);
+    std::experimental::transform(exec, ints, gb, TripleNum{});
   }
 
-  std::vector<int> gold(vsize);
+  auto expected = ranges::view::ints(0, 1024)
+                | ranges::view::drop_while([](auto a) { return a < 512; })
+                | ranges::view::transform(add3)
+                | ranges::view::transform(TripleNum{});
 
-  transform(view::transform(view::ints(0, 1024) | view::drop_while([](auto a) { return a < 512; }), Add3{}), gold.begin(), TripleNum{});
-
-  for (size_t i = 0; i < vsize; i++) {
-    if (gold[i] != vb[i]) {
-      std::cout << "Mismatch at position " << i << "\n";
-      return 1;
-    }
+  if (not ranges::equal(expected, vb)) {
+    std::cout << "Mismatch between expected and actual result!\n";
+    return 1;
   }
 
   std::cout << "All good!\n";

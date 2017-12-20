@@ -1,28 +1,17 @@
 #include <gstorm.h>
 #include <vector>
 #include <iostream>
-#include <range/v3/all.hpp>
 #include <utility>
+#include <random>
+#include <range/v3/all.hpp>
 
 #include "experimental.h"
-
-using namespace gstorm;
-using namespace cl::sycl;
-using namespace ranges::v3;
 
 class TripleNum {
   public:
   constexpr TripleNum() {};
   int operator()(int a) const {
     return a*3;
-  }
-};
-
-class Add3 {
-  public:
-  constexpr Add3() {};
-  int operator()(int a) const {
-    return a+3;
   }
 };
 
@@ -33,32 +22,33 @@ int main() {
   std::default_random_engine generator;
   std::uniform_int_distribution<int> distribution(0,10);
 
-  auto generate_int_pair
-    = [&]() { return std::make_pair(distribution(generator), distribution(generator)); };
+  auto generate_int_pair = [&generator, &distribution]() {
+    return std::make_pair(distribution(generator), distribution(generator)); };
 
+  // Input to the SYCL device
   std::vector<std::pair<int, int>> va(vsize);
+  ranges::generate(va, generate_int_pair);
+
+  auto add3 = [](auto a) { return a + 3; };
   std::vector<int> vb(vsize);
-
-  generate(va, generate_int_pair);
-
   {
-    sycl_exec exec;
+    gstorm::sycl_exec exec;
 
     auto ga = std::experimental::copy(exec, va);
     auto gb = std::experimental::copy(exec, vb);
 
-    std::experimental::transform(exec, view::transform(view::values(ga), Add3{}), gb, TripleNum{});
+    auto values = ranges::view::values(ga)
+                | ranges::view::transform(add3);
+    std::experimental::transform(exec, values, gb, TripleNum{});
   }
 
-  std::vector<int> gold(vsize);
+  auto expected = ranges::view::values(va)
+                | ranges::view::transform(add3)
+                | ranges::view::transform(TripleNum{});
 
-  transform(view::transform(view::values(va), Add3{}), gold.begin(), TripleNum{});
-
-  for (size_t i = 0; i < vsize; i++) {
-    if (gold[i] != vb[i]) {
-      std::cout << "Mismatch at position " << i << "\n";
-      return 1;
-    }
+  if (not ranges::equal(expected, vb)) {
+    std::cout << "Mismatch between expected and actual result!\n";
+    return 1;
   }
 
   std::cout << "All good!\n";
