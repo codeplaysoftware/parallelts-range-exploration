@@ -22,14 +22,15 @@ class TransformKernel{};
 
 template<typename InRng, typename OutRng, typename UnaryFunc>
 void transform(const InRng &in, OutRng &out, UnaryFunc func, cl::sycl::handler &cgh) {
-  size_t distance = ranges::v3::distance(in);
-  size_t thread_count = std::max(128ul, distance);
-  cl::sycl::nd_range<1> config{distance, cl::sycl::range < 1 > {thread_count}};
+  const size_t global_thread_count = ranges::distance(in);
+  const size_t local_thread_count = ranges::min(128ul, global_thread_count);
+
+  cl::sycl::nd_range<1> config{global_thread_count, local_thread_count};
 
   const auto inIt = in.begin();
   auto outIt = out.begin();
 
-  cgh.parallel_for<class TransformKernel<1, InRng, OutRng, UnaryFunc>>(config, [=](cl::sycl::nd_item<1> id) {
+  cgh.parallel_for<class TransformKernel<1, UnaryFunc>>(config, [=](cl::sycl::nd_item<1> id) {
     auto gid = static_cast<size_t>(id.get_global(0));
     *(outIt + gid) = func(*(inIt + gid));
   });

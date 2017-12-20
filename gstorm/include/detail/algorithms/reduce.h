@@ -6,6 +6,8 @@
 
 #include <range/v3/all.hpp>
 #include <iostream>
+#include <CL/sycl.hpp>
+
 namespace gstorm {
 namespace gpu {
 namespace algorithm {
@@ -13,7 +15,7 @@ namespace algorithm {
 template <int x, typename... Ts>
 class ReduceKernel{};
 
-template<typename InRng, typename T, typename BinaryFunc, typename value_type = T>// std::remove_cv_t<std::remove_reference_t<decltype(*(InRng::begin()))>>>
+template<typename InRng, typename T, typename BinaryFunc, typename value_type = T>
 auto reduce(InRng &in, T init, BinaryFunc func,
             cl::sycl::buffer<value_type, 1>& out, size_t thread_count,
             cl::sycl::handler &cgh) {
@@ -29,7 +31,7 @@ auto reduce(InRng &in, T init, BinaryFunc func,
     auto outAcc = out.template get_access<cl::sycl::access::mode::write>(cgh);
 
     // FIXME: this reduction is super slow
-    cgh.parallel_for< class ReduceKernel<1, InRng, BinaryFunc> >(config, [=](cl::sycl::nd_item<1> id) {
+    cgh.parallel_for< class ReduceKernel<1, BinaryFunc> >(config, [=](cl::sycl::nd_item<1> id) {
       auto gid = static_cast<size_t>(id.get_global(0));
 
       auto start = gid * wpt;

@@ -1,5 +1,6 @@
 #pragma once
 #include <map>
+#include <iostream>
 #include <CL/sycl.hpp>
 #include <detail/ranges/vector_base.h>
 #include <detail/algorithms/transform.h>
@@ -36,6 +37,8 @@ namespace gstorm
         gstorm::gpu::algorithm::transform(in, out, func, cgh); // call transform
       });
 
+      _queue.wait_and_throw();
+
       resetCGH();
     }
 
@@ -44,7 +47,6 @@ namespace gstorm
     auto reduce(InRng &in, T init, BinaryFunc func){
       using value_type = T;// std::remove_cv_t<std::remove_reference_t<decltype(*in.begin())>>;
 
-      T result; //std::remove_reference_t<decltype(*in.begin())> result;
       size_t distance = ranges::v3::distance(in);
       size_t thread_count = std::min(128ul, distance);
 
@@ -57,12 +59,21 @@ namespace gstorm
           gstorm::gpu::algorithm::reduce(in, init, func, out, thread_count, cgh); // call reduce
         });
 
-        _queue.wait();
+        _queue.wait_and_throw();
       }
       resetCGH();
       return  std::accumulate(outVec.begin(), outVec.end(), init, func);
     }
+    sycl_exec() {
 
+      auto exception_handler = [] (const cl::sycl::exception_list&) {
+        std::abort();
+      };
+
+      cl::sycl::cpu_selector device_selector;
+      _queue = cl::sycl::queue(device_selector, exception_handler);
+      std::cout << "Using device: " << _queue.get_device().get_info<cl::sycl::info::device::name>() << ", from: " << _queue.get_device().get_platform().get_info<cl::sycl::info::platform::name>() << std::endl;
+    }
   private:
     // sets the current CGH to all registered vectors
     // TODO: only update used vectors not every vector registerd

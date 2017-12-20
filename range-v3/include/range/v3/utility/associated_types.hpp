@@ -31,7 +31,9 @@ namespace ranges
         ////////////////////////////////////////////////////////////////////////////////////////
         template<typename T, typename Enable /*= void*/>
         struct difference_type
-        {};
+        {
+          using type = std::ptrdiff_t;
+        };
 
         template<>
         struct difference_type<std::nullptr_t>

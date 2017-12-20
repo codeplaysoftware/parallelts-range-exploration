@@ -407,8 +407,8 @@ namespace ranges
                 template<typename U, std::size_t M>
                 [[noreturn]] meta::if_c<M != N> operator()(indexed_element<U, M>) const
                 {
-#ifndef __device_code__
-                  //  throw bad_variant_access("bad variant access");
+#ifndef __SYCL_DEVICE_ONLY__
+                   throw bad_variant_access("bad variant access");
 #endif
                 }
                 template<typename U>

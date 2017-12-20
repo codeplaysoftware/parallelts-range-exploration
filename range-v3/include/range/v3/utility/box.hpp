@@ -151,7 +151,7 @@ namespace ranges
                     !std::is_copy_assignable<Fn>::value>;
 
             template<typename T, typename... Ts>
-            constexpr box_compress box_compression_(T, Ts...)
+            constexpr box_compress box_compression_(...)
             {
                 return box_compress::none;
             }
@@ -263,7 +263,7 @@ namespace ranges
         template<typename Element, typename Tag>
         class box<Element, Tag, detail::box_compress::coalesce>
         {
-            static Element value;
+            static constexpr Element value{};
         public:
             constexpr box() noexcept
             {}
@@ -291,7 +291,7 @@ namespace ranges
         };
 
         template<typename Element, typename Tag>
-        Element box<Element, Tag, detail::box_compress::coalesce>::value;
+        constexpr Element box<Element, Tag, detail::box_compress::coalesce>::value;
 
         // Get by tag type
         template<typename Tag, typename Element, detail::box_compress BC>
