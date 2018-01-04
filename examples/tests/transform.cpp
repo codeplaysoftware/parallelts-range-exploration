@@ -1,3 +1,5 @@
+#include "gtest/gtest.h"
+
 #include <gstorm.h>
 #include <vector>
 #include <iostream>
@@ -7,6 +9,8 @@
 
 #include "experimental.h"
 
+struct TransformAlgorithm : public testing::Test {};
+
 class TripleNum {
   public:
   int operator()(int a) const {
@@ -14,7 +18,7 @@ class TripleNum {
   }
 };
 
-int main() {
+TEST_F(TransformAlgorithm, TestStdTransform) {
 
   size_t vsize = 1024;
 
@@ -40,10 +44,5 @@ int main() {
 
   auto expected = va | ranges::view::transform(TripleNum{});
 
-  if (not ranges::equal(expected, vb)) {
-    std::cout << "Mismatch between expected and actual result!\n";
-    return 1;
-  }
-
-  std::cout << "All good!\n";
+  EXPECT_TRUE(ranges::equal(expected, vb));
 }

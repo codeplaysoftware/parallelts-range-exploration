@@ -1,13 +1,20 @@
+#include "gtest/gtest.h"
+
 #include <gstorm.h>
 #include <vector>
 #include <iostream>
 #include <functional>
+#include <tuple>
 #include <random>
+
 #include <range/v3/all.hpp>
 
 #include "experimental.h"
+#include "my_zip.h"
 
-int main() {
+struct DotProductZip : public testing::Test {};
+
+TEST_F(DotProductZip, TestDotProductZip) {
 
   size_t vsize = 1024;
 
@@ -30,16 +37,17 @@ int main() {
     auto ga = std::experimental::copy(exec, va);
     auto gb = std::experimental::copy(exec, vb);
 
-    auto multiplied = ranges::view::transform(ga, gb, std::multiplies<int>{});
+    auto multiplied = my_zip(ga, gb) | ranges::view::transform(
+        [](const auto& tpl) { return *std::get<0>(tpl) * *std::get<1>(tpl); });
+
     auto result = std::experimental::reduce(exec, multiplied, 0, std::plus<int>{});
 
-    auto expected = ranges::accumulate(ranges::view::transform(va, vb, std::multiplies<int>{}), 0, std::plus<int>{});
+    auto multiply_components =
+      [](const auto& a) { return std::get<0>(a) * std::get<1>(a); };
+    auto expected = ranges::accumulate(
+          ranges::view::zip(va, vb)
+        | ranges::view::transform(multiply_components), 0, std::plus<int>{});
 
-    if (expected != result) {
-      std::cout << "Mismatch!\n";
-      return 1;
-    }
+    EXPECT_EQ(result, expected);
   }
-
-  std::cout << "All good!\n";
 }

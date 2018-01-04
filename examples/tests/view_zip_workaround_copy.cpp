@@ -1,3 +1,5 @@
+#include "gtest/gtest.h"
+
 #include <gstorm.h>
 #include <vector>
 #include <iostream>
@@ -7,6 +9,8 @@
 #include <range/v3/all.hpp>
 
 #include "experimental.h"
+
+struct ViewZipWorkaroundCopy : public testing::Test {};
 
 struct AddComponents {
   constexpr AddComponents() {};
@@ -23,7 +27,7 @@ struct MakeCopyTuple {
   }
 };
 
-int main() {
+TEST_F(ViewZipWorkaroundCopy, TestViewZipWorkaroundCopy) {
 
   size_t vsize = 1024;
 
@@ -56,10 +60,5 @@ int main() {
   auto expected = ranges::view::zip(va, vb)
                 | ranges::view::transform(multiply_components);
 
-  if (not ranges::equal(expected, vc)) {
-    std::cout << "Mismatch between expected and actual result!\n";
-    return 1;
-  }
-
-  std::cout << "All good!\n";
+  EXPECT_TRUE(ranges::equal(expected, vc));
 }

@@ -25,6 +25,19 @@ endif()
 find_package(OpenCL REQUIRED)
 find_package(ComputeCpp REQUIRED)
 
+include_directories("include")
+include_directories(${COMPUTECPP_INCLUDE_DIRECTORY})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../gstorm/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../range-v3/include)
+
+add_compile_options(-std=c++17)
+
+# Device compiler doesn't support '-std=c++17'
+# Define NDEBUG to avoid <cassert> functions in device code
+set(COMPUTECPP_DEVICE_COMPILER_FLAGS "${COMPUTECPP_DEVICE_COMPILER_FLAGS} -std=c++1z -DNDEBUG")
+
+enable_testing()
+
 file(GLOB _ALL_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*)
 foreach(_FILE ${_ALL_FILES})
   if (IS_DIRECTORY ${_FILE})

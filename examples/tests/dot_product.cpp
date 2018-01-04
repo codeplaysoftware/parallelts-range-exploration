@@ -1,21 +1,17 @@
+#include "gtest/gtest.h"
+
 #include <gstorm.h>
 #include <vector>
 #include <iostream>
-#include <random>
 #include <functional>
+#include <random>
 #include <range/v3/all.hpp>
 
 #include "experimental.h"
 
-class TripleNum {
-  public:
-  constexpr TripleNum() {};
-  int operator()(int a) const {
-    return a*3;
-  }
-};
+struct DotProduct : public testing::Test {};
 
-int main() {
+TEST_F(DotProduct, TestDotProduct) {
 
   size_t vsize = 1024;
 
@@ -32,24 +28,17 @@ int main() {
   ranges::generate(va, generate_int);
   ranges::generate(vb, generate_int);
 
-  std::vector<int> vc(vsize);
   {
     gstorm::sycl_exec exec;
 
     auto ga = std::experimental::copy(exec, va);
     auto gb = std::experimental::copy(exec, vb);
-    auto gc = std::experimental::copy(exec, vc);
 
-    std::experimental::transform(exec, ranges::view::transform(ga, gb, std::plus<int>{}), gc, TripleNum{});
+    auto multiplied = ranges::view::transform(ga, gb, std::multiplies<int>{});
+    auto result = std::experimental::reduce(exec, multiplied, 0, std::plus<int>{});
+
+    auto expected = ranges::accumulate(ranges::view::transform(va, vb, std::multiplies<int>{}), 0, std::plus<int>{});
+
+    EXPECT_EQ(result, expected);
   }
-
-  auto expected = ranges::view::transform(va, vb, std::plus<int>{})
-                | ranges::view::transform(TripleNum{});
-
-  if (not ranges::equal(expected, vc)) {
-    std::cout << "Mismatch between expected and actual result!\n";
-    return 1;
-  }
-
-  std::cout << "All good!\n";
 }

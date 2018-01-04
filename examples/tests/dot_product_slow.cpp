@@ -1,3 +1,5 @@
+#include "gtest/gtest.h"
+
 #include <gstorm.h>
 #include <vector>
 #include <functional>
@@ -10,6 +12,8 @@
 #include "experimental.h"
 #include "my_zip.h"
 
+struct DotProductSlow : public testing::Test {};
+
 struct MultiplyComponents {
   constexpr MultiplyComponents() {};
   int operator()(std::tuple<cl::sycl::global_ptr<int>, cl::sycl::global_ptr<int>> a) const {
@@ -17,7 +21,7 @@ struct MultiplyComponents {
   }
 };
 
-int main() {
+TEST_F(DotProductSlow, TestDotProductSlow) {
 
   size_t vsize = 1024;
 
@@ -50,11 +54,6 @@ int main() {
     auto expected = ranges::accumulate(
         ranges::view::transform(va, vb, std::multiplies<int>{}), 0, std::plus<int>{});
 
-    if (expected != result) {
-      std::cout << "Mismatch between expected and actual result!\n";
-      return 1;
-    }
+    EXPECT_EQ(result, expected);
   }
-
-  std::cout << "All good!\n";
 }

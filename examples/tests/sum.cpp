@@ -1,3 +1,5 @@
+#include "gtest/gtest.h"
+
 #include <gstorm.h>
 #include <vector>
 #include <iostream>
@@ -6,7 +8,9 @@
 
 #include "experimental.h"
 
-int main() {
+struct Sum : public testing::Test {};
+
+TEST_F(Sum, TestSum) {
 
   size_t vsize = 1024;
 
@@ -21,11 +25,6 @@ int main() {
     auto result = std::experimental::reduce(exec, ga, 0, std::plus<int>{});
     auto expected = ranges::accumulate(va, 0);
 
-    if (result != expected) {
-      std::cout << "Mismatch between expected and actual result!\n";
-      return 1;
-    }
+    EXPECT_EQ(result, expected);
   }
-
-  std::cout << "All good!\n";
 }

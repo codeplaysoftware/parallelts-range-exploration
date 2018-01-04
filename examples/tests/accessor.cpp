@@ -1,3 +1,5 @@
+#include "gtest/gtest.h"
+
 #include <gstorm.h>
 #include <vector>
 #include <iostream>
@@ -6,6 +8,8 @@
 #include <CL/sycl.hpp>
 
 #include "experimental.h"
+
+struct Accessor : public testing::Test {};
 
 namespace tryout
 {
@@ -38,7 +42,7 @@ using sycl_accessor_type = cl::sycl::accessor<int, 1,
 
 }
 
-int main() {
+TEST_F(Accessor, TestAccessor) {
 
   cl::sycl::default_selector device_selector;
   cl::sycl::queue comQueue(device_selector);

@@ -1,3 +1,5 @@
+#include "gtest/gtest.h"
+
 #include <gstorm.h>
 #include <vector>
 #include <iostream>
@@ -10,14 +12,16 @@
 #include "experimental.h"
 #include "my_zip.h"
 
+struct MyZipGvectorView : public testing::Test {};
+
 struct AddComponents {
   constexpr AddComponents() {};
-  int operator()(const std::tuple<cl::sycl::global_ptr<int>, cl::sycl::global_ptr<int>>& tpl) const {
-    return *std::get<0>(tpl) + *std::get<1>(tpl);
+  int operator()(const std::tuple<int, cl::sycl::global_ptr<int>>& tpl) const {
+    return std::get<0>(tpl) + *std::get<1>(tpl);
   }
 };
 
-int main() {
+TEST_F(MyZipGvectorView, TestMyZipGvectorView) {
 
   size_t vsize = 1024;
 
@@ -42,18 +46,15 @@ int main() {
     auto gb = std::experimental::copy(exec, vb);
     auto gc = std::experimental::copy(exec, vc);
 
-    auto zip = my_zip(ga, gb);
+    auto added_one = ranges::view::transform(ga, [](auto a) { return a + 1; });
+    auto zip = my_zip(added_one, gb);
     std::experimental::transform(exec, zip, gc, AddComponents{});
   }
 
-  auto add_components = [](const auto& a) { return std::get<0>(a) + std::get<1>(a); };
-  auto expected = ranges::view::zip(va, vb)
-                | ranges::view::transform(add_components);
+  auto expected = ranges::view::zip(
+      va | ranges::view::transform([](auto a) { return a + 1; }),
+      vb)
+    | ranges::view::transform([](const auto& tpl) { return std::get<0>(tpl) + std::get<1>(tpl); });
 
-  if (not ranges::equal(expected, vc)) {
-    std::cout << "Mismatch between expected and actual result!\n";
-    return 1;
-  }
-
-  std::cout << "All good!\n";
+  EXPECT_TRUE(ranges::equal(expected, vc));
 }

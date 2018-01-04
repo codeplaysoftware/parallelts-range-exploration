@@ -1,3 +1,5 @@
+#include "gtest/gtest.h"
+
 #include <gstorm.h>
 #include <vector>
 #include <iostream>
@@ -10,6 +12,8 @@
 #include "experimental.h"
 #include "my_zip.h"
 
+struct Saxpy : public testing::Test {};
+
 template<typename T>
 struct AddComponents {
   constexpr AddComponents() {};
@@ -18,7 +22,7 @@ struct AddComponents {
   }
 };
 
-int main() {
+TEST_F(Saxpy, TestSaxpy) {
 
   size_t vsize = 1024;
 
@@ -56,11 +60,5 @@ int main() {
 
   auto expected = ranges::view::transform(x, y, [a](auto x, auto y) { return x*a + y; });
 
-  if (not ranges::equal(expected, z)) {
-    std::cout << "Mismatch between the expected and actual result!\n";
-    return 1;
-  }
-
-  std::cout << "All good!\n";
-
+  EXPECT_TRUE(ranges::equal(expected, z));
 }
