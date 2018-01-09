@@ -11,6 +11,11 @@ void transform(ExecT &&exec, InRng &&in, OutRng &out, UnaryFunc func) {
   exec.transform(in, out, std::move(func));
 }
 
+template<typename ExecT, typename InRng1, typename InRng2,typename OutRng, typename UnaryFunc>
+void transform(ExecT &&exec, InRng1 &&in1, InRng2&& in2, OutRng &out, UnaryFunc func) {
+  exec.transform(in1, in2, out, std::move(func));
+}
+
 template<typename ExecT, typename InRng>
 auto copy(ExecT &&exec, InRng &&in) {
   return gstorm::gpu::copy(exec, in);

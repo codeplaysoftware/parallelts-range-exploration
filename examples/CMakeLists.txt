@@ -34,7 +34,7 @@ add_compile_options(-std=c++17)
 
 # Device compiler doesn't support '-std=c++17'
 # Define NDEBUG to avoid <cassert> functions in device code
-set(COMPUTECPP_DEVICE_COMPILER_FLAGS "${COMPUTECPP_DEVICE_COMPILER_FLAGS} -std=c++1z -DNDEBUG")
+set(COMPUTECPP_DEVICE_COMPILER_FLAGS "${COMPUTECPP_DEVICE_COMPILER_FLAGS} -std=c++1z -DNDEBUG -no-serial-memop")
 
 enable_testing()
 

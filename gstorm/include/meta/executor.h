@@ -42,6 +42,20 @@ namespace gstorm
       resetCGH();
     }
 
+    // proxy function for calling the transform algorithm
+    template<typename InRng1, typename InRng2, typename OutRng, typename BinaryFunc>
+    void transform(const InRng1& in1, const InRng2& in2, OutRng& out, BinaryFunc func){
+
+      _queue.submit([&](cl::sycl::handler &cgh) {
+        setCGH(cgh); // update the cgh in every vector registerd with this executor
+        gstorm::gpu::algorithm::transform(in1, in2, out, func, cgh); // call transform
+      });
+
+      _queue.wait_and_throw();
+
+      resetCGH();
+    }
+
     // proxy function for calling the reduce algorithm
     template<typename InRng, typename T, typename BinaryFunc>
     auto reduce(InRng &in, T init, BinaryFunc func){
@@ -64,6 +78,9 @@ namespace gstorm
       resetCGH();
       return  std::accumulate(outVec.begin(), outVec.end(), init, func);
     }
+
+    sycl_exec(cl::sycl::queue _queue) : _queue(_queue) {};
+
     sycl_exec() {
 
       auto exception_handler = [] (const cl::sycl::exception_list&) {

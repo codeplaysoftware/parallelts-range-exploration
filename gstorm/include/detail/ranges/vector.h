@@ -233,13 +233,16 @@ public:
   }
 
   gvector(T &vec) : gvector_base(),
-                    _buffer(new cl::sycl::buffer<value_type>(vec.data(), vec.size())),
+                    _buffer(new cl::sycl::buffer<value_type>(vec.data(), vec.size(), {cl::sycl::property::buffer::use_host_ptr{}})),
                     _size(vec.size())  {}
+
+  gvector(value_type* data, size_t size) : gvector_base(),
+                    _buffer(new cl::sycl::buffer<value_type>(data, size, {cl::sycl::property::buffer::use_host_ptr{}})),
+                    _size(size)  {}
 
   ~gvector() {}
 
   gvector(const gvector &src) = delete; // copying a gvector is not allowed yet
-
 
   // move ctor for the gvector class
   // the move ctor will update to the new pointer by its bound executor
