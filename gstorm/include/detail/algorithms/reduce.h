@@ -25,20 +25,19 @@ auto reduce(InRng &in, T init, BinaryFunc func,
 
   auto wpt = distance / thread_count;
 
-  std::cout << distance << " " << thread_count << " " << wpt << std::endl;
   const auto inIt = in.begin();
   {
     auto outAcc = out.template get_access<cl::sycl::access::mode::write>(cgh);
 
     // FIXME: this reduction is super slow
     cgh.parallel_for< class ReduceKernel<1, BinaryFunc> >(config, [=](cl::sycl::nd_item<1> id) {
-      auto gid = static_cast<size_t>(id.get_global(0));
+      auto gid = id.get_global(0);
 
       auto start = gid * wpt;
 
       value_type sum = value_type();
 
-      for (size_t i = 0; i < wpt; ++i)
+      for (size_t i = 0; i < wpt; i += thread_count)
         sum = func(sum, *(inIt + start + i));
 
       outAcc[gid] = sum;
