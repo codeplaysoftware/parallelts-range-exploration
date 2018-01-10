@@ -21,14 +21,6 @@ struct AddComponents {
   }
 };
 
-template<typename... Ts>
-struct MakeCopyTuple {
-  constexpr MakeCopyTuple() {};
-  auto operator()(Ts... args) const {
-    return std::tuple<std::remove_reference_t<Ts>...>(std::forward<Ts>(args)...);
-  }
-};
-
 int main() {
   const size_t vsize = 1024 * 1024 * 16;
   const auto iterations = 100;
@@ -90,24 +82,12 @@ int main() {
         return std::get<0>(tpl) * *std::get<1>(tpl);
       };
 
-      auto multiply_components2 = [](const auto& tpl) {
-        return *std::get<0>(tpl) * std::get<1>(tpl);
-      };
+      // auto ax = my_zip(ranges::view::repeat(a), gpu_x)
+      //         | ranges::view::transform(multiply_components);
 
-      auto multiply_components3 = [](const auto& tpl) {
-        return std::get<0>(tpl) * std::get<1>(tpl);
-      };
-
-      auto mult_with_a = [a](auto tpl) {
-        return tpl * a;
-      };
-
-      // auto ax = my_zip(ranges::view::repeat(0.15f), gpu_x) |
-                // ranges::view::transform(multiply_components);
-      // auto ax = ranges::view::zip_with(MakeCopyTuple<float, float>{}, gpu_x, ranges::view::repeat(a)) |
-      //   ranges::view::transform(multiply_components3);
-
+      auto mult_with_a = [a](auto tpl) { return tpl * a; };
       auto ax = gpu_x | ranges::view::transform(mult_with_a);
+
       std::experimental::transform(exec, my_zip(ax, gpu_y), gpu_z,
                                    AddComponents<float>{});
     }
@@ -117,12 +97,12 @@ int main() {
         std::chrono::duration_cast<std::chrono::microseconds>(end - start);
 
     times.push_back(time_taken.count() / 1000.0);
-    std::cout << "\r" << (i+1) << "/" << iterations << std::flush;
+    std::cout << "\r" << (i + 1) << "/" << iterations << std::flush;
   }
   std::cout << "\n";
 
   ranges::sort(times);
-  std::cout << "Median time: " << times[iterations/2] << " ms\n";
+  std::cout << "Median time: " << times[iterations / 2] << " ms\n";
 
   free(x);
   free(y);
