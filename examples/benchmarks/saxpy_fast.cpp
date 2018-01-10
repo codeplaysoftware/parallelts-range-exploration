@@ -53,7 +53,8 @@ int main() {
   std::vector<double> times{};
 
   cl::sycl::gpu_selector device_selector;
-  auto q = cl::sycl::queue(device_selector);
+  auto q = cl::sycl::queue(device_selector,
+                           {cl::sycl::property::queue::enable_profiling{}});
   std::cout << "Using device: "
             << q.get_device().get_info<cl::sycl::info::device::name>()
             << ", from: "

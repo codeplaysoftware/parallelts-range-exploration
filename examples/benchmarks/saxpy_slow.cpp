@@ -34,13 +34,11 @@ template <typename T>
 struct MultiplyWithA {
   T a;
   constexpr MultiplyWithA(T a) : a{a} {};
-  T operator()(T x) const {
-    return x * a;
-  }
+  T operator()(T x) const { return x * a; }
 };
 
 int main() {
-  const size_t vsize = 1024*1024 * 16;
+  const size_t vsize = 1024 * 1024 * 16;
   const auto iterations = 100;
 
   std::default_random_engine generator;
@@ -74,7 +72,8 @@ int main() {
   std::vector<double> times{};
 
   cl::sycl::gpu_selector device_selector;
-  auto q = cl::sycl::queue(device_selector);
+  auto q = cl::sycl::queue(device_selector,
+                           {cl::sycl::property::queue::enable_profiling{}});
   std::cout << "Using device: "
             << q.get_device().get_info<cl::sycl::info::device::name>()
             << ", from: "
@@ -103,11 +102,12 @@ int main() {
       exec.registerGVector(&gpu_z);
       exec.registerGVector(&gpu_ax);
 
-      // std::experimental::transform(exec, my_zip(ranges::view::repeat(a), gpu_x),
-                                   // gpu_ax, MultiplyComponents<float>{});
+      // std::experimental::transform(exec, my_zip(ranges::view::repeat(a),
+      // gpu_x),
+      // gpu_ax, MultiplyComponents<float>{});
 
-      std::experimental::transform(exec, gpu_x,
-                                   gpu_ax, MultiplyWithA<float>{a});
+      std::experimental::transform(exec, gpu_x, gpu_ax,
+                                   MultiplyWithA<float>{a});
 
       std::experimental::transform(exec, my_zip(gpu_ax, gpu_y), gpu_z,
                                    AddComponents<float>{});
@@ -118,12 +118,12 @@ int main() {
         std::chrono::duration_cast<std::chrono::microseconds>(end - start);
 
     times.push_back(time_taken.count() / 1000.0);
-    std::cout << "\r" << (i+1) << "/" << iterations << std::flush;
+    std::cout << "\r" << (i + 1) << "/" << iterations << std::flush;
   }
   std::cout << "\n";
 
   ranges::sort(times);
-  std::cout << "Median time: " << times[iterations/2] << " ms\n";
+  std::cout << "Median time: " << times[iterations / 2] << " ms\n";
 
   free(x);
   free(y);
