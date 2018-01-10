@@ -21,6 +21,7 @@ struct AddComponents {
   }
 };
 
+
 int main() {
   const size_t vsize = 1024 * 1024 * 16;
   const auto iterations = 100;
@@ -83,11 +84,8 @@ int main() {
         return std::get<0>(tpl) * *std::get<1>(tpl);
       };
 
-      // auto ax = my_zip(ranges::view::repeat(a), gpu_x)
-      //         | ranges::view::transform(multiply_components);
-
-      auto mult_with_a = [a](auto tpl) { return tpl * a; };
-      auto ax = gpu_x | ranges::view::transform(mult_with_a);
+      auto ax = my_zip(ranges::view::repeat_n(a, vsize), gpu_x)
+              | ranges::view::transform(multiply_components);
 
       std::experimental::transform(exec, my_zip(ax, gpu_y), gpu_z,
                                    AddComponents<float>{});
