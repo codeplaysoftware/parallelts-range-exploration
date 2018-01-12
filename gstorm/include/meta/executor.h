@@ -62,7 +62,7 @@ namespace gstorm
       using value_type = T;// std::remove_cv_t<std::remove_reference_t<decltype(*in.begin())>>;
 
       size_t distance = ranges::v3::distance(in);
-      size_t thread_count = std::max(128ul, distance / 128ul);
+      size_t thread_count = std::max(128ul, distance / 256ul);
 
       std::vector<value_type> outVec(thread_count);
       {
