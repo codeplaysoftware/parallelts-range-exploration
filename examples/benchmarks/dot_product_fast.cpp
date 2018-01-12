@@ -36,7 +36,7 @@ int main() {
   const auto iterations = 100;
 
   std::default_random_engine generator;
-  std::uniform_real_distribution<float> distribution(0.0, 10.0);
+  std::uniform_real_distribution<float> distribution(-1.0, 1.0);
 
   auto generate_float = [&generator, &distribution]() {
     return distribution(generator);
@@ -108,7 +108,9 @@ int main() {
     expected += x[i] * y[i];
   }
 
-  if (result != expected) {
+  // Is within 0.1%?
+  if (std::abs(result - expected) >
+      0.001 * std::max(std::abs(result), std::abs(expected))) {
     std::cout << "Mismatch between expected and actual result!\n";
   }
 
