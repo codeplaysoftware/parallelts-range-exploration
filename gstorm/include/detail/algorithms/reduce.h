@@ -21,11 +21,11 @@ auto reduce(InRng &in, T init, BinaryFunc func,
             cl::sycl::handler &cgh) {
 
   size_t distance = ranges::v3::distance(in);
-  cl::sycl::nd_range<1> config{thread_count, cl::sycl::range < 1 > {thread_count}};
+  cl::sycl::nd_range<1> config{thread_count, 128ul};
 
   const auto inIt = in.begin();
   {
-    auto outAcc = out.template get_access<cl::sycl::access::mode::write>(cgh);
+    auto outAcc = out.template get_access<cl::sycl::access::mode::discard_write>(cgh);
 
     // FIXME: this reduction is super slow
     cgh.parallel_for< class ReduceKernel<1, BinaryFunc> >(config, [=](cl::sycl::nd_item<1> id) {
