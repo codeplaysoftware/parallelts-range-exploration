@@ -59,6 +59,7 @@ int main() {
 
   // std::vector<float> tmp(vsize);
 
+  auto result = 0.0f;
   std::vector<double> times{};
 
   cl::sycl::gpu_selector device_selector;
@@ -92,7 +93,7 @@ int main() {
       std::experimental::transform(exec, zipped, gpu_tmp,
                                    MultiplyComponents<float>{});
 
-      auto result =
+      result =
           std::experimental::reduce(exec, gpu_tmp, 0.0f, std::plus<float>{});
     }
     auto end = std::chrono::system_clock::now();
@@ -107,6 +108,15 @@ int main() {
 
   ranges::sort(times);
   std::cout << "Median time: " << times[iterations / 2] << " ms\n";
+
+  auto expected = 0.0f;
+  for (auto i = 0u; i < vsize; ++i) {
+    expected += x[i] * y[i];
+  }
+
+  if (result != expected) {
+    std::cout << "Mismatch between expected and actual result!\n";
+  }
 
   free(x);
   free(y);

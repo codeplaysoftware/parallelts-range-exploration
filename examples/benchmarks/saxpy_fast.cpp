@@ -103,6 +103,18 @@ int main() {
   ranges::sort(times);
   std::cout << "Median time: " << times[iterations / 2] << " ms\n";
 
+  std::vector<float> expected(vsize);
+  for (auto i = 0u; i < vsize; ++i) {
+    expected[i] = a * x[i] + y[i];
+  }
+
+  for (auto i = 0u; i < vsize; ++i) {
+    if (z[i] != expected[i]) {
+      std::cout << "Mismatch between expected and actual result!\n";
+      break;
+    }
+  }
+
   free(x);
   free(y);
   free(z);

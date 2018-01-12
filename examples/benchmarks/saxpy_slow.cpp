@@ -102,12 +102,9 @@ int main() {
       exec.registerGVector(&gpu_z);
       exec.registerGVector(&gpu_ax);
 
-      // std::experimental::transform(exec, my_zip(ranges::view::repeat(a),
-      // gpu_x),
-      // gpu_ax, MultiplyComponents<float>{});
-
-      std::experimental::transform(exec, gpu_x, gpu_ax,
-                                   MultiplyWithA<float>{a});
+      std::experimental::transform(
+          exec, my_zip(ranges::view::repeat_n(a, vsize), gpu_x), gpu_ax,
+          MultiplyComponents<float>{});
 
       std::experimental::transform(exec, my_zip(gpu_ax, gpu_y), gpu_z,
                                    AddComponents<float>{});
@@ -124,6 +121,18 @@ int main() {
 
   ranges::sort(times);
   std::cout << "Median time: " << times[iterations / 2] << " ms\n";
+
+  std::vector<float> expected(vsize);
+  for (auto i = 0u; i < vsize; ++i) {
+    expected[i] = a * x[i] + y[i];
+  }
+
+  for (auto i = 0u; i < vsize; ++i) {
+    if (z[i] != expected[i]) {
+      std::cout << "Mismatch between expected and actual result!\n";
+      break;
+    }
+  }
 
   free(x);
   free(y);

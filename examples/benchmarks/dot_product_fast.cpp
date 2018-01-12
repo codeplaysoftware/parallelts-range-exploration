@@ -45,6 +45,8 @@ int main() {
   auto x = static_cast<float*>(aligned_alloc(4096, vsize * sizeof(float)));
   auto y = static_cast<float*>(aligned_alloc(4096, vsize * sizeof(float)));
 
+  auto result = 0.0f;
+
   for (auto i = 0u; i < vsize; ++i) {
     x[i] = generate_float();
     y[i] = generate_float();
@@ -86,8 +88,7 @@ int main() {
       auto mult = my_zip(gpu_x, gpu_y)
                 | ranges::view::transform(MultiplyComponents<float>{});
 
-      auto result =
-          std::experimental::reduce(exec, mult, 0.0f, std::plus<float>{});
+      result = std::experimental::reduce(exec, mult, 0.0f, std::plus<float>{});
     }
     auto end = std::chrono::system_clock::now();
 
@@ -101,6 +102,15 @@ int main() {
 
   ranges::sort(times);
   std::cout << "Median time: " << times[iterations / 2] << " ms\n";
+
+  auto expected = 0.0f;
+  for (auto i = 0u; i < vsize; ++i) {
+    expected += x[i] * y[i];
+  }
+
+  if (result != expected) {
+    std::cout << "Mismatch between expected and actual result!\n";
+  }
 
   free(x);
   free(y);
