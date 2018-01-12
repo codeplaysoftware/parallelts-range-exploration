@@ -23,8 +23,6 @@ auto reduce(InRng &in, T init, BinaryFunc func,
   size_t distance = ranges::v3::distance(in);
   cl::sycl::nd_range<1> config{thread_count, cl::sycl::range < 1 > {thread_count}};
 
-  auto wpt = distance / thread_count;
-
   const auto inIt = in.begin();
   {
     auto outAcc = out.template get_access<cl::sycl::access::mode::write>(cgh);
@@ -33,12 +31,12 @@ auto reduce(InRng &in, T init, BinaryFunc func,
     cgh.parallel_for< class ReduceKernel<1, BinaryFunc> >(config, [=](cl::sycl::nd_item<1> id) {
       auto gid = id.get_global(0);
 
-      auto start = gid * wpt;
+      auto start = inIt + gid;
 
       value_type sum = value_type();
 
-      for (size_t i = 0; i < wpt; i += thread_count)
-        sum = func(sum, *(inIt + start + i));
+      for (size_t i = 0; i < distance; i += thread_count)
+        sum = func(sum, *(start + i));
 
       outAcc[gid] = sum;
     });
