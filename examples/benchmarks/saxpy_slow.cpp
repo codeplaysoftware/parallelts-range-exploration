@@ -1,6 +1,7 @@
 #include <chrono>
 #include <iostream>
 #include <random>
+#include <sstream>
 #include <tuple>
 #include <vector>
 
@@ -37,8 +38,16 @@ struct MultiplyWithA {
   T operator()(T x) const { return x * a; }
 };
 
-int main() {
-  const size_t vsize = 1024 * 1024 * 16;
+int main(int argc, char* argv[]) {
+  const size_t base_size = 1024 * 1024;
+
+  size_t multiplier = 16;
+  if (argc > 1) {
+    std::stringstream{argv[1]} >> multiplier;
+  }
+
+  std::cout << "Size: " << multiplier << "\n";
+  const auto vsize = base_size * multiplier;
   const auto iterations = 100;
 
   std::default_random_engine generator;
