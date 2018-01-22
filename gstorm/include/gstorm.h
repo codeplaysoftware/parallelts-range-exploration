@@ -12,6 +12,8 @@
 
 #include <meta/executor.h>
 
+#include <detail/decorators/ref.h>
+
 // algorithms
 #include <detail/algorithms/transform.h>
 //#include <detail/algorithms/reduce.h>
