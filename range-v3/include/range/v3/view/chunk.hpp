@@ -74,17 +74,18 @@ namespace ranges
 
         template<typename Rng>
         struct chunk_view<Rng>::adaptor
-          : adaptor_base, private box<offset_t>
+          : adaptor_base//, private box<offset_t>
         {
         private:
+            offset_t value;
             range_difference_t<Rng> n_;
             range_sentinel_t<Rng> end_;
-            offset_t & offset() {return this->box<offset_t>::get();}
-            offset_t const & offset() const {return this->box<offset_t>::get();}
+            offset_t & offset() {return value;}
+            offset_t const & offset() const {return value;}
         public:
             adaptor() = default;
             adaptor(range_difference_t<Rng> n, range_sentinel_t<Rng> end)
-              : box<offset_t>{0}, n_(n), end_(end)
+              : value{0}, n_(n), end_(end)
             {}
             auto get(range_iterator_t<Rng> it) const ->
                 decltype(view::take(make_iterator_range(std::move(it), end_), n_))
