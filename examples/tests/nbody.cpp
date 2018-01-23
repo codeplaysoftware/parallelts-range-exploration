@@ -27,12 +27,15 @@ struct NBodyOperator {
 
   template <typename T>
   auto operator()(const T& tpl) const {
+    return calculate(*std::get<0>(tpl), *std::get<1>(tpl), std::get<2>(tpl));
+  }
+
+  template <typename T>
+  data_t calculate(const data_t& p_orig, data_t& v_orig, T& particles) const {
+    auto p = p_orig;
+    auto v = v_orig;
     data_t a = {0.0f, 0.0f, 0.0f, 0.0f};
     data_t r = {0.0f, 0.0f, 0.0f, 0.0f};
-
-    auto p = *std::get<0>(tpl);
-    auto v = *std::get<1>(tpl);
-    auto& particles = std::get<2>(tpl);
 
     for (auto& particle : particles) {
       r.x = p.x - particle.x;
@@ -55,16 +58,27 @@ struct NBodyOperator {
     v.y += a.y * dt;
     v.z += a.z * dt;
 
-    *std::get<1>(tpl) = v;
+    v_orig = v;
     return p;
   }
 };
 
+bool float_comparison(float result, float expected) {
+  return std::abs(result - expected) <=
+         0.001 * std::max(std::abs(result), std::abs(expected));
+}
+
+bool data_t_comparison(data_t left, data_t right) {
+  return float_comparison(left.x, right.x) &&
+         float_comparison(left.y, right.y) &&
+         float_comparison(left.z, right.z) && float_comparison(left.w, right.w);
+}
+
 TEST_F(NBody, TestNBody) {
-  const size_t vsize = 1024;
+  const size_t vsize = 512;
 
   std::default_random_engine generator;
-  std::uniform_real_distribution<float> distribution(-10.0, 10.0);
+  std::uniform_real_distribution<float> distribution(-5.0, 5.0);
 
   auto generate_float = [&generator, &distribution]() {
     return distribution(generator);
@@ -82,26 +96,38 @@ TEST_F(NBody, TestNBody) {
   // Input to the SYCL device
   std::vector<data_t> position(vsize);
   std::vector<data_t> velocity(vsize);
-  std::vector<data_t> y(vsize);
+  std::vector<data_t> new_position(vsize);
 
   ranges::generate(position, generate_data_t);
-  ranges::generate(position, generate_data_t);
+  ranges::generate(velocity, generate_data_t);
 
+  auto expected_velocity = velocity;
   {
     gstorm::sycl_exec exec;
 
     auto gpu_position = std::experimental::copy(exec, position);
     auto gpu_velocity = std::experimental::copy(exec, velocity);
-    auto gpu_y = std::experimental::copy(exec, y);
+    auto gpu_new_position = std::experimental::copy(exec, new_position);
 
     auto repeated =
         ranges::view::repeat_n(gstorm::gpu::ref(gpu_position), vsize);
 
     auto zipped = my_zip(gpu_position, gpu_velocity, repeated);
 
-    std::experimental::transform(exec, zipped, gpu_y,
+    std::experimental::transform(exec, zipped, gpu_new_position,
                                  NBodyOperator{G, dt, eps2});
   }
 
-  // EXPECT_TRUE(ranges::equal(expected, z));
+  auto op = [G, dt, eps2](const auto& tpl) -> data_t {
+    return (NBodyOperator{G, dt, eps2})
+        .calculate(std::get<0>(tpl), std::get<1>(tpl), std::get<2>(tpl));
+  };
+
+  auto expected_position = ranges::view::zip(position, expected_velocity,
+                             ranges::view::repeat_n(position, vsize))
+                         | ranges::view::transform(op);
+
+  EXPECT_TRUE(
+      ranges::equal(expected_position, new_position, data_t_comparison));
+  EXPECT_TRUE(ranges::equal(expected_velocity, velocity, data_t_comparison));
 }
