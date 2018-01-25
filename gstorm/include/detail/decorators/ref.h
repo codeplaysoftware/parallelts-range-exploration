@@ -55,14 +55,5 @@ namespace gstorm {
     auto ref(range::gvector <T>& ref) {
       return _gref_iterable<T>(ref);
     }
-
-    template<typename T>
-    const auto* gcopy(T cpy) {
-      auto& _buffer = pacxx::v2::get_executor().allocate<_gcopy<T>>(1);
-      _gcopy<T> tmp(cpy);
-      _buffer.upload(&tmp, 1);
-
-      return _buffer.get();
-    }
   }
 }

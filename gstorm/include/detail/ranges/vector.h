@@ -46,7 +46,7 @@ template<typename T>
 struct gvector;
 
 template<typename T>
-struct iterator : public std::random_access_iterator_tag, public traits::range_forward_traits<T> {
+struct giterator : public std::random_access_iterator_tag, public traits::range_forward_traits<T> {
   using size_type = typename T::size_type;
   using value_type = typename T::value_type;
   using reference = std::conditional_t<std::is_const<T>::value,
@@ -63,21 +63,21 @@ struct iterator : public std::random_access_iterator_tag, public traits::range_f
                                                 cl::sycl::access::target::global_buffer,
                                                 cl::sycl::access::placeholder::true_t>;
 
-  iterator(size_t offset = 0, ptrdiff_t ref_back = 0) : accessor(), owner(ref_back), it(offset), id_(size_t_max) {
+  giterator(size_t offset = 0, ptrdiff_t ref_back = 0) : accessor(), owner(ref_back), it(offset), id_(size_t_max) {
 #ifndef __SYCL_DEVICE_ONLY__
     if (owner)
       id_ = (reinterpret_cast<gvector<T>*>(owner))->registerIterator(*this); // this should never be executed on the device
 #endif
   }
 
-  ~iterator(){
+  ~giterator(){
 #ifndef __SYCL_DEVICE_ONLY__
     if (owner && id_ != size_t_max)
       (reinterpret_cast<gvector<T>*>(owner))->forgetIterator(id_); // this should never be executed on the device
 #endif
   }
 
-  iterator(const iterator& other) : has_accessor(other.has_accessor), accessor(other.accessor), owner(other.owner), it(other.it), id_(){
+  giterator(const giterator& other) : has_accessor(other.has_accessor), accessor(other.accessor), owner(other.owner), it(other.it), id_(){
     if (!other.hasAccessor()) {
 #ifndef __SYCL_DEVICE_ONLY__
       if (owner)
@@ -92,7 +92,7 @@ struct iterator : public std::random_access_iterator_tag, public traits::range_f
 
   void setAccessor(sycl_accessor_type acc) { has_accessor = true; accessor = acc; }
 
-  explicit iterator(sycl_accessor_type acc, size_t offset = 0, ptrdiff_t ref_back = 0) :
+  explicit giterator(sycl_accessor_type acc, size_t offset = 0, ptrdiff_t ref_back = 0) :
     has_accessor(true),
     accessor(acc),
     owner(ref_back),
@@ -107,84 +107,84 @@ struct iterator : public std::random_access_iterator_tag, public traits::range_f
     return accessor[it];
   }
 
-  iterator &operator++() {
+  giterator &operator++() {
     ++it;
     return *this;
   }
 
-  iterator operator++(int) {
+  giterator operator++(int) {
     auto ip = it;
     ++it;
-    return iterator(accessor, ip, owner);
+    return giterator(accessor, ip, owner);
   }
 
-  iterator &operator--() {
+  giterator &operator--() {
     --it;
     return *this;
   }
 
-  iterator operator--(int) {
+  giterator operator--(int) {
     auto ip = it;
     --it;
-    return iterator(accessor, ip, owner);
+    return giterator(accessor, ip, owner);
   }
 
   reference operator[](difference_type n) { return accessor[it + n]; }
 
-  friend iterator advance(const iterator &lhs, difference_type n) {
+  friend giterator advance(const giterator &lhs, difference_type n) {
     return lhs.advance(n);
   }
 
-  iterator advance(difference_type n) {
+  giterator advance(difference_type n) {
     it += n;
     return *this;
   }
 
-  friend iterator operator+(const iterator &lhs, difference_type n) {
-    return iterator(lhs.accessor, lhs.it + n, lhs.owner);
+  friend giterator operator+(const giterator &lhs, difference_type n) {
+    return giterator(lhs.accessor, lhs.it + n, lhs.owner);
   }
 
-  friend iterator operator+(difference_type n, const iterator &rhs) {
-    return iterator(rhs.accessor, rhs.it + n, rhs.owner);
+  friend giterator operator+(difference_type n, const giterator &rhs) {
+    return giterator(rhs.accessor, rhs.it + n, rhs.owner);
   }
 
-  friend iterator operator-(const iterator &lhs, difference_type n) {
-    return iterator(lhs.accessor, lhs.it - n, lhs.owner);
+  friend giterator operator-(const giterator &lhs, difference_type n) {
+    return giterator(lhs.accessor, lhs.it - n, lhs.owner);
   }
 
-  friend difference_type operator-(const iterator &left, const iterator &right) {
+  friend difference_type operator-(const giterator &left, const giterator &right) {
     return left.it - right.it;
   }
 
-  friend iterator &operator-=(iterator &lhs, difference_type n) {
+  friend giterator &operator-=(giterator &lhs, difference_type n) {
     lhs.it -= n;
     return lhs;
   }
 
-  friend iterator &operator+=(iterator &lhs, difference_type n) {
+  friend giterator &operator+=(giterator &lhs, difference_type n) {
     lhs.it += n;
     return lhs;
   }
 
-  friend bool operator<(const iterator &left, const iterator &right) {
+  friend bool operator<(const giterator &left, const giterator &right) {
     return left.it < right.it;
   }
 
-  friend bool operator>(const iterator &left, const iterator &right) {
+  friend bool operator>(const giterator &left, const giterator &right) {
     return right < left;
   }
 
-  friend bool operator<=(const iterator &left, const iterator &right) {
+  friend bool operator<=(const giterator &left, const giterator &right) {
     return left < right || left == right;
   }
 
-  friend bool operator>=(const iterator &left, const iterator &right) {
+  friend bool operator>=(const giterator &left, const giterator &right) {
     return right < left || right == left;
   }
 
-  bool operator==(const iterator &other) const { return other.it == it; }
+  bool operator==(const giterator &other) const { return other.it == it; }
 
-  bool operator!=(const iterator &other) const { return !(other == *this); }
+  bool operator!=(const giterator &other) const { return !(other == *this); }
 
 private:
   bool has_accessor = false;
@@ -213,10 +213,10 @@ public:
                                                 cl::sycl::access::target::global_buffer,
                                                 cl::sycl::access::placeholder::true_t>;
 
+  using iterator = giterator<T>;
+  using sentinel = giterator<T>;
 
-  using sentinel = iterator<T>;
-
-  friend struct iterator<T>;
+  friend struct giterator<T>;
 
   gvector() : gvector_base(), _buffer(nullptr), _size(0) {}
 
@@ -273,32 +273,32 @@ public:
     return *this;
   }
 
-  iterator<T> begin() noexcept {
+  giterator<T> begin() noexcept {
     if (_cgh) {
-      return iterator<T>(getAccessor(_cgh, *_buffer), 0, reinterpret_cast<ptrdiff_t>(this));
+      return giterator<T>(getAccessor(_cgh, *_buffer), 0, reinterpret_cast<ptrdiff_t>(this));
     }
-    return iterator<T>(0, reinterpret_cast<ptrdiff_t>(this));
+    return giterator<T>(0, reinterpret_cast<ptrdiff_t>(this));
   }
 
-  iterator<T> end() noexcept {
+  giterator<T> end() noexcept {
     if (_cgh) {
-      return iterator<T>(getAccessor(_cgh, *_buffer), _size, reinterpret_cast<ptrdiff_t>(this));
+      return giterator<T>(getAccessor(_cgh, *_buffer), _size, reinterpret_cast<ptrdiff_t>(this));
     }
-    return iterator<T>(_size, reinterpret_cast<ptrdiff_t>(this));
+    return giterator<T>(_size, reinterpret_cast<ptrdiff_t>(this));
   }
 
-  const iterator<T> begin() const noexcept {
+  const giterator<T> begin() const noexcept {
     if (_cgh) {
-      return iterator<T>(getAccessor(_cgh, *_buffer), 0, reinterpret_cast<ptrdiff_t>(this));
+      return giterator<T>(getAccessor(_cgh, *_buffer), 0, reinterpret_cast<ptrdiff_t>(this));
     }
-    return iterator<T>(0, reinterpret_cast<ptrdiff_t>(this));
+    return giterator<T>(0, reinterpret_cast<ptrdiff_t>(this));
   }
 
-  const iterator<T> end() const noexcept {
+  const giterator<T> end() const noexcept {
     if (_cgh) {
-      return iterator<T>(getAccessor(_cgh, *_buffer), _size, reinterpret_cast<ptrdiff_t>(this));
+      return giterator<T>(getAccessor(_cgh, *_buffer), _size, reinterpret_cast<ptrdiff_t>(this));
     }
-    return iterator<T>(_size, reinterpret_cast<ptrdiff_t>(this));
+    return giterator<T>(_size, reinterpret_cast<ptrdiff_t>(this));
   }
 
   size_t size() const { return _size; }
@@ -328,7 +328,7 @@ protected:
   // an iterator has to register itself by its container
   // this is necessary to allow the container to update each iterator
   // as soon as the accessor is valid
-  auto registerIterator(iterator<T>& it) {
+  auto registerIterator(giterator<T>& it) {
     auto pair = std::make_pair(_iterators.size(), &it);
     _iterators.insert(pair);
     return pair.first;
@@ -361,7 +361,7 @@ private:
   }
 
   std::unique_ptr<cl::sycl::buffer <value_type>> _buffer;
-  std::map<size_t, iterator<T>*> _iterators;
+  std::map<size_t, giterator<T>*> _iterators;
   size_t _size;
 };
 

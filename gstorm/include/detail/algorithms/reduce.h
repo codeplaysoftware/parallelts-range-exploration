@@ -15,9 +15,9 @@ namespace algorithm {
 template <int x, typename... Ts>
 class ReduceKernel{};
 
-template<typename InRng, typename T, typename BinaryFunc, typename value_type = T>
+template<typename InRng, typename T, typename BinaryFunc>
 auto reduce(InRng &in, T init, BinaryFunc func,
-            cl::sycl::buffer<value_type, 1>& out, size_t thread_count,
+            cl::sycl::buffer<T, 1>& out, size_t thread_count,
             cl::sycl::handler &cgh) {
 
   size_t distance = ranges::v3::distance(in);
@@ -27,27 +27,33 @@ auto reduce(InRng &in, T init, BinaryFunc func,
   {
     auto outAcc = out.template get_access<cl::sycl::access::mode::discard_write>(cgh);
 
-    cgh.parallel_for< class ReduceKernel<1, BinaryFunc> >(config, [=](cl::sycl::nd_item<1> id) {
+    cgh.parallel_for< class ReduceKernel<1, BinaryFunc> >(config,
+        [outAcc, distance, func, inIt](cl::sycl::nd_item<1> id) {
       auto global_id = id.get_global(0);
       auto local_id = id.get_local(0);
       auto group_id = id.get_group(0);
-      auto num_groups = id.get_num_groups(0);
       auto local_size = id.get_local_range(0);
 
-      auto elems_per_group = distance / num_groups;
+      const auto elems_per_group = 32768ul;
 
-      auto start = inIt + elems_per_group * group_id + local_id;
+      auto start = elems_per_group * group_id + local_id;
+      auto end = elems_per_group * (group_id + 1);
+      end = distance < end ? distance : end;
 
-      value_type sum = value_type();
+      // Peel the first loop iteration
+      if (start < distance) {
 
-      for (size_t i = 0; i < elems_per_group; i += local_size)
-        sum = func(sum, *(start + i));
+        T sum = *(inIt + start);
 
-      outAcc[global_id] = sum;
+        for (auto i = start + local_size; i < end; i += local_size) {
+          sum = func(sum, *(inIt + i));
+        }
+
+        outAcc[global_id] = sum;
+      }
     });
   }
 }
 }
 }
 }
-

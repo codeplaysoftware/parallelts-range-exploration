@@ -57,20 +57,40 @@ namespace gstorm
     }
 
     // proxy function for calling the reduce algorithm
-    template<typename InRng, typename T, typename BinaryFunc>
-    auto reduce(InRng &in, T init, BinaryFunc func){
-      using value_type = T;// std::remove_cv_t<std::remove_reference_t<decltype(*in.begin())>>;
+    template <typename InRng, typename T, typename BinaryFunc>
+    auto reduce(InRng &in, T init, BinaryFunc func) {
+      using value_type = T;
 
-      size_t distance = ranges::v3::distance(in);
-      size_t thread_count = std::max(128ul, distance / 256ul);
+      const size_t range_length = ranges::v3::distance(in);
 
-      std::vector<value_type> outVec(thread_count);
+      // Try to access 32K elements per group
+      const auto work_per_thread = 256ul;
+      const auto local_thread_count = 128ul;
+      const auto work_per_group = work_per_thread * local_thread_count;
+
+      const auto group_count =
+       range_length % work_per_group == 0
+           ? range_length / work_per_group
+           : range_length / work_per_group + 1;
+
+      const auto global_thread_count = group_count * local_thread_count;
+
+      const auto elems_in_last_group = range_length % work_per_group;
+      const auto threads_writing_in_last_group =
+          elems_in_last_group < local_thread_count ? elems_in_last_group
+                                                   : local_thread_count;
+
+      const auto threads_writing =
+          range_length / work_per_group * local_thread_count +
+          threads_writing_in_last_group;
+
+      std::vector<value_type> outVec(threads_writing);
       {
         cl::sycl::buffer<value_type, 1> out(outVec.data(), outVec.size());
 
         _queue.submit([&](cl::sycl::handler &cgh) {
           setCGH(cgh); // update the cgh in every vector registerd with this executor
-          gstorm::gpu::algorithm::reduce(in, init, func, out, thread_count, cgh); // call reduce
+          gstorm::gpu::algorithm::reduce(in, init, func, out, global_thread_count, cgh); // call reduce
         });
 
         _queue.wait_and_throw();
