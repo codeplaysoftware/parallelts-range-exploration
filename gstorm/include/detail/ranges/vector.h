@@ -236,10 +236,6 @@ public:
                     _buffer(new cl::sycl::buffer<value_type>(vec.data(), vec.size(), {cl::sycl::property::buffer::use_host_ptr{}})),
                     _size(vec.size())  {}
 
-  gvector(value_type* data, size_t size) : gvector_base(),
-                    _buffer(new cl::sycl::buffer<value_type>(data, size, {cl::sycl::property::buffer::use_host_ptr{}})),
-                    _size(size)  {}
-
   ~gvector() {}
 
   gvector(const gvector &src) = delete; // copying a gvector is not allowed yet
