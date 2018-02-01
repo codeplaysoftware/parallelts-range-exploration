@@ -4,35 +4,45 @@
 
 #pragma once
 
-#include <CL/sycl.hpp>
-#include <range/v3/all.hpp>
 #include <cstddef>
 #include <type_traits>
 #include <utility>
-#include <meta/static_const.h>
-#include <detail/algorithms/config.h>
+
+#include <CL/sycl.hpp>
+#include <range/v3/all.hpp>
 
 namespace gstorm {
 namespace gpu {
 namespace algorithm {
 
 template <int x, typename... Ts>
-class TransformKernel{};
+class TransformKernel {};
 
+template <typename InRng, typename OutRng, typename UnaryFunc>
+void transform(const InRng &in, OutRng &out, UnaryFunc func,
+               cl::sycl::handler &cgh) {
+  const auto default_local_size = 128ul;
+  const auto range_length = static_cast<std::size_t>(ranges::distance(in));
 
-template<typename InRng, typename OutRng, typename UnaryFunc>
-void transform(const InRng &in, OutRng &out, UnaryFunc func, cl::sycl::handler &cgh) {
-  const size_t global_thread_count = ranges::distance(in);
-  const size_t local_thread_count = ranges::min(128ul, global_thread_count);
+  const auto global_thread_count =
+      range_length % default_local_size == 0
+          ? range_length
+          : ((range_length / default_local_size) + 1) * default_local_size;
+
+  const auto local_thread_count =
+      ranges::min(default_local_size, global_thread_count);
 
   cl::sycl::nd_range<1> config{global_thread_count, local_thread_count};
 
   const auto inIt = in.begin();
   auto outIt = out.begin();
 
-  cgh.parallel_for<class TransformKernel<1, UnaryFunc>>(config, [=](cl::sycl::nd_item<1> id) {
-    auto gid = static_cast<size_t>(id.get_global(0));
-    *(outIt + gid) = func(*(inIt + gid));
+  cgh.parallel_for<class TransformKernel<1, UnaryFunc>>(config,
+      [range_length, func, inIt, outIt](cl::sycl::nd_item<1> id) {
+    auto gid = id.get_global(0);
+    if (gid < range_length) {
+      *(outIt + gid) = func(*(inIt + gid));
+    }
   });
 }
 
