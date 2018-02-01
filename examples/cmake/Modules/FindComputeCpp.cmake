@@ -225,7 +225,6 @@ function(__build_spir targetName sourceFile binaryDir fileCounter)
 
   # Set the path to the Sycl file.
   set(outputSyclFile ${binaryDir}/${sourceFileName}.sycl)
-  set(outputObjectFile ${binaryDir}/${sourceFileName}.bc)
 
   # Add any user-defined include to the device compiler
   set(device_compiler_includes "")
@@ -269,13 +268,13 @@ function(__build_spir targetName sourceFile binaryDir fileCounter)
 
   # Add custom command for running compute++
   add_custom_command(
-    OUTPUT ${outputSyclFile} ${outputObjectFile}
+    OUTPUT ${outputSyclFile}
     COMMAND ${COMPUTECPP_DEVICE_COMPILER}
             ${COMPUTECPP_DEVICE_COMPILER_FLAGS}
             -isystem ${COMPUTECPP_INCLUDE_DIRECTORY}
             ${COMPUTECPP_PLATFORM_SPECIFIC_ARGS}
             ${device_compiler_includes}
-            -sycl-ih ${outputSyclFile} -o ${outputObjectFile}
+            -o ${outputObjectFile}
             -c ${sourceFile}
     DEPENDS ${sourceFile}
     IMPLICIT_DEPENDS CXX ${sourceFile}
