@@ -9,8 +9,7 @@
 #include <CL/sycl.hpp>
 #include <range/v3/all.hpp>
 
-#include <stdlib.h>
-
+#include "aligned_allocator.h"
 #include "experimental.h"
 #include "my_zip.h"
 
@@ -56,27 +55,18 @@ int main(int argc, char* argv[]) {
   auto generate_float = [&generator, &distribution]() {
     return distribution(generator);
   };
-  auto x = static_cast<float*>(aligned_alloc(4096, vsize * sizeof(float)));
-  auto y = static_cast<float*>(aligned_alloc(4096, vsize * sizeof(float)));
-  auto z = static_cast<float*>(aligned_alloc(4096, vsize * sizeof(float)));
-  auto ax = static_cast<float*>(aligned_alloc(4096, vsize * sizeof(float)));
-
-  for (auto i = 0u; i < vsize; ++i) {
-    x[i] = generate_float();
-    y[i] = generate_float();
-  }
 
   // Input to the SYCL device
-  // std::vector<float> x(vsize);
-  // std::vector<float> y(vsize);
+  std::vector<float, aligned_allocator<float, 4096>> x(vsize);
+  std::vector<float, aligned_allocator<float, 4096>> y(vsize);
 
-  // ranges::generate(x, generate_float);
-  // ranges::generate(y, generate_float);
+  ranges::generate(x, generate_float);
+  ranges::generate(y, generate_float);
 
   const float a = generate_float();
 
-  // std::vector<float> ax(vsize);
-  // std::vector<float> z(vsize);
+  std::vector<float, aligned_allocator<float, 4096>> ax(vsize);
+  std::vector<float, aligned_allocator<float, 4096>> z(vsize);
 
   std::vector<double> times{};
 
@@ -87,8 +77,8 @@ int main(int argc, char* argv[]) {
             << q.get_device().get_info<cl::sycl::info::device::name>()
             << ", from: "
             << q.get_device()
-                   .get_platform()
-                   .get_info<cl::sycl::info::platform::name>()
+                .get_platform()
+                .get_info<cl::sycl::info::platform::name>()
             << "\n";
 
   for (auto i = 0; i < iterations; ++i) {
@@ -96,20 +86,10 @@ int main(int argc, char* argv[]) {
     {
       gstorm::sycl_exec exec(q);
 
-      // auto gpu_x = std::experimental::copy(exec, x);
-      // auto gpu_y = std::experimental::copy(exec, y);
-      // auto gpu_ax = std::experimental::copy(exec, ax);
-      // auto gpu_z = std::experimental::copy(exec, z);
-
-      auto gpu_x = gstorm::range::gvector<std::vector<float>>(x, vsize);
-      auto gpu_y = gstorm::range::gvector<std::vector<float>>(y, vsize);
-      auto gpu_z = gstorm::range::gvector<std::vector<float>>(z, vsize);
-      auto gpu_ax = gstorm::range::gvector<std::vector<float>>(ax, vsize);
-
-      exec.registerGVector(&gpu_x);
-      exec.registerGVector(&gpu_y);
-      exec.registerGVector(&gpu_z);
-      exec.registerGVector(&gpu_ax);
+      auto gpu_x = std::experimental::copy(exec, x);
+      auto gpu_y = std::experimental::copy(exec, y);
+      auto gpu_ax = std::experimental::copy(exec, ax);
+      auto gpu_z = std::experimental::copy(exec, z);
 
       std::experimental::transform(
           exec, my_zip(ranges::view::repeat_n(a, vsize), gpu_x), gpu_ax,
@@ -131,20 +111,11 @@ int main(int argc, char* argv[]) {
   ranges::sort(times);
   std::cout << "Median time: " << times[iterations / 2] << " ms\n";
 
-  std::vector<float> expected(vsize);
-  for (auto i = 0u; i < vsize; ++i) {
-    expected[i] = a * x[i] + y[i];
-  }
+  auto expected =
+    ranges::view::transform(x, y, [a](auto x, auto y) { return x*a + y; });
 
-  for (auto i = 0u; i < vsize; ++i) {
-    if (z[i] != expected[i]) {
-      std::cout << "Mismatch between expected and actual result!\n";
-      break;
-    }
+  if (!ranges::equal(expected, z)) {
+    std::cout << "Mismatch between expected and actual result!\n";
+    return 1;
   }
-
-  free(x);
-  free(y);
-  free(z);
-  free(ax);
 }

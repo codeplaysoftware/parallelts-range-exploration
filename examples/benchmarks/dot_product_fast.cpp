@@ -9,8 +9,7 @@
 #include <CL/sycl.hpp>
 #include <range/v3/all.hpp>
 
-#include <stdlib.h>
-
+#include "aligned_allocator.h"
 #include "experimental.h"
 #include "my_zip.h"
 
@@ -51,24 +50,15 @@ int main(int argc, char* argv[]) {
     return distribution(generator);
   };
 
-  auto x = static_cast<float*>(aligned_alloc(4096, vsize * sizeof(float)));
-  auto y = static_cast<float*>(aligned_alloc(4096, vsize * sizeof(float)));
-
-  auto result = 0.0f;
-
-  for (auto i = 0u; i < vsize; ++i) {
-    x[i] = generate_float();
-    y[i] = generate_float();
-  }
-
   // Input to the SYCL device
-  // std::vector<float> x(vsize);
-  // std::vector<float> y(vsize);
+  std::vector<float, aligned_allocator<float, 4096>> x(vsize);
+  std::vector<float, aligned_allocator<float, 4096>> y(vsize);
 
-  // ranges::generate(x, generate_float);
-  // ranges::generate(y, generate_float);
+  ranges::generate(x, generate_float);
+  ranges::generate(y, generate_float);
 
   std::vector<double> times{};
+  auto result = 0.0f;
 
   cl::sycl::gpu_selector device_selector;
   auto q = cl::sycl::queue(device_selector);
@@ -76,8 +66,8 @@ int main(int argc, char* argv[]) {
             << q.get_device().get_info<cl::sycl::info::device::name>()
             << ", from: "
             << q.get_device()
-                   .get_platform()
-                   .get_info<cl::sycl::info::platform::name>()
+                .get_platform()
+                .get_info<cl::sycl::info::platform::name>()
             << "\n";
 
   for (auto i = 0; i < iterations; ++i) {
@@ -85,14 +75,8 @@ int main(int argc, char* argv[]) {
     {
       gstorm::sycl_exec exec(q);
 
-      // auto gpu_x = std::experimental::copy(exec, x);
-      // auto gpu_y = std::experimental::copy(exec, y);
-
-      auto gpu_x = gstorm::range::gvector<std::vector<float>>(x, vsize);
-      auto gpu_y = gstorm::range::gvector<std::vector<float>>(y, vsize);
-
-      exec.registerGVector(&gpu_x);
-      exec.registerGVector(&gpu_y);
+      auto gpu_x = std::experimental::copy(exec, x);
+      auto gpu_y = std::experimental::copy(exec, y);
 
       auto mult = my_zip(gpu_x, gpu_y)
                 | ranges::view::transform(MultiplyComponents<float>{});
@@ -112,17 +96,12 @@ int main(int argc, char* argv[]) {
   ranges::sort(times);
   std::cout << "Median time: " << times[iterations / 2] << " ms\n";
 
-  auto expected = 0.0f;
-  for (auto i = 0u; i < vsize; ++i) {
-    expected += x[i] * y[i];
-  }
+
+  const auto expected = ranges::inner_product(x, y, 0.0f);
 
   // Is within 0.1%?
   if (std::abs(result - expected) >
       0.001 * std::max(std::abs(result), std::abs(expected))) {
     std::cout << "Mismatch between expected and actual result!\n";
   }
-
-  free(x);
-  free(y);
 }
