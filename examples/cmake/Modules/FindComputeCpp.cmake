@@ -274,7 +274,7 @@ function(__build_spir targetName sourceFile binaryDir fileCounter)
             -isystem ${COMPUTECPP_INCLUDE_DIRECTORY}
             ${COMPUTECPP_PLATFORM_SPECIFIC_ARGS}
             ${device_compiler_includes}
-            -o ${outputObjectFile}
+            -o ${outputSyclFile}
             -c ${sourceFile}
     DEPENDS ${sourceFile}
     IMPLICIT_DEPENDS CXX ${sourceFile}
