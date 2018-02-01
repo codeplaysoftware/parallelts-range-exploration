@@ -24,12 +24,12 @@ struct DotProduct {
   }
 };
 
-struct MultiplyComponents {
-  constexpr MultiplyComponents() {};
+struct AddComponents {
+  constexpr AddComponents() {};
 
   template <typename T>
   int operator()(const T& a) const {
-    return std::get<0>(a) * std::get<1>(a);
+    return std::get<0>(a) + std::get<1>(a);
   }
 };
 
@@ -115,7 +115,7 @@ TEST_F(Sgemv, sgemv) {
 
     auto zipped = my_zip(dot_prod, gpu_y | ranges::view::transform([b](auto y) {return b*y; }));
 
-    std::experimental::transform(exec, zipped, gpu_output, MultiplyComponents{});
+    std::experimental::transform(exec, zipped, gpu_output, AddComponents{});
   }
 
   auto expected = ranges::view::zip(
@@ -125,7 +125,7 @@ TEST_F(Sgemv, sgemv) {
                     | ranges::view::transform(DotProduct{})
                     | ranges::view::transform([a](auto dot) { return dot * a; }),
                     y | ranges::view::transform([b](auto y) {return b*y; }))
-                | ranges::view::transform(MultiplyComponents{});
+                | ranges::view::transform(AddComponents{});
 
   EXPECT_TRUE(ranges::equal(expected, output));
 }
