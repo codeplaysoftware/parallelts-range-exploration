@@ -1,12 +1,12 @@
 #include "gtest/gtest.h"
 
-#include <gstorm.h>
+#include <fstream>
 #include <iostream>
 #include <random>
 #include <tuple>
 #include <vector>
-#include <iostream>
 
+#include <gstorm.h>
 #include <CL/sycl.hpp>
 #include <range/v3/all.hpp>
 
@@ -90,6 +90,40 @@ struct minFunctor {
   }
 };
 
+template <typename T>
+auto shift_range(T& range, int length, int amount) {
+  auto cycled = ranges::view::cycle(range);
+  return ranges::view::slice(cycled, length + amount, 2 * length + amount);
+}
+
+template <typename T>
+auto shift_and_zip(T& range, int length, int k, int m, int n) {
+  // Use transform with identity to force a load and strip the global address space
+  auto i0 = range | ranges::view::transform([](auto a) { return a; });
+
+  auto i1 = shift_range(i0, length, k);
+  auto i2 = shift_range(i0, length, m * k);
+  auto i3 = shift_range(i0, length, -k);
+  auto i4 = shift_range(i0, length, - m * k);
+  auto i5 = shift_range(i0, length, k + m * k);
+  auto i6 = shift_range(i0, length, k - m * k);
+  auto i7 = shift_range(i0, length, -k + m * k);
+  auto i8 = shift_range(i0, length, -k - m * k);
+
+  auto zr = ranges::view::zip(i0, i1, i2, i3, i4, i5, i6, i7, i8,
+                              ranges::view::iota(0, length));
+
+  return zr;
+}
+
+template <typename T>
+void jfa(T& input, T& output, gstorm::sycl_exec& exec, int k, int m, int n) {
+  auto length = m * n;
+  auto zr = shift_and_zip(input, length, k, m, n);
+
+  std::experimental::transform(exec, zr, output, minFunctor(m, n, k));
+}
+
 void generate_random_sites(std::vector<int> &t, int Nb, int m, int n) {
   std::default_random_engine rng;
   std::uniform_int_distribution<int> dist(0, m * n - 1);
@@ -104,56 +138,74 @@ TEST_F(Voronoi, TestVoronoi) {
   const int m = 512;  // number of rows
   const int n = 512;  // number of columns
   const int s = 100;  // number of sites
+  const auto length = m * n;
 
   // Input to the SYCL device
-  std::vector<int> hseeds(m * n, m * n);
+  std::vector<int> hseeds(length, length);
   generate_random_sites(hseeds, s, m, n);
 
-  std::vector<int> output(261631, m * n);
+  std::vector<int> output(length, 0);
   {
     gstorm::sycl_exec exec;
 
     auto gpu_hseeds = std::experimental::copy(exec, hseeds);
     auto gpu_output = std::experimental::copy(exec, output);
 
-    // Use transform with identity to force a load and strip the global address space
-    auto i = gpu_hseeds | ranges::view::transform([](auto a) { return a; });
-    auto k = 1;
-
-    auto i0 = ranges::view::unbounded(i.begin());
-    auto i1 = ranges::view::unbounded(i.begin() - k);
-    auto i2 = ranges::view::unbounded(i.begin() - m * k);
-    auto i3 = ranges::view::unbounded(i.begin() + k - m * k);
-    auto i4 = ranges::view::unbounded(i.begin() - k + m * k);
-    auto i5 = ranges::view::unbounded(i.begin() - k - m * k);
-
-    auto zr = ranges::view::zip(i0, ranges::view::slice(i, k, n * m),
-                                ranges::view::slice(i, m * k, n * m), i1, i2,
-                                ranges::view::slice(i, k + m * k, n * m), i3,
-                                i4, i5, ranges::view::iota(0, n * m));
-
-    auto zrt = zr | ranges::view::take(n * m);
-    std::experimental::transform(exec, zrt, gpu_output, minFunctor(m, n, k));
+    jfa(gpu_hseeds, gpu_output, exec, 1, m, n);
   }
 
   auto k = 1;
   auto& i = hseeds;
 
-  auto i0 = ranges::view::unbounded(i.begin());
-  auto i1 = ranges::view::unbounded(i.begin() - k);
-  auto i2 = ranges::view::unbounded(i.begin() - m * k);
-  auto i3 = ranges::view::unbounded(i.begin() + k - m * k);
-  auto i4 = ranges::view::unbounded(i.begin() - k + m * k);
-  auto i5 = ranges::view::unbounded(i.begin() - k - m * k);
-
-  auto zr = ranges::view::zip(i0, ranges::view::slice(i, k, n * m),
-                              ranges::view::slice(i, m * k, n * m), i1, i2,
-                              ranges::view::slice(i, k + m * k, n * m), i3,
-                              i4, i5, ranges::view::iota(0, n * m));
-
-  auto expected = zr
-                | ranges::view::take(n * m)
+  auto expected = shift_and_zip(i, length, k, m, n)
                 | ranges::view::transform(minFunctor(m, n, k));
 
-  EXPECT_TRUE(ranges::equal(expected, output));
+  // Work around ranges::view::transform returning equal
+  // iterators from begin & end when using cycle and slice
+  for (auto i = 0; i < length; ++i) {
+    EXPECT_EQ(expected[i], output[i]);
+  }
+}
+
+// Export the tab to PGM image format
+void vector_to_pgm(std::vector<int>& image, int m, int n, std::string filename) {
+  std::ofstream outputFile(filename);
+  outputFile << "P2\n";
+  outputFile << m << " " << n << "\n255\n";
+
+  for (auto value : image) {
+    outputFile << (int) (71 * value) % 256; // Map values to [0,255]
+    outputFile << " ";
+  }
+
+  outputFile << "\n";
+}
+
+TEST_F(Voronoi, TestVoronoiFull) {
+  const int m = 512;  // number of rows
+  const int n = 512;  // number of columns
+  const int s = 100;  // number of sites
+
+  // Input to the SYCL device
+  std::vector<int> hseeds(m * n, m * n);
+  generate_random_sites(hseeds, s, m, n);
+
+  std::vector<int> output(m*n, m * n);
+  {
+    gstorm::sycl_exec exec;
+
+    auto gpu_hseeds = std::experimental::copy(exec, hseeds);
+    auto gpu_output = std::experimental::copy(exec, output);
+
+    jfa(gpu_hseeds, gpu_output, exec, 1, m, n);
+    std::swap(gpu_hseeds, gpu_output);
+
+    // JFA : main loop with k=n/2, n/4, ..., 1
+    for (int k = std::max(m, n) / 2; k > 0; k /= 2) {
+      jfa(gpu_hseeds, gpu_output, exec, k, m, n);
+      std::swap(gpu_hseeds, gpu_output);
+    }
+  }
+
+  vector_to_pgm(hseeds, m, n, "discrete_voronoi.pgm");
 }

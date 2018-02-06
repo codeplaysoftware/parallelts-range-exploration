@@ -78,37 +78,43 @@ namespace ranges
                 using cycled_view_t = constify_if<cycled_view>;
                 using difference_type_ = range_difference_t<Rng>;
                 using iterator = range_iterator_t<constify_if<Rng>>;
+                using sentinel = range_sentinel_t<constify_if<Rng>>;
 
-                cycled_view_t *rng_;
+                // cycled_view_t *rng_;
                 iterator it_;
+
+                iterator begin_;
+
+                sentinel end_;
 
                 iterator get_end_(std::true_type, bool = false) const
                 {
-                    return ranges::end(rng_->rng_);
+                    return end_;
                 }
                 template<bool CanBeEmpty = false>
-                iterator get_end_(std::false_type, meta::bool_<CanBeEmpty> = {}) const
-                {
-                    auto &end_ = ranges::get<end_tag>(*rng_);
-                    RANGES_ASSERT(CanBeEmpty || end_);
-                    if(CanBeEmpty && !end_)
-                        end_ = ranges::next(it_, ranges::end(rng_->rng_));
-                    return *end_;
-                }
+                // iterator get_end_(std::false_type, meta::bool_<CanBeEmpty> = {}) const
+                // {
+                //     auto &end_ = ranges::get<end_tag>(*rng_);
+                //     RANGES_ASSERT(CanBeEmpty || end_);
+                //     if(CanBeEmpty && !end_)
+                //         end_ = ranges::next(it_, end_bla);
+                //     return *end_;
+                // }
                 void set_end_(std::true_type) const
                 {}
-                void set_end_(std::false_type) const
-                {
-                    auto &end_ = ranges::get<end_tag>(*rng_);
-                    if(!end_)
-                        end_ = it_;
-                }
+                // void set_end_(std::false_type) const
+                // {
+                //     auto &end_ = ranges::get<end_tag>(*rng_);
+                //     if(!end_)
+                //         end_ = it_;
+                // }
             public:
                 cursor()
-                  : rng_{}, it_{}
+                  : /* rng_{}, */ it_{}, begin_{}, end_{}
                 {}
                 explicit cursor(cycled_view_t &rng)
-                  : rng_(&rng), it_(ranges::begin(rng.rng_))
+                  : /* rng_(&rng), */ it_(ranges::begin(rng.rng_)), begin_(ranges::begin(rng.rng_)),
+                    end_(ranges::end(rng.rng_))
                 {}
                 constexpr bool done() const
                 {
@@ -121,30 +127,30 @@ namespace ranges
                 )
                 bool equal(cursor const &pos) const
                 {
-                    RANGES_ASSERT(rng_ == pos.rng_);
+                    // RANGES_ASSERT(rng_ == pos.rng_);
                     return it_ == pos.it_;
                 }
                 void next()
                 {
-                    auto const end = ranges::end(rng_->rng_);
+                    auto const end = end_;
                     RANGES_ASSERT(it_ != end);
                     if(++it_ == end)
                     {
                         this->set_end_(BoundedRange<Rng>());
-                        it_ = ranges::begin(rng_->rng_);
+                        it_ = begin_;
                     }
                 }
                 CONCEPT_REQUIRES(BidirectionalRange<Rng>())
                 void prev()
                 {
-                    if(it_ == ranges::begin(rng_->rng_))
+                    if(it_ == begin_)
                         it_ = this->get_end_(BoundedRange<Rng>());
                     --it_;
                 }
                 CONCEPT_REQUIRES(RandomAccessRange<Rng>())
                 void advance(difference_type_ n)
                 {
-                    auto const begin = ranges::begin(rng_->rng_);
+                    auto const begin = begin_;
                     auto const end = this->get_end_(BoundedRange<Rng>(), meta::bool_<true>());
                     auto const d = end - begin;
                     auto const off = ((it_ - begin) + n) % d;
@@ -153,7 +159,7 @@ namespace ranges
                 CONCEPT_REQUIRES(SizedSentinel<iterator, iterator>())
                 difference_type_ distance_to(cursor const &that) const
                 {
-                    RANGES_ASSERT(that.rng_ == rng_);
+                    // RANGES_ASSERT(that.rng_ == rng_);
                     return that.it_ - it_;
                 }
             };
