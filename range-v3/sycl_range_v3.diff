@@ -183,7 +183,7 @@ index 8940e4c..9d403d4 100755
  #else  // RANGES_CXX_INLINE_VARIABLES >= RANGES_CXX_INLINE_VARIABLES_17
  #define RANGES_INLINE_VARIABLE(type, name) \
 diff --git a/include/range/v3/detail/variant.hpp b/include/range/v3/detail/variant.hpp
-index 392de4f..fcf020f 100755
+index 392de4f..1eedc29 100755
 --- a/include/range/v3/detail/variant.hpp
 +++ b/include/range/v3/detail/variant.hpp
 @@ -15,7 +15,7 @@
@@ -204,12 +204,14 @@ index 392de4f..fcf020f 100755
  
                  template<typename U, std::size_t ...Is>
                  void construct_(U &u, meta::index_sequence<Is...>)
-@@ -408,7 +408,7 @@ namespace ranges
+@@ -407,8 +407,8 @@ namespace ranges
+                 template<typename U, std::size_t M>
                  [[noreturn]] meta::if_c<M != N> operator()(indexed_element<U, M>) const
                  {
- #ifndef __device_code__
+-#ifndef __device_code__
 -                    throw bad_variant_access("bad variant access");
-+                  //  throw bad_variant_access("bad variant access");
++#ifndef __SYCL_DEVICE_ONLY__
++                   throw bad_variant_access("bad variant access");
  #endif
                  }
                  template<typename U>
@@ -228,6 +230,99 @@ index 392de4f..fcf020f 100755
      {};
  }
  
+diff --git a/include/range/v3/utility/associated_types.hpp b/include/range/v3/utility/associated_types.hpp
+index d654296..ed6c040 100755
+--- a/include/range/v3/utility/associated_types.hpp
++++ b/include/range/v3/utility/associated_types.hpp
+@@ -31,7 +31,9 @@ namespace ranges
+         ////////////////////////////////////////////////////////////////////////////////////////
+         template<typename T, typename Enable /*= void*/>
+         struct difference_type
+-        {};
++        {
++          using type = std::ptrdiff_t;
++        };
+ 
+         template<>
+         struct difference_type<std::nullptr_t>
+diff --git a/include/range/v3/utility/basic_iterator.hpp b/include/range/v3/utility/basic_iterator.hpp
+index bf7089c..ea7d5ca 100755
+--- a/include/range/v3/utility/basic_iterator.hpp
++++ b/include/range/v3/utility/basic_iterator.hpp
+@@ -417,22 +417,37 @@ namespace ranges
+         /// @{
+         ///
+         template<typename T>
+-        struct basic_mixin : private box<T>
++        struct basic_mixin //: private box<T>
+         {
+             CONCEPT_REQUIRES(DefaultConstructible<T>())
+             constexpr basic_mixin()
+-              : box<T>{}
++              : value{}
+             {}
+             CONCEPT_REQUIRES(MoveConstructible<T>())
+             constexpr basic_mixin(T &&t)
+-              : box<T>(detail::move(t))
++              : value(detail::move(t))
+             {}
+             CONCEPT_REQUIRES(CopyConstructible<T>())
+             constexpr basic_mixin(T const &t)
+-              : box<T>(t)
++              : value(t)
+             {}
+         protected:
+-            using box<T>::get;
++         //   using box<T>::get;
++
++          T value;
++
++          RANGES_CXX14_CONSTEXPR T &get() & noexcept
++          {
++            return value;
++          }
++          constexpr T const &get() const & noexcept
++          {
++            return value;
++          }
++          RANGES_CXX14_CONSTEXPR T &&get() && noexcept
++          {
++            return detail::move(value);
++          }
+         };
+ 
+         template<typename S>
+diff --git a/include/range/v3/utility/box.hpp b/include/range/v3/utility/box.hpp
+index 8a4d7ba..c686212 100755
+--- a/include/range/v3/utility/box.hpp
++++ b/include/range/v3/utility/box.hpp
+@@ -150,7 +150,7 @@ namespace ranges
+                     !std::is_default_constructible<Fn>::value &&
+                     !std::is_copy_assignable<Fn>::value>;
+ 
+-            template<typename>
++            template<typename T, typename... Ts>
+             constexpr box_compress box_compression_(...)
+             {
+                 return box_compress::none;
+@@ -263,7 +263,7 @@ namespace ranges
+         template<typename Element, typename Tag>
+         class box<Element, Tag, detail::box_compress::coalesce>
+         {
+-            static Element value;
++            static constexpr Element value{};
+         public:
+             constexpr box() noexcept
+             {}
+@@ -291,7 +291,7 @@ namespace ranges
+         };
+ 
+         template<typename Element, typename Tag>
+-        Element box<Element, Tag, detail::box_compress::coalesce>::value;
++        constexpr Element box<Element, Tag, detail::box_compress::coalesce>::value;
+ 
+         // Get by tag type
+         template<typename Tag, typename Element, detail::box_compress BC>
 diff --git a/include/range/v3/utility/common_tuple.hpp b/include/range/v3/utility/common_tuple.hpp
 index 66936bf..d50ad2f 100755
 --- a/include/range/v3/utility/common_tuple.hpp
@@ -481,21 +576,76 @@ index 38e30c9..07444f3 100755
          template<typename ...Ts, typename ...Us, typename Qual1, typename Qual2>
          struct basic_common_reference<common_tuple<Ts...>, common_tuple<Us...>, Qual1, Qual2>;
 diff --git a/include/range/v3/utility/compressed_pair.hpp b/include/range/v3/utility/compressed_pair.hpp
-index 030354b..51e9a69 100755
+index 030354b..1c446ca 100755
 --- a/include/range/v3/utility/compressed_pair.hpp
 +++ b/include/range/v3/utility/compressed_pair.hpp
-@@ -55,9 +55,9 @@ namespace ranges
+@@ -39,8 +39,10 @@ namespace ranges
+             template<typename List, typename Indices> struct compressed_tuple_;
+             template<typename... Ts, std::size_t... Is>
+             struct compressed_tuple_<meta::list<Ts...>, meta::index_sequence<Is...>>
+-              : storage<Ts, Is, Ts...>...
++              //: storage<Ts, Is, Ts...>...
+             {
++                sycl_tuple<Ts...> _tpl;
++
+                 static_assert(Same<meta::index_sequence<Is...>,
+                     meta::make_index_sequence<sizeof...(Is)>>(), "What madness is this?!?");
+ 
+@@ -50,14 +52,30 @@ namespace ranges
+                 template<typename... Args,
+                     meta::if_<meta::strict_and<std::is_constructible<Ts, Args>...>, int> = 0>
+                 constexpr compressed_tuple_(Args &&... args)
+-                  : storage<Ts, Is, Ts...>{detail::forward<Args>(args)}...
++                  : _tpl(std::forward<Args>(args)...) //storage<Ts, Is, Ts...>{detail::forward<Args>(args)}...
+                 {}
  
                  template<typename... Us,
                      meta::if_<meta::strict_and<std::is_constructible<Us, Ts const &>...>, int> = 0>
 -                constexpr operator std::tuple<Us...> () const
 +                constexpr operator sycl_tuple<Us...> () const
++                {
++                    return _tpl; // sycl_tuple<Us...>{get<Is>(*this)...};
++                }
++
++                template<size_t I>
++                RANGES_CXX14_CONSTEXPR auto &get() & noexcept
++                {
++                    return std::get<I>(_tpl);
++                }
++                template<size_t I>
++                constexpr auto const &get() const & noexcept
++                {
++                    return std::get<I>(_tpl);
++                }
++                template<size_t I>
++                RANGES_CXX14_CONSTEXPR auto &&get() && noexcept
                  {
 -                    return std::tuple<Us...>{get<Is>(*this)...};
-+                    return sycl_tuple<Us...>{get<Is>(*this)...};
++                    return detail::move(std::get<I>(_tpl));
                  }
              };
  
+@@ -68,17 +86,17 @@ namespace ranges
+             template<std::size_t I, typename... Ts, std::size_t... Is, typename T = meta::at_c<meta::list<Ts...>, I>>
+             RANGES_CXX14_CONSTEXPR T &get(compressed_tuple_<meta::list<Ts...>, meta::index_sequence<Is...>> &tuple) noexcept
+             {
+-                return static_cast<storage<T, I, Ts...> &>(tuple).get();
++                return tuple.template get<I>();// static_cast<storage<T, I, Ts...> &>(tuple).get();
+             }
+             template<std::size_t I, typename... Ts, std::size_t... Is, typename T = meta::at_c<meta::list<Ts...>, I>>
+             constexpr T const &get(compressed_tuple_<meta::list<Ts...>, meta::index_sequence<Is...>> const &tuple) noexcept
+             {
+-                return static_cast<storage<T, I, Ts...> const &>(tuple).get();
++                return tuple.template get<I>();// static_cast<storage<T, I, Ts...> const &>(tuple).get();
+             }
+             template<std::size_t I, typename... Ts, std::size_t... Is, typename T = meta::at_c<meta::list<Ts...>, I>>
+             RANGES_CXX14_CONSTEXPR T && get(compressed_tuple_<meta::list<Ts...>, meta::index_sequence<Is...>> && tuple) noexcept
+             {
+-                return static_cast<storage<T, I, Ts...> &&>(tuple).get();
++                return tuple.template get<I>();// static_cast<storage<T, I, Ts...> &&>(tuple).get();
+             }
+         }
+         using compressed_tuple_detail::compressed_tuple;
 diff --git a/include/range/v3/utility/dangling.hpp b/include/range/v3/utility/dangling.hpp
 index d6c2bfe..06f9708 100755
 --- a/include/range/v3/utility/dangling.hpp
@@ -563,6 +713,31 @@ index d6c2bfe..06f9708 100755
          /// objects recursively.
          RANGES_INLINE_VARIABLE(sanitize_fn, sanitize)
      }
+diff --git a/include/range/v3/utility/functional.hpp b/include/range/v3/utility/functional.hpp
+index 41483f6..0b65c56 100755
+--- a/include/range/v3/utility/functional.hpp
++++ b/include/range/v3/utility/functional.hpp
+@@ -730,17 +730,17 @@ namespace ranges
+         struct reference_wrapper
+         {
+         private:
+-            T *t_;
++            ptrdiff_t t_;
+         public:
+             using type = T;
+             using reference = meta::if_c<RValue, T &&, T &>;
+             constexpr reference_wrapper() = default;
+             constexpr reference_wrapper(reference t) noexcept
+-              : t_(std::addressof(t))
++              : t_(reinterpret_cast<ptrdiff_t >(std::addressof(t)))
+             {}
+             constexpr reference get() const noexcept
+             {
+-                return static_cast<reference>(*t_);
++                return static_cast<reference>(*reinterpret_cast<T*>(t_));
+             }
+             constexpr operator reference() const noexcept
+             {
 diff --git a/include/range/v3/utility/swap.hpp b/include/range/v3/utility/swap.hpp
 index d61478c..d7874f2 100755
 --- a/include/range/v3/utility/swap.hpp
@@ -688,6 +863,117 @@ index 7332488..2cd6e0a 100755
  
              template<bool IsConst>
              struct sentinel;
+diff --git a/include/range/v3/view/cycle.hpp b/include/range/v3/view/cycle.hpp
+index 44589f0..afbe92b 100755
+--- a/include/range/v3/view/cycle.hpp
++++ b/include/range/v3/view/cycle.hpp
+@@ -78,37 +78,43 @@ namespace ranges
+                 using cycled_view_t = constify_if<cycled_view>;
+                 using difference_type_ = range_difference_t<Rng>;
+                 using iterator = range_iterator_t<constify_if<Rng>>;
++                using sentinel = range_sentinel_t<constify_if<Rng>>;
+ 
+-                cycled_view_t *rng_;
++                // cycled_view_t *rng_;
+                 iterator it_;
+ 
++                iterator begin_;
++
++                sentinel end_;
++
+                 iterator get_end_(std::true_type, bool = false) const
+                 {
+-                    return ranges::end(rng_->rng_);
++                    return end_;
+                 }
+                 template<bool CanBeEmpty = false>
+-                iterator get_end_(std::false_type, meta::bool_<CanBeEmpty> = {}) const
+-                {
+-                    auto &end_ = ranges::get<end_tag>(*rng_);
+-                    RANGES_ASSERT(CanBeEmpty || end_);
+-                    if(CanBeEmpty && !end_)
+-                        end_ = ranges::next(it_, ranges::end(rng_->rng_));
+-                    return *end_;
+-                }
++                // iterator get_end_(std::false_type, meta::bool_<CanBeEmpty> = {}) const
++                // {
++                //     auto &end_ = ranges::get<end_tag>(*rng_);
++                //     RANGES_ASSERT(CanBeEmpty || end_);
++                //     if(CanBeEmpty && !end_)
++                //         end_ = ranges::next(it_, end_bla);
++                //     return *end_;
++                // }
+                 void set_end_(std::true_type) const
+                 {}
+-                void set_end_(std::false_type) const
+-                {
+-                    auto &end_ = ranges::get<end_tag>(*rng_);
+-                    if(!end_)
+-                        end_ = it_;
+-                }
++                // void set_end_(std::false_type) const
++                // {
++                //     auto &end_ = ranges::get<end_tag>(*rng_);
++                //     if(!end_)
++                //         end_ = it_;
++                // }
+             public:
+                 cursor()
+-                  : rng_{}, it_{}
++                  : /* rng_{}, */ it_{}, begin_{}, end_{}
+                 {}
+                 explicit cursor(cycled_view_t &rng)
+-                  : rng_(&rng), it_(ranges::begin(rng.rng_))
++                  : /* rng_(&rng), */ it_(ranges::begin(rng.rng_)), begin_(ranges::begin(rng.rng_)),
++                    end_(ranges::end(rng.rng_))
+                 {}
+                 constexpr bool done() const
+                 {
+@@ -121,30 +127,30 @@ namespace ranges
+                 )
+                 bool equal(cursor const &pos) const
+                 {
+-                    RANGES_ASSERT(rng_ == pos.rng_);
++                    // RANGES_ASSERT(rng_ == pos.rng_);
+                     return it_ == pos.it_;
+                 }
+                 void next()
+                 {
+-                    auto const end = ranges::end(rng_->rng_);
++                    auto const end = end_;
+                     RANGES_ASSERT(it_ != end);
+                     if(++it_ == end)
+                     {
+                         this->set_end_(BoundedRange<Rng>());
+-                        it_ = ranges::begin(rng_->rng_);
++                        it_ = begin_;
+                     }
+                 }
+                 CONCEPT_REQUIRES(BidirectionalRange<Rng>())
+                 void prev()
+                 {
+-                    if(it_ == ranges::begin(rng_->rng_))
++                    if(it_ == begin_)
+                         it_ = this->get_end_(BoundedRange<Rng>());
+                     --it_;
+                 }
+                 CONCEPT_REQUIRES(RandomAccessRange<Rng>())
+                 void advance(difference_type_ n)
+                 {
+-                    auto const begin = ranges::begin(rng_->rng_);
++                    auto const begin = begin_;
+                     auto const end = this->get_end_(BoundedRange<Rng>(), meta::bool_<true>());
+                     auto const d = end - begin;
+                     auto const off = ((it_ - begin) + n) % d;
+@@ -153,7 +159,7 @@ namespace ranges
+                 CONCEPT_REQUIRES(SizedSentinel<iterator, iterator>())
+                 difference_type_ distance_to(cursor const &that) const
+                 {
+-                    RANGES_ASSERT(that.rng_ == rng_);
++                    // RANGES_ASSERT(that.rng_ == rng_);
+                     return that.it_ - it_;
+                 }
+             };
 diff --git a/include/range/v3/view/zip.hpp b/include/range/v3/view/zip.hpp
 index 2678bc5..d94b131 100755
 --- a/include/range/v3/view/zip.hpp
@@ -765,7 +1051,7 @@ index 502b56a..b65f117 100755
                  bool equal(cursor const &pos) const
 diff --git a/include/sycl/tuple.h b/include/sycl/tuple.h
 new file mode 100644
-index 0000000..615a236
+index 0000000..7cfa06d
 --- /dev/null
 +++ b/include/sycl/tuple.h
 @@ -0,0 +1,332 @@
@@ -826,7 +1112,7 @@ index 0000000..615a236
 +struct Tuple<T, Ts...> {
 +  constexpr Tuple() {}
 +
-+  Tuple(T t, Ts... ts) : head(t), tail(ts...) {}
++  Tuple(T t, Ts... ts) : head(std::forward<T>(t)), tail(std::forward<Ts>(ts)...) {}
 +
 +  T head;
 +  Tuple<Ts...> tail;
@@ -1058,7 +1344,7 @@ index 0000000..615a236
 +}  // internal
 +}  // visioncpp
 +
-+#if 0
++#if 0 // set to 1 to use std::tuple
 +
 +template<typename... Ts>
 +using sycl_tuple = std::tuple<Ts...>;
