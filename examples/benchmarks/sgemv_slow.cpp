@@ -28,7 +28,7 @@ struct AddComponents {
   constexpr AddComponents() {};
 
   template <typename T>
-  int operator()(const T& a) const {
+  auto operator()(const T& a) const {
     return *std::get<0>(a) + *std::get<1>(a);
   }
 };
