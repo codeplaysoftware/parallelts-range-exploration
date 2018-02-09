@@ -16,7 +16,7 @@ struct Sgemv : public testing::Test {};
 struct DotProduct {
   constexpr DotProduct(){};
   template <typename T>
-  float operator()(const T& tpl) const {
+  auto operator()(const T& tpl) const {
     auto row = std::get<0>(tpl);
     auto x = std::get<1>(tpl);
 
@@ -28,7 +28,7 @@ struct AddComponents {
   constexpr AddComponents() {};
 
   template <typename T>
-  int operator()(const T& a) const {
+  auto operator()(const T& a) const {
     return std::get<0>(a) + std::get<1>(a);
   }
 };
