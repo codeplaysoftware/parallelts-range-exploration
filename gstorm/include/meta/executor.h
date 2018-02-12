@@ -6,6 +6,8 @@
 #include <detail/algorithms/transform.h>
 #include <detail/algorithms/reduce.h>
 
+#include "aligned_allocator.h"
+
 namespace gstorm
 {
   class sycl_exec {
@@ -70,9 +72,10 @@ namespace gstorm
           range_length / work_per_group * local_thread_count +
           threads_writing_in_last_group;
 
-      std::vector<value_type> outVec(threads_writing);
+      std::vector<value_type, aligned_allocator<value_type, 4096>> outVec(threads_writing);
       {
-        cl::sycl::buffer<value_type, 1> out(outVec.data(), outVec.size());
+        cl::sycl::buffer<value_type, 1> out(outVec.data(), outVec.size(),
+                                            {cl::sycl::property::buffer::use_host_ptr{}});
 
         _queue.submit([&](cl::sycl::handler &cgh) {
           setCGH(cgh); // update the cgh in every vector registerd with this executor
