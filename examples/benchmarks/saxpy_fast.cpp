@@ -22,7 +22,7 @@ struct AddComponents {
 };
 
 int main(int argc, char* argv[]) {
-  const size_t base_size = 1024 * 1024;
+  const size_t base_size = 1024 * 128;
 
   size_t multiplier = 16;
   if (argc > 1) {

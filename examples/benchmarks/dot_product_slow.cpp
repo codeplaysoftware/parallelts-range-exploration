@@ -14,15 +14,6 @@
 #include "my_zip.h"
 
 template <typename T>
-struct AddComponents {
-  constexpr AddComponents(){};
-  T operator()(const std::tuple<cl::sycl::global_ptr<T>,
-                                cl::sycl::global_ptr<T>>& tpl) const {
-    return *std::get<0>(tpl) + *std::get<1>(tpl);
-  }
-};
-
-template <typename T>
 struct MultiplyComponents {
   constexpr MultiplyComponents(){};
   T operator()(const std::tuple<cl::sycl::global_ptr<T>,
@@ -32,7 +23,7 @@ struct MultiplyComponents {
 };
 
 int main(int argc, char* argv[]) {
-  const size_t base_size = 1024 * 1024;
+  const size_t base_size = 1024 * 128;
 
   size_t multiplier = 16;
   if (argc > 1) {
