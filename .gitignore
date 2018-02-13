@@ -32,4 +32,6 @@ build
 *.sycl
 *.swp
 
+*.log
+
 .ycm_extra_conf.py
