@@ -84,8 +84,9 @@ struct giterator : public std::random_access_iterator_tag, public traits::range_
         it(other.it),
         id_(size_t_max) {
 #ifndef __SYCL_DEVICE_ONLY__
-    if (owner)
+    if (owner) {
       id_ = (reinterpret_cast<gvector<T> *>(owner))->registerIterator(*this);
+    }
 #endif
   }
 
