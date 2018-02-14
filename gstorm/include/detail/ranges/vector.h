@@ -77,13 +77,16 @@ struct giterator : public std::random_access_iterator_tag, public traits::range_
 #endif
   }
 
-  giterator(const giterator& other) : has_accessor(other.has_accessor), accessor(other.accessor), owner(other.owner), it(other.it), id_(){
-    if (!other.hasAccessor()) {
+  giterator(const giterator &other)
+      : has_accessor(other.has_accessor),
+        accessor(other.accessor),
+        owner(other.owner),
+        it(other.it),
+        id_(size_t_max) {
 #ifndef __SYCL_DEVICE_ONLY__
-      if (owner)
-        id_ = (reinterpret_cast<gvector<T>*>(owner))->registerIterator(*this); // this should never be executed on the device
+    if (owner)
+      id_ = (reinterpret_cast<gvector<T> *>(owner))->registerIterator(*this);
 #endif
-    }
   }
 
   bool hasAccessor() const { return has_accessor; }
