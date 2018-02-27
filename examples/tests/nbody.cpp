@@ -13,12 +13,6 @@
 
 struct NBody : public testing::Test {};
 
-using data_t = struct F4 {
-  F4() : x(0), y(0), z(0), w(0) {}
-  F4(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
-  float x, y, z, w;
-};
-
 struct NBodyOperator {
   float G, dt, eps2;
 
@@ -31,32 +25,34 @@ struct NBodyOperator {
   }
 
   template <typename T>
-  data_t calculate(const data_t& p_orig, data_t& v_orig, T& particles) const {
+  cl::sycl::float4 calculate(const cl::sycl::float4& p_orig,
+                             cl::sycl::float4& v_orig, T& particles) const {
     auto p = p_orig;
     auto v = v_orig;
-    data_t a = {0.0f, 0.0f, 0.0f, 0.0f};
-    data_t r = {0.0f, 0.0f, 0.0f, 0.0f};
+    cl::sycl::float4 a{0.0f, 0.0f, 0.0f, 0.0f};
+    cl::sycl::float4 r{0.0f, 0.0f, 0.0f, 0.0f};
 
     for (auto& particle : particles) {
-      r.x = p.x - particle.x;
-      r.y = p.y - particle.y;
-      r.z = p.z - particle.z;
-      r.w = cl::sycl::sqrt(r.x * r.x + r.y * r.y + r.z * r.z + eps2);
+      r.x() = p.x() - particle.x();
+      r.y() = p.y() - particle.y();
+      r.z() = p.z() - particle.z();
+      r.w() =
+          cl::sycl::sqrt(r.x() * r.x() + r.y() * r.y() + r.z() * r.z() + eps2);
 
-      a.w = G * particle.w * r.w * r.w * r.w;
+      a.w() = G * particle.w() * r.w() * r.w() * r.w();
 
-      a.x += a.w * r.x;
-      a.y += a.w * r.y;
-      a.z += a.w * r.z;
+      a.x() += a.w() * r.x();
+      a.y() += a.w() * r.y();
+      a.z() += a.w() * r.z();
     }
 
-    p.x += v.x * dt + a.x * 0.5f * dt * dt;
-    p.y += v.y * dt + a.y * 0.5f * dt * dt;
-    p.z += v.z * dt + a.z * 0.5f * dt * dt;
+    p.x() += v.x() * dt + a.x() * 0.5f * dt * dt;
+    p.y() += v.y() * dt + a.y() * 0.5f * dt * dt;
+    p.z() += v.z() * dt + a.z() * 0.5f * dt * dt;
 
-    v.x += a.x * dt;
-    v.y += a.y * dt;
-    v.z += a.z * dt;
+    v.x() += a.x() * dt;
+    v.y() += a.y() * dt;
+    v.z() += a.z() * dt;
 
     v_orig = v;
     return p;
@@ -68,10 +64,11 @@ bool float_comparison(float result, float expected) {
          0.001 * std::max(std::abs(result), std::abs(expected));
 }
 
-bool data_t_comparison(data_t left, data_t right) {
-  return float_comparison(left.x, right.x) &&
-         float_comparison(left.y, right.y) &&
-         float_comparison(left.z, right.z) && float_comparison(left.w, right.w);
+bool float4_comparison(cl::sycl::float4 left, cl::sycl::float4 right) {
+  return float_comparison(left.x(), right.x()) &&
+         float_comparison(left.y(), right.y()) &&
+         float_comparison(left.z(), right.z()) &&
+         float_comparison(left.w(), right.w());
 }
 
 TEST_F(NBody, TestNBody) {
@@ -84,9 +81,9 @@ TEST_F(NBody, TestNBody) {
     return distribution(generator);
   };
 
-  auto generate_data_t = [&generate_float]() {
-    return data_t{generate_float(), generate_float(), generate_float(),
-                  generate_float()};
+  auto generate_float4 = [&generate_float]() {
+    return cl::sycl::float4{generate_float(), generate_float(),
+                            generate_float(), generate_float()};
   };
 
   const auto G = -6.673e-11f;
@@ -94,12 +91,12 @@ TEST_F(NBody, TestNBody) {
   const auto eps2 = 0.00125f;
 
   // Input to the SYCL device
-  std::vector<data_t> position(vsize);
-  std::vector<data_t> velocity(vsize);
-  std::vector<data_t> new_position(vsize);
+  std::vector<cl::sycl::float4> position(vsize);
+  std::vector<cl::sycl::float4> velocity(vsize);
+  std::vector<cl::sycl::float4> new_position(vsize);
 
-  ranges::generate(position, generate_data_t);
-  ranges::generate(velocity, generate_data_t);
+  ranges::generate(position, generate_float4);
+  ranges::generate(velocity, generate_float4);
 
   auto expected_velocity = velocity;
   {
@@ -118,7 +115,7 @@ TEST_F(NBody, TestNBody) {
                                  NBodyOperator{G, dt, eps2});
   }
 
-  auto op = [G, dt, eps2](const auto& tpl) -> data_t {
+  auto op = [G, dt, eps2](const auto& tpl) -> cl::sycl::float4 {
     return (NBodyOperator{G, dt, eps2})
         .calculate(std::get<0>(tpl), std::get<1>(tpl), std::get<2>(tpl));
   };
@@ -128,6 +125,6 @@ TEST_F(NBody, TestNBody) {
                          | ranges::view::transform(op);
 
   EXPECT_TRUE(
-      ranges::equal(expected_position, new_position, data_t_comparison));
-  EXPECT_TRUE(ranges::equal(expected_velocity, velocity, data_t_comparison));
+      ranges::equal(expected_position, new_position, float4_comparison));
+  EXPECT_TRUE(ranges::equal(expected_velocity, velocity, float4_comparison));
 }

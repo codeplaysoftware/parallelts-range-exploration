@@ -15,11 +15,7 @@ struct Sum {
   constexpr Sum() {};
   template<typename T>
   float operator()(const T& row) const {
-    auto sum = 0.0f;
-    for (auto& elem : row) {
-      sum += elem;
-    }
-    return sum;
+    return ranges::accumulate(row, 0.0f);
   }
 };
 

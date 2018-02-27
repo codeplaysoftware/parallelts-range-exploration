@@ -27,7 +27,6 @@
 #include <range/v3/view/all.hpp>
 #include <range/v3/view/view.hpp>
 #include <range/v3/view/take.hpp>
-#include <range/v3/utility/box.hpp>
 #include <range/v3/utility/static_const.hpp>
 
 namespace ranges
@@ -74,7 +73,7 @@ namespace ranges
 
         template<typename Rng>
         struct chunk_view<Rng>::adaptor
-          : adaptor_base//, private box<offset_t>
+          : adaptor_base
         {
         private:
             offset_t value;

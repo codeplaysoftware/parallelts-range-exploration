@@ -5,7 +5,7 @@
 #pragma once
 
 #include <detail/ranges/vector.h>
-
+#include <string>
 
 namespace gstorm {
   namespace traits {
@@ -26,7 +26,13 @@ namespace gstorm {
     struct is_gvector<T<U>> : std::is_same<T<U>, range::gvector<U>> {
     };
 
+    template<class T>
+    struct is_string : std::false_type {
+    };
 
+    template<class T, class Traits, class Alloc>
+    struct is_string<std::basic_string<T, Traits, Alloc>> : std::true_type {
+    };
 
     template<template<typename...> class Template, typename T>
     struct is_specialization_of : std::false_type {

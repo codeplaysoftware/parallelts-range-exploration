@@ -12,16 +12,19 @@ namespace gstorm {
 namespace gpu {
 
 struct _copy {
-  template<typename Exec, typename T>
+  template <typename Exec, typename T>
   auto operator()(Exec &&exec, T &input) const {
-    static_assert(traits::is_vector<T>::value, "Only std::vector is currently supported!");
+    constexpr auto is_vector = traits::is_vector<T>::value;
+    constexpr auto is_string = traits::is_string<T>::value;
+    static_assert( is_vector || is_string,
+                  "Only std::vector & std::string are currently supported!");
     range::gvector<T> nv(input);
     exec.registerGVector(&nv);
     return nv;
   }
 };
 
-template<typename T>
+template <typename T>
 auto operator|(T &lhs, const _copy &rhs) {
   return rhs(lhs);
 }
